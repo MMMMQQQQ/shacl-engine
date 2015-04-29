@@ -61,7 +61,7 @@ public abstract class SPARQLConstraintQuery {
 	public boolean executeQuery(Model model) {
 		SPARQLQueryExecutor executor = new SPARQLQueryExecutor();		
 		boolean isValid = executor.isQueryValid(this.getBaseQuery(), this.getBindings(), model);
-		System.out.println("isvalid?"+isValid);
+
 		return isValid;
 	}
 	
