@@ -18,9 +18,9 @@ There are 6 main class types:
 Furthermore, there are several helper classes.
 
 The validator is the main access point as it ties the different functions together.
-1. On instantiating, the ModelRegistry registers all ModelBuilder subclasses and SPARQLConstraintQuery subclasses and ties them together.
-2. The validator then checks for data instances to be evaluated
-3. Then it checks for constraint violations:
+* On instantiating, the ModelRegistry registers all ModelBuilder subclasses and SPARQLConstraintQuery subclasses and ties them together.
+* The validator then checks for data instances to be evaluated
+* Then it checks for constraint violations:
 	* It iterates over all registered ModelBuilder classes in the registry. Each ModelBuilder represents on constraint that needs to be  checked.
 	* Each ModelBuilder instance extracts all necessary information and stores it into a SHACLEntity object
 	* The SPARQLConstraintQuery class that is linked with the ModelBuilder class takes the generated SHACLEntity and with a SPARQL query checks whether the entity violates the model. If so, a non empty error model is returned.
