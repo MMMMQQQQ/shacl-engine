@@ -1,23 +1,23 @@
 package at.ac.tuwien.shacl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import at.ac.tuwien.shacl.validation.SPARQLValidator;
-import at.ac.tuwien.shacl.vocabulary.SHACL;
-import at.ac.tuwien.shacl.vocabulary.SelectionProperty;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Statement;
 
 public class Main {
-	public static void main(String[] args) {
+	private static String MAVEN_RES_PATH = "src/main/resources/";
+	
+	public static void main(String[] args) throws FileNotFoundException {
 		
 		Model model = ModelFactory.createDefaultModel();
+		model.read(new FileInputStream(new File(MAVEN_RES_PATH+"query3.ttl")), null, "TURTLE");
 		//violates constraint
-		model.read("query3.ttl");
+		//model.read("query3.ttl");
 		//doesn't violate any constraints. uncomment for testing
 		//model.read("query4.ttl");
 		//model.write(System.out, "RDF/XML");
