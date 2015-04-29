@@ -1,92 +1,31 @@
 package at.ac.tuwien.shacl.validation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
-import at.ac.tuwien.shacl.sparql.querying.MissingBindingException;
-import at.ac.tuwien.shacl.sparql.querying.SPARQLHasValue;
-import at.ac.tuwien.shacl.sparql.querying.SPARQLQueryConstraint;
+import at.ac.tuwien.shacl.model.SHACLEntity;
+import at.ac.tuwien.shacl.sparql.queries.SPARQLConstraintQuery;
+import at.ac.tuwien.shacl.util.ModelRegistry;
+import at.ac.tuwien.shacl.util.SHACLModelLoader;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 import at.ac.tuwien.shacl.vocabulary.SelectionProperty;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SPARQLValidator {
 	private Model model;
 	
+	private ModelRegistry registry;
+	
 	public SPARQLValidator(Model model) {
 		this.model = model;
+		this.registry = SHACLModelLoader.getModelRegistry();
 	}
-	
-	public void validate(SPARQLQueryConstraint sqc, Model model) throws MissingBindingException {
-		SPARQLQueryExecutor executor = new SPARQLQueryExecutor();
-		executor.isQueryValid(sqc.getBaseQuery(), sqc.getBindings(), model);
-	}
-
-	public Model validateNode(Resource resource, Property property,
-			RDFNode... nodes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*public Model validateAll(Model model) {
-		Model errorModel = ModelFactory.createDefaultModel();
-		
-		for(Statement s : model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList()) {
-			Set<Resource> shapes = new HashSet<Resource>();
-
-			addSuperClasses(s.getResource(), shapes);
-			for(Resource sh : shapes) {
-				for(Statement propertyS : sh.listProperties(SHACL.property).toList()) {
-					// Property constraints
-					Statement predicateS = propertyS.getResource().getProperty(SHACL.predicate);
-
-					Statement hasValueS = propertyS.getResource().getProperty(SHACL.hasValue);
-					if(hasValueS != null) {
-						HashMap<String, RDFNode> variables = new HashMap<String, RDFNode>();
-						variables.put("this", s.getSubject());
-						variables.put("predicate", model.getProperty(predicateS.getResource().getURI()));
-						variables.put("hasValue", hasValueS.getObject());
-						
-						try {
-							SPARQLHasValue hvc = new SPARQLHasValue();
-							hvc.createBindings(variables);
-							
-							SPARQLQueryExecutor executor = new SPARQLQueryExecutor();
-							boolean isValid;
-							
-							isValid = executor.isQueryValid(hvc.getBaseQuery(), hvc.getBindings(), model);
-						
-							if(!isValid) {
-								Resource error = errorModel.createResource(SHACL.Error);
-								error.addProperty(SHACL.root, s.getSubject());
-								error.addProperty(SHACL.path, model.getProperty(predicateS.getResource().getURI()));
-								error.addProperty(SHACL.message, "Missing required value " + hasValueS);
-							}
-						} catch (MissingBindingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						
-					}
-				}
-			}
-		}
-		
-		return errorModel;
-	}*/
 	
 	public Model validateAll() {
 		Model errorModel = ModelFactory.createDefaultModel();
@@ -95,51 +34,55 @@ public class SPARQLValidator {
 		
 		for(Statement s : shapeStatements) {
 			Resource resource = s.getResource();
-			
-		}
-		
-		for(Statement s : model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList()) {
-			Set<Resource> shapes = new HashSet<Resource>();
-
-			addSuperClasses(s.getResource(), shapes);
-			for(Resource sh : shapes) {
-				for(Statement propertyS : sh.listProperties(SHACL.property).toList()) {
-					// Property constraints
-					Statement predicateS = propertyS.getResource().getProperty(SHACL.predicate);
-
-					Statement hasValueS = propertyS.getResource().getProperty(SHACL.hasValue);
-					if(hasValueS != null) {
-						HashMap<String, RDFNode> variables = new HashMap<String, RDFNode>();
-						variables.put("this", s.getSubject());
-						variables.put("predicate", model.getProperty(predicateS.getResource().getURI()));
-						variables.put("hasValue", hasValueS.getObject());
-						
-						try {
-							SPARQLHasValue hvc = new SPARQLHasValue();
-							hvc.createBindings(variables);
-							
-							SPARQLQueryExecutor executor = new SPARQLQueryExecutor();
-							boolean isValid;
-							
-							isValid = executor.isQueryValid(hvc.getBaseQuery(), hvc.getBindings(), model);
-						
-							if(!isValid) {
-								Resource error = errorModel.createResource(SHACL.Error);
-								error.addProperty(SHACL.root, s.getSubject());
-								error.addProperty(SHACL.path, model.getProperty(predicateS.getResource().getURI()));
-								error.addProperty(SHACL.message, "Missing required value " + hasValueS);
-							}
-						} catch (MissingBindingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						
-					}
-				}
+			for(Statement property : resource.listProperties(SHACL.property).toList()) {
+				errorModel = this.checkForPropertyConstraints(s.getSubject(), property.getResource());
 			}
 		}
 		
+		return errorModel;
+	}
+	
+	/**
+	 * Check for violations of property constraints.
+	 * Property constraints include: 
+	 * 
+	 * @return
+	 */
+	/*private Model checkForPropertyConstraints(Resource focusNode, Resource constraint) {
+		Model errorModel = ModelFactory.createDefaultModel();
+		
+		HasValueBuilder hasValueModelBuilder = new HasValueBuilder();
+		SHACLEntity hasValue = hasValueModelBuilder.build(focusNode, constraint);
+		HasValueQuery hasValueQuery = new HasValueQuery(hasValue);
+		if(!hasValueQuery.executeQuery(model)) {
+			errorModel = hasValueModelBuilder.buildViolationModel(hasValue);
+		}
+		
+		return errorModel;
+	}*/
+	
+	/**
+	 * Check for all property constraints that are registered in the registry.
+	 * 
+	 * @param focusNode
+	 * @param constraint
+	 * @return
+	 */
+	private Model checkForPropertyConstraints(Resource focusNode, Resource constraint) {
+		Model errorModel = ModelFactory.createDefaultModel();
+		try {
+			for(Class<? extends ModelBuilder> builderClass : registry.getAll().keySet()) {
+				ModelBuilder builder = registry.getInstanceOfBuilderClass(builderClass);
+				SHACLEntity entity = builder.build(focusNode, constraint);
+				SPARQLConstraintQuery query = registry.getInstanceOfQueryClass(builderClass, entity);
+				if(!query.executeQuery(model)) {
+					errorModel.add(builder.buildViolationModel(entity));
+				}
+			}
+		} catch(NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+			e.printStackTrace();
+		}
+
 		return errorModel;
 	}
 	
@@ -162,19 +105,14 @@ public class SPARQLValidator {
 		
 		return statements;
 	}
-	
-//	
-//	protected Model createErrorModel(RDFNode root, RDFNode) {
-//		
+
+//	private void addSuperClasses(Resource shape, Set<Resource> shapes) {
+//		shapes.add(shape);
+//		for(Statement s : shape.listProperties(RDFS.subClassOf).toList()) {
+//			
+//			if(!shapes.contains(s.getResource())) {
+//				addSuperClasses(s.getResource(), shapes);
+//			}
+//		}
 //	}
-//	
-	private void addSuperClasses(Resource shape, Set<Resource> shapes) {
-		shapes.add(shape);
-		for(Statement s : shape.listProperties(RDFS.subClassOf).toList()) {
-			System.out.println("in recursion");
-			if(!shapes.contains(s.getResource())) {
-				addSuperClasses(s.getResource(), shapes);
-			}
-		}
-	}
 }

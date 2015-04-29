@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model.constrviolations;
+package at.ac.tuwien.shacl.model;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
