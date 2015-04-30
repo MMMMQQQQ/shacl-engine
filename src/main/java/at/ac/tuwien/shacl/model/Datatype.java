@@ -3,19 +3,20 @@ package at.ac.tuwien.shacl.model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public class HasValue implements PropertyConstraint {
+public class Datatype implements PropertyConstraint {
 	private Resource focusNode;
 	
 	private Resource predicate;
 	
-	private RDFNode hasValueNode;
-	
-	public HasValue(Resource focusNode, Resource predicate, RDFNode hasValueNode) {
+	private RDFNode datatypeNode;
+
+	public Datatype(Resource focusNode, Resource predicate, RDFNode datatypeNode) {
+		super();
 		this.focusNode = focusNode;
 		this.predicate = predicate;
-		this.hasValueNode = hasValueNode;
+		this.datatypeNode = datatypeNode;
 	}
-	
+
 	public Resource getFocusNode() {
 		return focusNode;
 	}
@@ -32,11 +33,11 @@ public class HasValue implements PropertyConstraint {
 		this.predicate = predicate;
 	}
 
-	public RDFNode getHasValueNode() {
-		return hasValueNode;
+	public RDFNode getDatatypeNode() {
+		return datatypeNode;
 	}
 
-	public void setHasValueNode(RDFNode hasValueNode) {
-		this.hasValueNode = hasValueNode;
+	public void setDatatypeNode(RDFNode datatypeNode) {
+		this.datatypeNode = datatypeNode;
 	}
 }

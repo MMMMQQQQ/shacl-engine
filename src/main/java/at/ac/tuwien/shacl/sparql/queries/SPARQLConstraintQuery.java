@@ -17,12 +17,6 @@ public abstract class SPARQLConstraintQuery {
 	protected QuerySolutionMap bindings;
 	
 	protected SPARQLConstraintQuery() {
-		
-	}
-	
-	public void init(SHACLEntity entity) {
-		this.addQueryString();
-		this.addBindings(entity);
 	}
 	
 	/**
@@ -35,6 +29,7 @@ public abstract class SPARQLConstraintQuery {
 			
 		}
 		Query query = QueryFactory.create(this.queryString);
+
 		return query;
 	};
 	
@@ -48,9 +43,13 @@ public abstract class SPARQLConstraintQuery {
 	
 	protected void createBindings(Map<String, RDFNode> variables) {
 		bindings = new QuerySolutionMap();
-		System.out.println(variables);
+		
+		//FIXME binding values get changed in allowedValues. issue with list/array?
+		System.out.println("in create bindings: "+variables);
 		for(Map.Entry<String, RDFNode> v : variables.entrySet()) {
+			System.out.println("v.value: "+v.getValue());
 			bindings.add(v.getKey(), v.getValue());
+			System.out.println("now: "+bindings);
 		}
 	}
 	
@@ -58,8 +57,17 @@ public abstract class SPARQLConstraintQuery {
 		return this.bindings;
 	}
 	
-	public boolean executeQuery(Model model) {
-		SPARQLQueryExecutor executor = new SPARQLQueryExecutor();		
+	public boolean validateQuery(Model model, SHACLEntity shaclEntity) {
+		if(bindings == null) {
+			this.addBindings(shaclEntity);
+		}
+		
+		if(queryString == null) {
+			this.addQueryString();
+		}
+		
+		SPARQLQueryExecutor executor = new SPARQLQueryExecutor();	
+		System.out.println("bindings: "+this.getBindings());
 		boolean isValid = executor.isQueryValid(this.getBaseQuery(), this.getBindings(), model);
 
 		return isValid;

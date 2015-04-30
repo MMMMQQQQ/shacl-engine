@@ -22,8 +22,8 @@ public class ModelRegistry {
 	
 	public SPARQLConstraintQuery getInstanceOfQueryClass(Class<? extends ModelBuilder> builderClass, SHACLEntity entity) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Class<? extends SPARQLConstraintQuery> c = registry.get(builderClass);
-		Constructor<? extends SPARQLConstraintQuery> cons = c.getConstructor(SHACLEntity.class);
-		SPARQLConstraintQuery query = cons.newInstance(entity);
+		Constructor<? extends SPARQLConstraintQuery> cons = c.getConstructor();
+		SPARQLConstraintQuery query = cons.newInstance();
 		
 		return query;
 	}

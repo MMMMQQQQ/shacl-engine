@@ -1,11 +1,16 @@
 package at.ac.tuwien.shacl.validation;
 
 import at.ac.tuwien.shacl.model.SHACLEntity;
+import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public interface ModelBuilder {
+public abstract class ModelBuilder {
+	protected Resource getPredicate(Resource constraint) {
+		return constraint.getProperty(SHACL.predicate).getObject().asResource();
+	}
+	
 	/**
 	 * Build a SHACL entity from the RDF nodes.
 	 * 
@@ -13,7 +18,7 @@ public interface ModelBuilder {
 	 * @param constraint
 	 * @return
 	 */
-	public SHACLEntity build(Resource focusNode, Resource constraint);
+	public abstract SHACLEntity build(Resource focusNode, Resource constraint);
 	
 	/**
 	 * Build a violation model from a SHACL entity.
@@ -21,5 +26,5 @@ public interface ModelBuilder {
 	 * @param entity
 	 * @return
 	 */
-	public Model buildViolationModel(SHACLEntity entity);
+	public abstract Model buildViolationModel(SHACLEntity entity);
 }

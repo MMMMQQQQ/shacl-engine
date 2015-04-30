@@ -5,6 +5,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 
 /**
@@ -28,7 +29,7 @@ public class SPARQLQueryExecutor {
 		ResultSet results = exec.execSelect();
 		//CAUTION: printing it out in formatter will skew result set and might return false values.
 		//de-comment the next lines only for testing purposes
-		//System.out.println(ResultSetFormatter.asText(results));
+		System.out.println(ResultSetFormatter.asText(results));
 		//System.out.println("result set: "+results.getRowNumber());
 		try {
 			if(results.hasNext()) {

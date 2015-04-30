@@ -14,10 +14,6 @@ public class HasValueQuery extends SPARQLConstraintQuery {
 	private String predicate = "predicate";
 	private String hasValue = "hasValue";
 
-	public HasValueQuery(SHACLEntity hasValueEntity) {
-		this.init(hasValueEntity);
-	}
-
 	@Override
 	protected void addQueryString() {
 		this.setBaseQueryString(
@@ -36,7 +32,7 @@ public class HasValueQuery extends SPARQLConstraintQuery {
 
 		variables.put(this.thiz, hasValueEntity.getFocusNode());
 		variables.put(this.predicate, hasValueEntity.getPredicate());
-		variables.put(this.hasValue, hasValueEntity.getHasValue());
+		variables.put(this.hasValue, hasValueEntity.getHasValueNode());
 
 		this.createBindings(variables);
 	}

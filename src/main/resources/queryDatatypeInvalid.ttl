@@ -2,7 +2,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ex: <http://example.com/ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
 
 ex:DatatypeExampleShape
 	a sh:Shape ;
@@ -11,9 +11,6 @@ ex:DatatypeExampleShape
 		sh:datatype xsd:string ;
 	] .
 
-ex:DatatypeShapeExampleValidResource
-	ex:someProperty "Some value" .
-	
-
 ex:DatatypeShapeExampleInvalidResource
+	sh:nodeShape ex:DatatypeExampleShape;
 	ex:someProperty 42 .

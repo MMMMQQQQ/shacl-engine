@@ -14,6 +14,7 @@ public class SHACL {
 
     public final static String PREFIX = "sh";
 
+    public final static Property datatype = ResourceFactory.createProperty(NS + "datatype");
 
     public final static Resource Constraint = ResourceFactory.createResource(NS + "Constraint");
 

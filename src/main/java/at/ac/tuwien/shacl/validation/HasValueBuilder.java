@@ -9,7 +9,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
-public class HasValueBuilder implements ModelBuilder {
+public class HasValueBuilder extends ModelBuilder {
 	
 	public HasValue build(Resource focusNode, Resource constraint) {
 		Statement hasValue = constraint.getProperty(SHACL.hasValue);
@@ -17,7 +17,7 @@ public class HasValueBuilder implements ModelBuilder {
 		HasValue hasValueEntity = null;
 		
 		if(hasValue != null) {
-			Resource predicate = constraint.getProperty(SHACL.predicate).getObject().asResource();
+			Resource predicate = this.getPredicate(constraint);
 			hasValueEntity = new HasValue(focusNode, predicate, hasValue.getObject());
 		}
 		
@@ -31,8 +31,7 @@ public class HasValueBuilder implements ModelBuilder {
 		Resource error = errorModel.createResource(SHACL.Error);
 		error.addProperty(SHACL.root, hv.getFocusNode());
 		error.addProperty(SHACL.path, hv.getPredicate());
-		error.addProperty(SHACL.message, "Missing required value " + hv.getHasValue());
-		errorModel.write(System.out, "TURTLE");
+		error.addProperty(SHACL.message, "Missing required value " + hv.getHasValueNode());
 		return errorModel;
 	}
 }

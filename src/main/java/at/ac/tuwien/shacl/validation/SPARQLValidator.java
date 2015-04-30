@@ -33,8 +33,11 @@ public class SPARQLValidator {
 		List<Statement> shapeStatements = this.getInstantiatedShapeTriplets();
 		
 		for(Statement s : shapeStatements) {
+			
 			Resource resource = s.getResource();
+			System.out.println(s.getResource());
 			for(Statement property : resource.listProperties(SHACL.property).toList()) {
+				System.out.println("checking");
 				errorModel = this.checkForPropertyConstraints(s.getSubject(), property.getResource());
 			}
 		}
@@ -69,14 +72,18 @@ public class SPARQLValidator {
 	 * @return
 	 */
 	private Model checkForPropertyConstraints(Resource focusNode, Resource constraint) {
+
 		Model errorModel = ModelFactory.createDefaultModel();
 		try {
 			for(Class<? extends ModelBuilder> builderClass : registry.getAll().keySet()) {
+				System.out.println("checking");
 				ModelBuilder builder = registry.getInstanceOfBuilderClass(builderClass);
 				SHACLEntity entity = builder.build(focusNode, constraint);
-				SPARQLConstraintQuery query = registry.getInstanceOfQueryClass(builderClass, entity);
-				if(!query.executeQuery(model)) {
-					errorModel.add(builder.buildViolationModel(entity));
+				if(entity != null) {
+					SPARQLConstraintQuery query = registry.getInstanceOfQueryClass(builderClass, entity);
+					if(!query.validateQuery(model, entity)) {
+						errorModel.add(builder.buildViolationModel(entity));
+					}
 				}
 			}
 		} catch(NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
