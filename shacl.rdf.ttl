@@ -1,0 +1,1971 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:sh="http://www.w3.org/ns/shacl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractNodeKindPropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?nodeKind
+		WHERE {
+			?this ?predicate ?object ;
+			FILTER (!sh:hasNodeKind(?object, ?nodeKind)) .
+		}
+		</sh:sparql>
+    <sh:message>Values must be of kind {?nodeKind}</sh:message>
+    <sh:argument rdf:nodeID="A0"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies the valid node kind of a property.</rdfs:comment>
+    <rdfs:label>Abstract node kind property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg6">
+    <rdfs:label>arg6</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#inverseProperty">
+    <rdfs:label>inverse property</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A1">
+    <rdfs:comment>The property to get the value count of.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#OrConstraint">
+    <sh:sparql>
+		SELECT *
+		WHERE {
+			FILTER NOT EXISTS {
+				GRAPH ?shapesGraph {
+					?shapes rdf:rest*/rdf:first ?shape .
+				}
+				FILTER sh:hasShape(?this, ?shape, ?shapesGraph) .
+			}
+		}
+		</sh:sparql>
+    <sh:message>Violation of OR constraint</sh:message>
+    <sh:labelTemplate>Or constraint: {?shapes}</sh:labelTemplate>
+    <sh:argument rdf:nodeID="A2"/>
+    <rdfs:comment>Enforces a constraint that at least one of several provided shapes must be valid for the focus resource.</rdfs:comment>
+    <rdfs:label>Or constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#LocalTemplateConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractPropertyConstraint">
+    <sh:property rdf:nodeID="A3"/>
+    <sh:property rdf:nodeID="A4"/>
+    <sh:argument rdf:nodeID="A5"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Shared superclass for templates that take a predicate as one of their arguments.</rdfs:comment>
+    <rdfs:label>Abstract property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#LocalTemplateConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A6">
+    <rdfs:comment>The minimum number of values that the property must have. Defaults to 0.</rdfs:comment>
+    <rdfs:label>min count</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optional>
+    <sh:defaultValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</sh:defaultValue>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#minCount"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#TemplateConstraint">
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>A constraint that is instantiating a template.</rdfs:comment>
+    <rdfs:label>Template constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Constraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Templates"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#InversePropertyConstraint">
+    <sh:labelTemplate>Inverse property {?predicate} : {?valueType} [{?minCount}..{?maxCount}]</sh:labelTemplate>
+    <rdfs:comment>Declares the structural constraints for an incoming property at the associated class. The supported arguments are inherited from the superclasses.</rdfs:comment>
+    <rdfs:label>Inverse property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractValueTypeInversePropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractCountInversePropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A7">
+    <rdfs:comment>Declares that a given property is relevant for matching resources.</rdfs:comment>
+    <rdfs:label>property</rdfs:label>
+    <sh:defaultValueType rdf:resource="http://www.w3.org/ns/shacl#PropertyConstraint"/>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#PropertyConstraint"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractValueShapePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?valueShape
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (!sh:hasShape(?object, ?valueShape, ?shapesGraph)) .
+		}
+		</sh:sparql>
+    <sh:message>Value does not fulfill the constraints of shape {?valueShape}</sh:message>
+    <sh:argument rdf:nodeID="A8"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Enforces a constraint that all values of the property must have a certain shape.</rdfs:comment>
+    <rdfs:label>Abstract shape property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A9">
+    <rdfs:comment>Result annotations provide information about additional properties that the constructed constraint violations shall have.</rdfs:comment>
+    <rdfs:label>result annotation</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#ResultAnnotation"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#resultAnnotation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#message">
+    <rdfs:label>message</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A10">
+    <rdfs:comment>The type that all values of the inverse property must have, based on the semantics defined by the function sh:hasType.</rdfs:comment>
+    <rdfs:label>value type</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#valueType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#IRI">
+    <rdfs:comment>The node kind of all IRIs.</rdfs:comment>
+    <rdfs:label>IRI</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#NodeKind"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A11">
+    <sh:sparql>
+			SELECT ?this (?this AS ?subject) (?predicate AS ?object)
+			WHERE {
+				?this rdfs:subClassOf* ?class .
+				?class sh:argument/sh:predicate ?predicate .
+				FILTER (!STRSTARTS(str(?predicate), "http://www.w3.org/ns/shacl#arg")) .
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#argument"/>
+    <sh:message>Function arguments must be the predicates sh:arg1, sh:arg2 etc.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#fractionDigits">
+    <rdfs:label>fraction digits</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#valueCount">
+    <sh:sparql>
+		SELECT ((COUNT(?object)) AS ?result)
+		WHERE {
+			?arg1 ?arg2 ?object .
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:argument rdf:nodeID="A1"/>
+    <sh:argument rdf:nodeID="A12"/>
+    <rdfs:comment>Gets the number of values of a given property (?arg2) at a given subject (?arg1). The result is the number of matches of (?arg1, ?arg2, ?object).</rdfs:comment>
+    <rdfs:label>value count</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Datatype">
+    <rdfs:comment>The class of RDF datatypes.</rdfs:comment>
+    <rdfs:label>Datatype</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A13">
+    <sh:sparql>
+			SELECT ?this
+			WHERE {
+				FILTER EXISTS {
+					?this sh:datatype ?datatype .
+					?this sh:valueType ?valueType .
+				}
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#datatype"/>
+    <sh:message>Property constraints cannot have both datatype and valueType.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#nodeShape">
+    <rdfs:label>node shape</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A14">
+    <rdfs:comment>A default value that could be used to pre-populate input forms etc. This has no formal meaning otherwise.</rdfs:comment>
+    <rdfs:label>default value</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#defaultValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg7">
+    <rdfs:label>arg7</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A15">
+    <rdfs:comment>The maximum number of values that the inverse property must have. Defaults to unlimited.</rdfs:comment>
+    <rdfs:label>max count</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optional>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#maxCount"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A16">
+    <rdfs:label>type</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A17">
+    <rdfs:comment>The max length permitted for values of this property.</rdfs:comment>
+    <rdfs:label>max length</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#maxLength"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#graph">
+    <rdfs:label>graph</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#NativeConstraint">
+    <sh:property rdf:nodeID="A18"/>
+    <rdfs:label>Native constraint</rdfs:label>
+    <sh:property rdf:nodeID="A9"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Constraint"/>
+    <sh:property rdf:nodeID="A19"/>
+    <sh:property rdf:nodeID="A20"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:property rdf:nodeID="A21"/>
+    <sh:property rdf:nodeID="A22"/>
+    <rdfs:comment>A constraint that has a native executable body attached with it.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A23">
+    <rdfs:comment>The datatype that the node must have.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A24">
+    <rdfs:comment>The property to render.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A25">
+    <rdfs:comment>Links a graph with other graphs that shall be included into the shapes graph that includes shape and template definitions as well as the SHACL metamodel.</rdfs:comment>
+    <rdfs:label>library</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#library"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A26">
+    <sh:sparql>
+			SELECT ?this (?this AS ?root) (?arg AS ?object)
+			WHERE {
+				{
+					?this sh:argument ?arg .
+					FILTER (isBlank(?arg) &amp;&amp; NOT EXISTS { ?arg a ?any }) .
+					BIND (BNODE() AS ?cv) .
+				}
+				FILTER (!sh:hasShape(?arg, sh:Argument, ?shapesGraph)) .
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#argument"/>
+    <sh:message>Malformed sh:argument.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A27">
+    <rdfs:comment>The object resource.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#member">
+    <rdfs:label>member</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#totalDigits">
+    <rdfs:label>total digits</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractMinExclusivePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?minExclusive
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (?object &lt;= ?minExclusive) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must be greater than {?minExclusive}</sh:message>
+    <sh:argument rdf:nodeID="A28"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies an (exclusive) minimum value for literal values.</rdfs:comment>
+    <rdfs:label>Abstract min exclusive property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#datatype">
+    <rdfs:label>datatype</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A29">
+    <rdfs:comment>The default value of this argument, to be used if no other value has been specified.</rdfs:comment>
+    <rdfs:label>default value</rdfs:label>
+    <sh:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optional>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#defaultValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractMinLengthPropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?minLength ?objectLength
+		WHERE {
+			?this ?predicate ?object .
+			BIND (STRLEN(str(?object)) AS ?objectLength) .
+			FILTER (?objectLength &lt; ?minLength) .
+		}
+		</sh:sparql>
+    <sh:message>Values must be at least {?minLength} characters long, but found value with {?objectLength} characters.</sh:message>
+    <sh:argument rdf:nodeID="A30"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies the min length of literal values.</rdfs:comment>
+    <rdfs:label>Abstract min length property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractArgumentMaxCountConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate
+		WHERE {
+			FILTER EXISTS {
+				?this ?predicate ?value1 .
+				?this ?predicate ?value2 .
+				FILTER (?value1 != ?value2) .
+			}
+		}
+		</sh:sparql>
+    <sh:message>Arguments cannot have more than one value.</sh:message>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:label>Abstract argument max count constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A31">
+    <rdfs:comment>The resource/instance providing the context.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg4">
+    <rdfs:label>arg4</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A12">
+    <rdfs:comment>The subject resource.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A32">
+    <rdfs:comment>A human-readable message explaining the cause of the violation. Multiple values are possible assuming they have different languages.</rdfs:comment>
+    <rdfs:label>message</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#message"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractValueTypeInversePropertyConstraint">
+    <rdfs:comment>Enforces a constraint that all incoming values of the property must be of a certain type. This will accept instances of subclasses..</rdfs:comment>
+    <sh:message>Inverse values must be instances of {?valueType}</sh:message>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+    <sh:sparql>
+		SELECT (?this AS ?object) ?subject ?predicate ?valueType
+		WHERE {
+			?subject ?predicate ?this .
+			FILTER (!sh:hasType(?subject, ?valueType)) .
+		}
+		</sh:sparql>
+    <sh:argument rdf:nodeID="A10"/>
+    <rdfs:label>Abstract value type inverse property constraint</rdfs:label>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <sh:constraint rdf:nodeID="A33"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A34">
+    <rdfs:comment>The maximum number of values that the property must have. Defaults to unlimited.</rdfs:comment>
+    <rdfs:label>max count</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optional>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#maxCount"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Templates">
+    <rdfs:comment>The recommended abstract superclass for all templates, so that they are grouped together under a common root in class trees etc.</rdfs:comment>
+    <rdfs:label>Templates</rdfs:label>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Template"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#maxExclusive">
+    <rdfs:label>max exclusive</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A21">
+    <rdfs:comment>Specifies the default sh:message(s) to produce for any constraint violation. May have multiple values for different languages.</rdfs:comment>
+    <rdfs:label>message</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#message"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A35">
+    <rdfs:comment>The property to get the value of.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#defaultValue">
+    <rdfs:label>default value</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A36">
+    <rdfs:comment>Links a resource with the shapes that it is supposed to have.</rdfs:comment>
+    <rdfs:label>node shape</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#nodeShape"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A37">
+    <rdfs:comment>True to indicate that this class is not expected to have direct instances.</rdfs:comment>
+    <rdfs:label>abstract</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#abstract"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A38">
+    <rdfs:comment>The length permitted for values of this property.</rdfs:comment>
+    <rdfs:label>length</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#length"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+    <rdfs:label>type</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#TestCase">
+    <sh:property rdf:nodeID="A39"/>
+    <rdfs:comment>Each instances of this class represents a test case, e.g. to formalize the expected behavior of SHACL implementations.</rdfs:comment>
+    <rdfs:label>Test case</rdfs:label>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A40">
+    <rdfs:comment>Result annotations provide information about additional properties that the constructed constraint violations shall have.</rdfs:comment>
+    <rdfs:label>result annotation</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#ResultAnnotation"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#resultAnnotation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Literal">
+    <rdfs:comment>The node kind of all literals.</rdfs:comment>
+    <rdfs:label>Literal</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#NodeKind"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A41">
+    <rdfs:comment>The SPARQL query to execute.</rdfs:comment>
+    <rdfs:label>SPARQL</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#sparql"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ConstraintViolation">
+    <sh:property rdf:nodeID="A42"/>
+    <sh:property rdf:nodeID="A43"/>
+    <sh:property rdf:nodeID="A44"/>
+    <rdfs:label>Constraint violation</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:property rdf:nodeID="A45"/>
+    <sh:property rdf:nodeID="A32"/>
+    <sh:property rdf:nodeID="A46"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:property rdf:nodeID="A47"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Instances of subclasses of this class can be constructed during constraint validation, to flag a single violation.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A19">
+    <rdfs:comment>Specifies the default sh:predicate to produce for any constraint violation.</rdfs:comment>
+    <rdfs:label>predicate</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#predicate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A48">
+    <rdfs:comment>The type that the node must have.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A49">
+    <rdfs:comment>True to indicate that this function will always return the same values for the same combination of arguments, regardless of the query graphs. Engines can use this information to cache and reuse previous function calls.</rdfs:comment>
+    <rdfs:label>cachable</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#cachable"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Graph">
+    <sh:property rdf:nodeID="A25"/>
+    <sh:property rdf:nodeID="A50"/>
+    <rdfs:comment>A collection of RDF triples identified by a URI. In a Linked Data scenario, a graph should be accessible from its URI via content negotiation in formats such as Turtle and JSON-LD.</rdfs:comment>
+    <rdfs:label>Graph</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg5">
+    <rdfs:label>arg5</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Resource">
+    <sh:property rdf:nodeID="A36"/>
+    <sh:property rdf:nodeID="A16"/>
+    <rdfs:label>Resource</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A51">
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:minCount>
+    <rdfs:comment>The annotation property that shall be set.</rdfs:comment>
+    <rdfs:label>annotation property</rdfs:label>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#annotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Class">
+    <sh:constraint rdf:nodeID="A52"/>
+    <sh:property rdf:nodeID="A53"/>
+    <sh:property rdf:nodeID="A54"/>
+    <sh:property rdf:nodeID="A37"/>
+    <sh:property rdf:nodeID="A55"/>
+    <rdfs:comment>The class of classes.</rdfs:comment>
+    <rdfs:label>Class</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#minExclusive">
+    <rdfs:label>min exclusive</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#returnType">
+    <rdfs:label>return type</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#propertyValue">
+    <sh:sparql>
+		SELECT ?object
+		WHERE {
+			?arg1 ?arg2 ?object .
+		}
+		</sh:sparql>
+    <sh:argument rdf:nodeID="A35"/>
+    <sh:argument rdf:nodeID="A56"/>
+    <rdfs:comment>Gets the 'first' value of a given property (?arg2) at a given subject (?arg1). The behavior is arbitrary if multiple values are present.</rdfs:comment>
+    <rdfs:label>property value</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#constraint">
+    <rdfs:label>constraint</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A57">
+    <rdfs:comment>Links a local constraint to Shapes that the tested nodes need to fulfill before the constraint is evaluated.</rdfs:comment>
+    <rdfs:label>scope</rdfs:label>
+    <sh:defaultValueType rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#scope"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#argument">
+    <rdfs:label>argument</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Warning">
+    <rdfs:comment>A non-critical constraint violation indicating a warning.</rdfs:comment>
+    <rdfs:label>Warning</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#ConstraintViolation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A50">
+    <rdfs:comment>Links a graph with other graphs that shall be included into the query graph over which constraints are validated. This is a transitive property, i.e. includes of includes are also added.</rdfs:comment>
+    <rdfs:label>include</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Graph"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#include"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ignore">
+    <rdfs:label>ignore</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A58">
+    <rdfs:comment>The node to check the node kind of.</rdfs:comment>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#root">
+    <rdfs:label>root</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A59">
+    <rdfs:comment>Declares that a given incoming reference property is relevant for matching resources.</rdfs:comment>
+    <rdfs:label>inverse property</rdfs:label>
+    <sh:defaultValueType rdf:resource="http://www.w3.org/ns/shacl#InversePropertyConstraint"/>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#InversePropertyConstraint"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#inverseProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#uriStart">
+    <rdfs:label>URI start</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#PropertyConstraint">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractMaxLengthPropertyConstraint"/>
+    <rdfs:label>Property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractHasValuePropertyConstraint"/>
+    <sh:property rdf:nodeID="A14"/>
+    <rdfs:comment>Declares the structural constraints for a property at the associated class. The supported arguments are inherited from the superclasses.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractMaxExclusivePropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractAllowedValuesPropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypePropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractLengthPropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractNodeKindPropertyConstraint"/>
+    <sh:constraint rdf:nodeID="A13"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPatternPropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractMinInclusivePropertyConstraint"/>
+    <sh:labelTemplate>Property {?predicate} : {?datatype}{?valueType} [{?minCount}..{?maxCount}]</sh:labelTemplate>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractMinExclusivePropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractMinLengthPropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractValueTypePropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractValueShapePropertyConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractMaxInclusivePropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractCountPropertyConstraint"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#minCount">
+    <rdfs:label>min count</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#object">
+    <rdfs:label>object</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A60">
+    <rdfs:comment>The node kind that the node must have.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#NodeKind"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A44">
+    <rdfs:comment>Can link a violation with other violation reports that provide more details. This is especially useful to describe violations against nested patterns or shapes.</rdfs:comment>
+    <rdfs:label>detail</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#ConstraintViolation"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#detail"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractMaxLengthPropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?maxLength ?objectLength
+		WHERE {
+			?this ?predicate ?object .
+			BIND (STRLEN(str(?object)) AS ?objectLength) .
+			FILTER (?objectLength &gt; ?maxLength) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must be at most {?maxLength} characters long, but found value with {?objectLength} characters.</sh:message>
+    <sh:argument rdf:nodeID="A17"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies the max length of literal values.</rdfs:comment>
+    <rdfs:label>Abstract max length property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#subject">
+    <rdfs:label>subject</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractArgumentValueTypeConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?valueType
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (!sh:hasType(?object, ?valueType)) .
+		}
+		</sh:sparql>
+    <sh:message>Values must be instances of {?valueType}</sh:message>
+    <sh:argument rdf:nodeID="A61"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Enforces a constraint that the value of an argument must be of a certain type. For resources this will accept instances of subclasses. For literals this will accept strings with language tags instead of xsd:string.</rdfs:comment>
+    <rdfs:label>Abstract argument value type constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A61">
+    <rdfs:comment>The type that all values of the property must have, based on the semantics defined by the function sh:hasType.</rdfs:comment>
+    <rdfs:label>value type</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#IRI"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#valueType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Shape">
+    <sh:property rdf:nodeID="A59"/>
+    <rdfs:comment>The class of shapes.</rdfs:comment>
+    <sh:property rdf:nodeID="A62"/>
+    <sh:constraint rdf:nodeID="A63"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:property rdf:nodeID="A64"/>
+    <rdfs:label>Shape</rdfs:label>
+    <sh:property rdf:nodeID="A7"/>
+    <sh:constraint rdf:nodeID="A65"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#GlobalConstraint">
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>The type of constraints that are used 'globally' for the whole graph and not just specific instances.</rdfs:comment>
+    <rdfs:label>Global constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Constraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A66">
+    <rdfs:comment>Points at the predicate of triples that shall be ignored during the comparison (e.g., sh:message).</rdfs:comment>
+    <rdfs:ignore>ignore</rdfs:ignore>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#ignore"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractMinInclusivePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?minInclusive
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (?object &lt; ?minInclusive) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must be greater than or equal to {?minInclusive}</sh:message>
+    <sh:argument rdf:nodeID="A67"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies an (inclusive) minimum value for literal values.</rdfs:comment>
+    <rdfs:label>Abstract min inclusive property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#severity">
+    <rdfs:label>severity</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#private">
+    <rdfs:label>private</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#value">
+    <rdfs:label>value</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A68">
+    <rdfs:comment>The resource/instance providing the context.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#detail">
+    <rdfs:label>detail</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#string">
+    <rdfs:label>string</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractMaxInclusivePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?maxInclusive
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (?object &gt; ?maxInclusive) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must be less than or equal to {?maxInclusive}</sh:message>
+    <sh:argument rdf:nodeID="A69"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies an (inclusive) maximum value for literal values.</rdfs:comment>
+    <rdfs:label>Abstract max inclusive property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A70">
+    <rdfs:comment>If specified then blank nodes that have no rdf:type pass this constraint. The type of those resources is assumed to be ?defaultValueType.</rdfs:comment>
+    <rdfs:label>default value type</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optional>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#defaultValueType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Functions">
+    <rdfs:comment>The recommended abstract superclass for all functions, so that they are grouped together under a common root in class trees etc.</rdfs:comment>
+    <rdfs:label>Functions</rdfs:label>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A71">
+    <rdfs:comment>The datatype that all values of the property must have, based on the semantics defined by the function sh:hasDatatype.</rdfs:comment>
+    <rdfs:label>datatype</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#IRI"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#optional">
+    <rdfs:label>optional</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A72">
+    <rdfs:comment>The minimum number of values that the inverse property must have. Defaults to 0.</rdfs:comment>
+    <rdfs:label>min count</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optional>
+    <sh:defaultValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</sh:defaultValue>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#minCount"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A73">
+    <rdfs:comment>The node to check the datatype of.</rdfs:comment>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A74">
+    <sh:sparql>
+			SELECT *
+			WHERE {
+				FILTER EXISTS {
+					?this sh:datatype ?value1 .
+					?this sh:valueType ?value2 .
+				}
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#datatype"/>
+    <sh:message>Arguments cannot have both ?datatype and ?valueType.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#final">
+    <rdfs:label>final</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractArgumentDatatypeConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?datatype
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (!sh:hasDatatype(?object, ?datatype)) .
+		}
+		</sh:sparql>
+    <sh:message>Values must have datatype {?datatype}</sh:message>
+    <sh:argument rdf:nodeID="A75"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Enforces a constraint that the value of an argument must be a literal of a certain datatype. This will accept strings with language tags instead of xsd:string.</rdfs:comment>
+    <rdfs:label>Abstract argument datatype constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#abstract">
+    <rdfs:label>abstract</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractOptionalArgumentConstraint">
+    <rdfs:comment>Enforces a constraint that a non-optional argument must have a value, similar to minCount = 1, unless it has been declared optional, or a sh:defaultValue exists.</rdfs:comment>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate
+		WHERE {
+			FILTER (!bound(?defaultValue) &amp;&amp; !?optional &amp;&amp; !?optionalWhenInherited &amp;&amp; NOT EXISTS { ?this ?predicate ?any }) .
+		}
+		</sh:sparql>
+    <sh:argument rdf:nodeID="A29"/>
+    <rdfs:label>Abstract optional argument constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <sh:message>Missing value for required argument</sh:message>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <sh:argument rdf:nodeID="A76"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+    <sh:argument rdf:nodeID="A77"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#pattern">
+    <rdfs:label>pattern</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A54">
+    <rdfs:comment>True to indicate that this class is not expected to have subclasses.</rdfs:comment>
+    <rdfs:label>final</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#final"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#defaultValueType">
+    <rdfs:label>default value type</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A78">
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <rdfs:comment>The values of the annotation property.</rdfs:comment>
+    <rdfs:label>annotation value</rdfs:label>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#annotationValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A63">
+    <sh:sparql>
+			SELECT ?this (?this AS ?subject) (?prop AS ?object)
+			WHERE {
+				{
+					?this sh:inverseProperty ?prop .
+					FILTER (isBlank(?prop) &amp;&amp; NOT EXISTS { ?prop a ?any }) .
+				}
+				FILTER (!sh:hasShape(?prop, sh:InversePropertyConstraint, ?shapesGraph)) .
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#inverseProperty"/>
+    <sh:message>Malformed sh:inverseProperty.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#hasType">
+    <sh:sparql>
+		ASK {
+			{
+				{
+					FILTER (isIRI(?arg1) || isBlank(?arg1)) .
+				} .
+				?class (rdfs:subClassOf)* ?arg2 .
+				?arg1 a ?class .
+			}
+			UNION
+			{
+				# Allow untyped resources for rdfs:Resource and rdf:Property
+				FILTER ((isIRI(?arg1) || isBlank(?arg1)) &amp;&amp; (?arg2 = rdfs:Resource || ?arg2 = rdf:Property) &amp;&amp; NOT EXISTS { ?arg1 a ?any }) .
+			}
+			UNION
+			{
+				# Allow untyped blank nodes with rdf:first if expected type is rdf:List
+				FILTER (?arg2 = rdf:List &amp;&amp; isBlank(?arg1) &amp;&amp; EXISTS { ?arg1 rdf:first ?any }) .
+			}
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:argument rdf:nodeID="A48"/>
+    <sh:argument rdf:nodeID="A79"/>
+    <rdfs:comment>Checks whether a given node (?arg1) is an instance of a given class (?arg2) or its subclasses. If arg2 is rdf:Property then the function returns true if ?arg1 is an untyped IRI.</rdfs:comment>
+    <rdfs:label>has type</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#minInclusive">
+    <rdfs:label>min inclusive</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#sparql">
+    <rdfs:label>SPARQL</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg8">
+    <rdfs:label>arg8</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#include">
+    <rdfs:label>include</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A80">
+    <rdfs:comment>The exclusive maximum value permitted for this property: ?value &lt; ?maxExclusive</rdfs:comment>
+    <rdfs:label>max exclusive</rdfs:label>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#Literal"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#maxExclusive"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A81">
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Template"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#member"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#scope">
+    <rdfs:label>scope</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A52">
+    <sh:sparql>
+			SELECT ?this (?this AS ?subject) 
+			WHERE {
+				FILTER isIRI(?this) .
+				FILTER (?this != rdfs:Resource &amp;&amp; ?this != rdfs:Literal) .
+				FILTER NOT EXISTS {
+					?this rdfs:subClassOf ?superClass .
+					FILTER (isIRI(?superClass) &amp;&amp; ?superClass != ?this)
+				}
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+    <sh:message>Each named class should have at least one (other) named superclass</sh:message>
+    <sh:severity rdf:resource="http://www.w3.org/ns/shacl#Warning"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A43">
+    <rdfs:comment>The Constraint that caused this. This property gets filled in automatically by the constraint validation engine.</rdfs:comment>
+    <rdfs:label>source</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Constraint"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#source"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#checkAll">
+    <rdfs:label>check all</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractDatatypePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?datatype
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (!sh:hasDatatype(?object, ?datatype)) .
+		}
+		</sh:sparql>
+    <sh:message>Values must have datatype {?datatype}</sh:message>
+    <sh:argument rdf:nodeID="A71"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Enforces a constraint that all values of the property must be literals of a certain datatype. This will accept strings with language tags instead of xsd:string.</rdfs:comment>
+    <rdfs:label>Abstract datatype property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#FatalError">
+    <rdfs:comment>An error that cannot be recovered and further evaluation may terminate immediately. Engines may decide to perform the validation of potentially fatal constraints first.</rdfs:comment>
+    <rdfs:label>Fatal Error</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Error"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg9">
+    <rdfs:label>arg9</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A82">
+    <rdfs:comment>Declares the argument(s) of this macro.</rdfs:comment>
+    <rdfs:label>argument</rdfs:label>
+    <sh:defaultValueType rdf:resource="http://www.w3.org/ns/shacl#Argument"/>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Argument"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#argument"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#date">
+    <rdfs:label>date</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A76">
+    <rdfs:comment>True to indicate that the property does not require a value. By default, the value is required.</rdfs:comment>
+    <rdfs:label>optional</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:defaultValue rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</sh:defaultValue>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#optional"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A83">
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <rdfs:comment>The name of the SPARQL variable from the SELECT clause that shall be used for the values.</rdfs:comment>
+    <rdfs:label>annotation variable name</rdfs:label>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#annotationVarName"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#valueType">
+    <rdfs:label>value type</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A65">
+    <sh:sparql>
+			SELECT ?this (?this AS ?subject) (?prop AS ?object)
+			WHERE {
+				{
+					?this sh:property ?prop .
+					FILTER (isBlank(?prop) &amp;&amp; NOT EXISTS { ?prop a ?any }) .
+				}
+				FILTER (!sh:hasShape(?prop, sh:PropertyConstraint, ?shapesGraph)) .
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#property"/>
+    <sh:message>Malformed sh:property.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#float">
+    <rdfs:label>float</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#minLength">
+    <rdfs:label>min length</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ResultAnnotation">
+    <sh:property rdf:nodeID="A83"/>
+    <sh:property rdf:nodeID="A78"/>
+    <sh:property rdf:nodeID="A51"/>
+    <rdfs:comment>Defines the rules to derive the values of a given annotation property as extra values for a constraint violation.</rdfs:comment>
+    <rdfs:label>Result annotation</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A20">
+    <rdfs:comment>A human-readable explanation of this constraint. May have multiple values for different languages.</rdfs:comment>
+    <rdfs:label>comment</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#nodeKind">
+    <rdfs:label>node kind</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A84">
+    <sh:sparql>
+			SELECT ?message
+			WHERE {
+				?this rdfs:subClassOf* ?class1 .
+				?class1 sh:argument ?argument1 .
+				?argument1 sh:predicate ?predicate .
+				?this rdfs:subClassOf* ?class2 .
+				?class2 sh:argument ?argument2 .
+				FILTER (?argument1 != ?argument2) .
+				?argument2 sh:predicate ?predicate .
+				BIND (CONCAT("Duplicate Argument for the same predicate ", sh:propertyLabel(?predicate, ?this)) AS ?message) .
+			}
+			</sh:sparql>
+    <rdfs:comment>The same predicate can only be used once at all Arguments.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A45">
+    <rdfs:comment>The subject of triples involved in this violation.</rdfs:comment>
+    <rdfs:label>subject</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#subject"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Literal">
+    <rdfs:comment>The class of literal values, eg. textual strings and integers.</rdfs:comment>
+    <rdfs:Label>Literal</rdfs:Label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A75">
+    <rdfs:comment>The datatype that all values of the property must have.</rdfs:comment>
+    <rdfs:label>datatype</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#IRI"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Template">
+    <sh:property rdf:nodeID="A41"/>
+    <sh:property rdf:nodeID="A85"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>A macro that acts as an abstraction of a (reusable) SPARQL query. The query can be parameterized by the supplied arguments.</rdfs:comment>
+    <rdfs:label>Template</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Macro"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#time">
+    <rdfs:label>time</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#comment">
+    <rdfs:label>comment</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A86">
+    <rdfs:comment>A resource that shall be tested for constraints violations.</rdfs:comment>
+    <rdfs:label>check</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#check"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ClosedShape">
+    <rdfs:comment>A singleton instance of sh:ClosedShapeConstraint that can be shared between multiple shape definitions.</rdfs:comment>
+    <rdfs:label>Closed shape</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ClosedShapeConstraint"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A67">
+    <rdfs:comment>The inclusive minimum value permitted for this property: ?value &gt;= ?minInclusive</rdfs:comment>
+    <rdfs:label>min inclusive</rdfs:label>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#Literal"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#minInclusive"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractCountInversePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?object) ?predicate ?minCount ?maxCount ?count
+		WHERE {
+			BIND (sh:inverseValueCount(?this, ?predicate) AS ?count) .
+			FILTER ((?count &lt; ?minCount) || (bound(?maxCount) &amp;&amp; (?count &gt; ?maxCount))) .
+		}
+		</sh:sparql>
+    <rdfs:comment>Enforces a constraint on the cardinality of an incoming property using minCount and maxCount. By default, an inverse property may have 0 to unlimited number of values.</rdfs:comment>
+    <rdfs:label>Abstract count inverse property constraint</rdfs:label>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <sh:argument rdf:nodeID="A72"/>
+    <sh:argument rdf:nodeID="A15"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <sh:message>Inverse property must have [{?minCount}..{?maxCount}] values, but found {?count}</sh:message>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A30">
+    <rdfs:comment>The min length permitted for values of this property.</rdfs:comment>
+    <rdfs:label>min length</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#minLength"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A8">
+    <rdfs:comment>The shape that the values must have.</rdfs:comment>
+    <rdfs:label>value shape</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#valueShape"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#propertyLabel">
+    <sh:sparql>
+		SELECT ?label
+		WHERE {
+			{
+				?arg2 a ?type .
+				?type rdfs:subClassOf* ?class .
+				?class sh:property|sh:argument ?p .
+				?p sh:predicate ?arg1 .
+				?p rdfs:label ?label .
+			}
+			UNION {
+				BIND (sh:label(?arg1) AS ?label) .
+			}	
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:argument rdf:nodeID="A31"/>
+    <sh:argument rdf:nodeID="A24"/>
+    <rdfs:comment>Gets a human-readable label for a given property (?arg1) in the context of a given resource/instance (?arg2). Attempts to use any rdfs:label locally defined at the types of ?arg2 via sh:property. Falls back to the global sh:label of the property itself if no local label was found.</rdfs:comment>
+    <rdfs:label>property label</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A87">
+    <rdfs:comment>The resource to validate.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A85">
+    <rdfs:comment>Outlines how human-readable labels of instances of this template class shall be produced. The values must be strings that can contain {?argName} as placeholders for the actual values of the given argument. There may be multiple values, for different languages.</rdfs:comment>
+    <rdfs:label>label template</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#labelTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#check">
+    <rdfs:label>check</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A28">
+    <rdfs:comment>The exclusive minimum value permitted for this property: ?value &gt; ?minInclusive</rdfs:comment>
+    <rdfs:label>min exclusive</rdfs:label>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#Literal"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#minExclusive"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#GraphConstraintCheckingTestCase">
+    <rdfs:comment>Represents a test case that performs constraint checking on a complete graph and asserts that certain constraint violations have been reported.</rdfs:comment>
+    <rdfs:label>Graph test case</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#ConstraintCheckingTestCase"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#LocalNativeConstraint">
+    <rdfs:comment>A local constraint that has a native executable body attached with it.</rdfs:comment>
+    <rdfs:label>Local native constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#NativeConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#LocalConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ConstraintCheckingTestCase">
+    <sh:property rdf:nodeID="A88"/>
+    <sh:property rdf:nodeID="A66"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Superclass for test cases that perform constraint checking.</rdfs:comment>
+    <rdfs:label>Constraint checking test case</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#TestCase"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A33">
+    <sh:sparql>
+			SELECT ?this (?this AS ?subject) (?valueType AS ?object)
+			WHERE {
+				?this sh:valueType ?valueType .
+				FILTER isBlank(?valueType) .
+			}
+			</sh:sparql>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#valueType"/>
+    <sh:message>The values of sh:valueType cannot be blank nodes.</sh:message>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#annotationVarName">
+    <rdfs:label>annotation var name</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#inverseValueCount">
+    <sh:sparql>
+		SELECT ((COUNT(?subject)) AS ?result)
+		WHERE {
+			?subject ?arg2 ?arg1 .
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <sh:argument rdf:nodeID="A89"/>
+    <sh:argument rdf:nodeID="A27"/>
+    <rdfs:comment>Gets the number of values of a given property (?arg2) at a given object (?arg1). The result is the number of matches of (?subject, ?arg2, ?arg1).</rdfs:comment>
+    <rdfs:label>inverse value count</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractPatternPropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?pattern
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (!regex(str(?object), ?pattern)) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must match the pattern {?pattern}</sh:message>
+    <sh:argument rdf:nodeID="A90"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies a regular expression that all values of the property need to match.</rdfs:comment>
+    <rdfs:label>Abstract pattern property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A91">
+    <rdfs:comment>A SPARQL ASK or SELECT query that can reference the supplied arguments.</rdfs:comment>
+    <rdfs:label>SPARQL</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#sparql"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#hasNodeKind">
+    <sh:sparql>
+		ASK {
+			FILTER ((isIRI(?arg1) &amp;&amp; ?arg2 = sh:IRI) ||
+				(isLiteral(?arg1) &amp;&amp; ?arg2 = sh:Literal) ||
+				(isBlank(?arg1) &amp;&amp; ?arg2 = sh:BlankNode))
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:argument rdf:nodeID="A60"/>
+    <sh:argument rdf:nodeID="A58"/>
+    <rdfs:comment>Checks whether a given node (?arg1) has a given sh:NodeKind (?arg2). For example, sh:hasNodeKind(42, sh:Literal) = true.</rdfs:comment>
+    <rdfs:label>has node kind</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#LocalTemplateConstraint">
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>A local constraint that is instantiating a template.</rdfs:comment>
+    <rdfs:label>Local template constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#LocalConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#TemplateConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#hasDatatype">
+    <sh:sparql>
+		ASK {
+			{
+				FILTER isLiteral(?arg1) .
+			} .
+			BIND (datatype(?arg1) AS ?datatype) .
+			FILTER ((?datatype = ?arg2) || (rdf:langString = ?datatype &amp;&amp; ?arg2 = xsd:string)) .
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:argument rdf:nodeID="A23"/>
+    <sh:argument rdf:nodeID="A73"/>
+    <rdfs:comment>Checks whether a given node (?arg1) is a literal with a given datatype (?arg2). If the datatype is xsd:string, then the function will also accept literals with a language tag.</rdfs:comment>
+    <rdfs:label>has datatype</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A46">
+    <rdfs:comment>The predicate of triples involved in this violation.</rdfs:comment>
+    <rdfs:label>predicate</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#predicate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A42">
+    <rdfs:comment>The object of triples involved in this violation.</rdfs:comment>
+    <rdfs:label>object</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#object"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractAllowedValuesPropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object
+		WHERE {
+			?this ?predicate ?object .
+			FILTER NOT EXISTS {
+				GRAPH ?shapesGraph {
+					?allowedValues (rdf:rest*)/rdf:first ?object .
+				}
+			}
+		}
+		</sh:sparql>
+    <sh:message>Value is not one of the allowed values</sh:message>
+    <sh:argument rdf:nodeID="A92"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies the allowed values for a property by pointing to a List of nodes.</rdfs:comment>
+    <rdfs:label>Abstract allowed values property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A47">
+    <rdfs:comment>The root resource of the violation (often: the focus node).</rdfs:comment>
+    <rdfs:label>root</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#root"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#subClassOf">
+    <rdfs:label>subClassOf</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl">
+    <rdfs:comment>The vocabulary defining the Shapes Constraint Language (SHACL).</rdfs:comment>
+    <rdfs:label>SHACL Vocabulary</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Graph"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ResourceConstraintCheckingTestCase">
+    <sh:property rdf:nodeID="A86"/>
+    <rdfs:comment>Represents a test case that performs constraint checking on one or more resources and asserts that certain constraint violations have been reported.</rdfs:comment>
+    <rdfs:label>Resource test case</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#ConstraintCheckingTestCase"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#labelTemplate">
+    <rdfs:label>label template</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A77">
+    <rdfs:comment>True to indicate that the property does not require a value when used by a subclass template. If set to true, then instances of subclasses do not need to fill in all required arguments - incomplete templates will simply not be executed. By default, the value is required.</rdfs:comment>
+    <rdfs:label>optional when inherited</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:defaultValue rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</sh:defaultValue>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#optionalWhenInherited"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#property">
+    <rdfs:label>property</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A93">
+    <rdfs:comment>The node to render.</rdfs:comment>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Constraint">
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>An abstract superclass of constraints. Constraints are either template calls or "native" constraints with an executable body.</rdfs:comment>
+    <rdfs:label>Constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#maxInclusive">
+    <rdfs:label>max inclusive</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A90">
+    <rdfs:comment>The (regular expression) pattern for values of this property.</rdfs:comment>
+    <rdfs:label>pattern</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#pattern"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A94">
+    <rdfs:comment>The required value of the property.</rdfs:comment>
+    <rdfs:label>has value</rdfs:label>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#hasValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Macro">
+    <sh:constraint rdf:nodeID="A26"/>
+    <sh:constraint rdf:nodeID="A84"/>
+    <sh:property rdf:nodeID="A82"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Abstract superclass of macro components of a SHACL library, especially Functions and Templates. Macros can take arguments, which are constraints that are different from PropertyConstraints in that they can only have at most one value.</rdfs:comment>
+    <rdfs:label>Macro</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#cachable">
+    <rdfs:label>cachable</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#LocalConstraint">
+    <sh:property rdf:nodeID="A57"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>The type of constraints that are used 'locally' in the context of a shape. This class is never instantiated directly, because local shapes need to have another type such as sh:NativeConstraint.</rdfs:comment>
+    <rdfs:label>Local constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Constraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ConstraintTemplate">
+    <sh:property rdf:nodeID="A40"/>
+    <sh:property rdf:nodeID="A95"/>
+    <sh:property rdf:nodeID="A96"/>
+    <sh:property rdf:nodeID="A97"/>
+    <rdfs:comment>A template backed by a SPARQL query that is used for constraint validation.</rdfs:comment>
+    <rdfs:label>Constraint template</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Template"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">
+    <rdfs:comment>The class of RDF properties.</rdfs:comment>
+    <rdfs:label>Property</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A55">
+    <rdfs:label>sub-class of</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A98">
+    <rdfs:comment>The shape containing the constraints that need to be validated.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#ClosedShapeConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (?predicate != rdf:type &amp;&amp; ?predicate != sh:nodeShape) .
+			FILTER NOT EXISTS {
+				GRAPH ?shapesGraph {
+					?currentShape sh:property/sh:predicate ?predicate .
+				}
+			}
+		}	
+		</sh:sparql>
+    <sh:message>Invalid triple for closed shape</sh:message>
+    <sh:labelTemplate>Closed shape</sh:labelTemplate>
+    <rdfs:comment>Triggers an error for each triple of the focus node that has a predicate that is not explicitly enumerated using sh:property in the surrounding shape.</rdfs:comment>
+    <rdfs:label>Closed shape constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#LocalTemplateConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A79">
+    <rdfs:comment>The node to check the type of.</rdfs:comment>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A92">
+    <rdfs:comment>The rdf:List containing the allowed values of the property.</rdfs:comment>
+    <rdfs:label>allowed values</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#allowedValues"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#integer">
+    <rdfs:label>integer</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg2">
+    <rdfs:label>arg2</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#resultAnnotation">
+    <rdfs:label>result annotation</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#violation">
+    <rdfs:label>violation</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Set">
+    <sh:property rdf:nodeID="A99"/>
+    <rdfs:comment>Defines a set of nodes. Subclasses may further restrict the type of the members.</rdfs:comment>
+    <rdfs:label>Set</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#length">
+    <rdfs:label>length</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#label">
+    <rdfs:label>label</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#annotationValue">
+    <rdfs:label>annotation value</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#GlobalTemplateConstraint">
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>A global constraint that is instantiating a template.</rdfs:comment>
+    <rdfs:label>Global template constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#GlobalConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#TemplateConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A53">
+    <rdfs:comment>True to indicate that this class is only meant to be used inside of the graph that it has been defined in. This is often used to discourage instantiation outside of controlled scenarios. User interfaces may hide private classes from selection widgets.</rdfs:comment>
+    <rdfs:label>private</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#private"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A18">
+    <rdfs:comment>The SPARQL SELECT query to execute.</rdfs:comment>
+    <rdfs:label>SPARQL</rdfs:label>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#sparql"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A3">
+    <rdfs:comment>A description of the role of the predicate to users. Multiple values (for different languages) are supported.</rdfs:comment>
+    <rdfs:label>comment</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Error">
+    <rdfs:comment>A constraint violation indicating an error.</rdfs:comment>
+    <rdfs:label>Error</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#ConstraintViolation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#optionalWhenInherited">
+    <rdfs:label>optional when inherited</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#annotationProperty">
+    <rdfs:label>annotation property</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg3">
+    <rdfs:label>arg3</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#decimal">
+    <rdfs:label>decimal</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#maxLength">
+    <rdfs:label>max length</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#arg1">
+    <rdfs:label>arg1</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A99">
+    <rdfs:comment>A member node of the Set.</rdfs:comment>
+    <rdfs:label>member</rdfs:label>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#member"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A97">
+    <rdfs:comment>Specifies the default rdf:type to produce for any constraint violation.</rdfs:comment>
+    <rdfs:label>severity</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#severity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Argument">
+    <sh:constraint rdf:nodeID="A74"/>
+    <sh:labelTemplate>Argument {?predicate} : {?datatype}{?valueType}</sh:labelTemplate>
+    <rdfs:comment>Declares an argument that gets mapped to a variable in the parameterized SPARQL query.</rdfs:comment>
+    <rdfs:label>Argument</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractArgumentValueTypeConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractArgumentMaxCountConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractArgumentDatatypeConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractOptionalArgumentConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A100">
+    <rdfs:comment>The graph containing the shape definitions.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Graph"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#maxCount">
+    <rdfs:label>max count</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A2">
+    <rdfs:comment>A list of shapes that will be validated.</rdfs:comment>
+    <rdfs:label>shapes</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#shapes"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A56">
+    <rdfs:comment>The subject resource.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractCountPropertyConstraint">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+    <rdfs:comment>Enforces a constraint on the cardinality of the property using minCount and maxCount. By default, a property may have 0 to unlimited number of values.</rdfs:comment>
+    <sh:message>Required value count [{?minCount}..{?maxCount}] but found {?count}</sh:message>
+    <sh:argument rdf:nodeID="A6"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <rdfs:label>Abstract count property constraint</rdfs:label>
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?count ?minCount ?maxCount
+		WHERE {
+			BIND (sh:valueCount(?this, ?predicate) AS ?count) .
+			FILTER ((?count &lt; ?minCount) || (bound(?maxCount) &amp;&amp; (?count &gt; ?maxCount))) .
+		}
+		</sh:sparql>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <sh:argument rdf:nodeID="A34"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A101">
+    <rdfs:comment>The (inverse) property to render. For example for ex:child this may produce 'parent'.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A0">
+    <rdfs:comment>The node kind that all values of the property must be of.</rdfs:comment>
+    <rdfs:label>node kind</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#NodeKind"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#nodeKind"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A69">
+    <rdfs:comment>The inclusive maximum value permitted for this property: ?value &lt;= ?maxInclusive</rdfs:comment>
+    <rdfs:label>max inclusive</rdfs:label>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#Literal"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#maxInclusive"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Function">
+    <sh:constraint rdf:nodeID="A11"/>
+    <sh:property rdf:nodeID="A91"/>
+    <sh:property rdf:nodeID="A49"/>
+    <rdfs:comment>A macro implementing a SPARQL function, backed by a SPARQL ASK or SELECT query.</rdfs:comment>
+    <rdfs:label>Function</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Macro"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#label">
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:argument rdf:nodeID="A93"/>
+    <rdfs:comment>Gets a human-readable label for a given node, if possible. The exact behavior of this function is left to the engine's implementation, but it typically tries to find an rdfs:label or similar property. If no such label is found, it may fall back to the local name or qname, and finally the URI. If the argument is a literal then this may simply return the lexical form. For blank nodes it should find a suitable rendering, depending on its type.</rdfs:comment>
+    <rdfs:label>label</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#allowedValues">
+    <rdfs:label>allowed values</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#Profile">
+    <sh:property rdf:nodeID="A81"/>
+    <rdfs:comment>A profile is a collection of templates. Profiles can be used to group together templates with similar complexity. Tools can indicate that they support specific profiles only.</rdfs:comment>
+    <rdfs:label>Profile</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Set"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A62">
+    <rdfs:comment>Links a Shape to other Shapes that the tested nodes need to fulfill before the constraints of the shape are evaluated.</rdfs:comment>
+    <rdfs:label>scope</rdfs:label>
+    <sh:defaultValueType rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#Shape"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#scope"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A89">
+    <rdfs:comment>The property to get the value count of.</rdfs:comment>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#arg2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A22">
+    <rdfs:comment>Specifies the default rdf:type to produce for any constraint violation.</rdfs:comment>
+    <rdfs:label>severity</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#severity"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#valueShape">
+    <rdfs:label>value shape</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#whiteSpace">
+    <rdfs:label>whiteSpace</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#hasShape">
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <sh:argument rdf:nodeID="A100"/>
+    <sh:argument rdf:nodeID="A98"/>
+    <sh:argument rdf:nodeID="A87"/>
+    <rdfs:comment>Validates whether a given resource (?arg1) fulfills all error-level constraints defined for a given shape (?arg2). This creates a (possibly recursive) constraint validator.</rdfs:comment>
+    <rdfs:label>has shape</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#NodeKind">
+    <rdfs:comment>The class of RDF node kinds: literals, blank nodes and IRIs.</rdfs:comment>
+    <rdfs:label>Node kind</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A88">
+    <rdfs:comment>The expected constraint violations. An engine needs to perform a graph isomorphism test of all expected violations with the actual violations.</rdfs:comment>
+    <rdfs:label>violation</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#ConstraintViolation"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#violation"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A64">
+    <rdfs:comment>Defines arbitrary constraints on the matching resources. Use sh:property for structural property declarations.</rdfs:comment>
+    <rdfs:label>constraint</rdfs:label>
+    <sh:defaultValueType rdf:resource="http://www.w3.org/ns/shacl#NativeConstraint"/>
+    <sh:valueType rdf:resource="http://www.w3.org/ns/shacl#LocalConstraint"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#constraint"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractMaxExclusivePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?maxExclusive
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (?object &gt;= ?maxExclusive) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must be less than {?maxExclusive}</sh:message>
+    <sh:argument rdf:nodeID="A80"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies an (exclusive) maximum value for literal values.</rdfs:comment>
+    <rdfs:label>Abstract max exclusive property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractHasValuePropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?hasValue
+		WHERE {
+			FILTER NOT EXISTS { ?this ?predicate ?hasValue }
+		}
+		</sh:sparql>
+    <sh:message>Missing expected value {?hasValue}</sh:message>
+    <sh:argument rdf:nodeID="A94"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies that the given property must have the specified value (it may also have others).</rdfs:comment>
+    <rdfs:label>Abstract has value property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A102">
+    <rdfs:comment>The type that all values of the property must have, based on the semantics defined by the function sh:hasType.</rdfs:comment>
+    <rdfs:label>value type</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <sh:nodeKind rdf:resource="http://www.w3.org/ns/shacl#IRI"/>
+    <sh:optionalWhenInherited rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:optionalWhenInherited>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#valueType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#dateTime">
+    <rdfs:label>dateTime</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint">
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Abstract base class for datatype-related constraints.</rdfs:comment>
+    <rdfs:label>Abstract datatype facet property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#library">
+    <rdfs:label>library</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A5">
+    <rdfs:comment>The Property being constrained.</rdfs:comment>
+    <rdfs:label>predicate</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#predicate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A95">
+    <rdfs:comment>Specifies the default sh:predicate to produce for any constraint violation.</rdfs:comment>
+    <rdfs:label>predicate</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#predicate"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractLengthPropertyConstraint">
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?length ?objectLength
+		WHERE {
+			?this ?predicate ?object .
+			BIND (STRLEN(str(?object)) AS ?objectLength) .
+			FILTER (?objectLength != ?length) .
+		} 
+		</sh:sparql>
+    <sh:message>Values must be exactly {?length} characters long, but found value with {?objectLength} characters.</sh:message>
+    <sh:argument rdf:nodeID="A38"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdfs:comment>Specifies the exact length of literal values.</rdfs:comment>
+    <rdfs:label>Abstract length property constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractDatatypeFacetPropertyConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A96">
+    <rdfs:comment>Specifies the default sh:message(s) to produce for any constraint violation. May have multiple values for different languages.</rdfs:comment>
+    <rdfs:label>message</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#message"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A4">
+    <rdfs:comment>A display label for input forms etc. By default, the global rdfs:label of the predicate should be used. Multiple values (for different languages) are supported.</rdfs:comment>
+    <rdfs:label>label</rdfs:label>
+    <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#predicate">
+    <rdfs:label>predicate</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#inversePropertyLabel">
+    <sh:sparql>
+		SELECT ?label
+		WHERE {
+			{
+				?arg2 a ?type .
+				?type rdfs:subClassOf* ?class .
+				?class sh:inverseProperty ?p .
+				?p sh:predicate ?arg1 .
+				?p rdfs:label ?label .
+			}
+			UNION {
+				BIND (CONCAT("(inverse of) ", sh:label(?arg1)) AS ?label) .
+			}	
+		}
+		</sh:sparql>
+    <sh:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <sh:argument rdf:nodeID="A68"/>
+    <sh:argument rdf:nodeID="A101"/>
+    <rdfs:comment>Gets a human-readable label for a given inverse property (?arg1) in the context of a given resource/instance (?arg2). Attempts to use any rdfs:label locally defined at the types of ?arg2 via sh:inverseProperty. Falls back to the global sh:label of the property itself if no local label was found.</rdfs:comment>
+    <rdfs:label>inverse property label</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#Functions"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#Function"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A39">
+    <rdfs:comment>The graph that shall be tested.</rdfs:comment>
+    <rdfs:label>graph</rdfs:label>
+    <sh:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:minCount>
+    <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</sh:maxCount>
+    <sh:predicate rdf:resource="http://www.w3.org/ns/shacl#graph"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#boolean">
+    <rdfs:label>boolean</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#BlankNode">
+    <rdfs:comment>The node kind of all blank nodes.</rdfs:comment>
+    <rdfs:label>Blank node</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#NodeKind"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#AbstractValueTypePropertyConstraint">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#AbstractPropertyConstraint"/>
+    <sh:abstract rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:abstract>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#ConstraintTemplate"/>
+    <sh:argument rdf:nodeID="A102"/>
+    <sh:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</sh:private>
+    <rdfs:label>Abstract value type property constraint</rdfs:label>
+    <sh:argument rdf:nodeID="A70"/>
+    <sh:message>Values must be instances of {?valueType}</sh:message>
+    <sh:sparql>
+		SELECT ?this (?this AS ?subject) ?predicate ?object ?valueType
+		WHERE {
+			?this ?predicate ?object .
+			FILTER (!sh:hasType(?object, ?valueType)) .
+			FILTER (!bound(?defaultValueType) || !isBlank(?object) || EXISTS { ?object a ?anyType }) .
+		}
+		</sh:sparql>
+    <rdfs:comment>Enforces a constraint that all values of the property must be of a certain type. For resources this will accept instances of subclasses. Untyped blank nodes are allowed if a defaultValueType has been specified. For literals this will accept strings with language tags instead of xsd:string.</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/ns/shacl#GlobalNativeConstraint">
+    <rdfs:comment>A global constraint that has a native executable body attached with it.</rdfs:comment>
+    <rdfs:label>Global native constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#NativeConstraint"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/shacl#GlobalConstraint"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+</rdf:RDF>

@@ -1,5 +1,9 @@
 package at.ac.tuwien.shacl.vocabulary;
 
+import at.ac.tuwien.shacl.util.Config;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
@@ -13,9 +17,17 @@ public class SHACL {
     public final static String NS = BASE_URI + "#";
 
     public final static String PREFIX = "sh";
+    
+    public final static Property object = ResourceFactory.createProperty(NS + "object");
+
+    public final static Property subject = ResourceFactory.createProperty(NS + "subject");
+    
+    public final static Property private_ = ResourceFactory.createProperty(NS + "private");
 
     public final static Property datatype = ResourceFactory.createProperty(NS + "datatype");
 
+    public final static Property hasDatatype = ResourceFactory.createProperty(NS + "hasDatatype");
+    
     public final static Resource Constraint = ResourceFactory.createResource(NS + "Constraint");
 
     public final static Resource OrConstraint = ResourceFactory.createResource(NS + "OrConstraint");
@@ -193,5 +205,11 @@ public class SHACL {
 
     public static String getURI() {
         return NS;
+    }
+    
+    public static Model getModel() {
+    	Model model = ModelFactory.createDefaultModel();
+		model.read(Config.base_res_dir+"shacl.shacl.ttl");
+		return model;
     }
 }
