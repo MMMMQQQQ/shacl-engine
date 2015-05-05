@@ -18,15 +18,33 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 public class SPARQLQueryExecutor {
 	
 	//TODO transform to other query methods
-	public static boolean isQueryValid(final Query query, final Model model) {
-		QueryExecution exec = QueryExecutionFactory.create(query, model);
+//	public static boolean isQueryValid(final Query query, final Model model) {
+//		QueryExecution exec = QueryExecutionFactory.create(query, model);
+//		ResultSet results = exec.execSelect();
+//
+//		boolean isValid = true;
+//		try {
+//			if(results.hasNext()) {
+//				isValid = false;
+//			}
+//			System.out.println(ResultSetFormatter.asText(results));
+//			return isValid;
+//		} finally {
+//			exec.close();
+//		}
+//	}
+//	
+	
+	public static boolean isQueryValid(final String queryString, final Model model, QuerySolutionMap bindings) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+		System.out.println(exec.getQuery());
 		ResultSet results = exec.execSelect();
-
 		boolean isValid = true;
 		try {
 			if(results.hasNext()) {
 				isValid = false;
 			}
+			
 			System.out.println(ResultSetFormatter.asText(results));
 			return isValid;
 		} finally {
@@ -34,9 +52,9 @@ public class SPARQLQueryExecutor {
 		}
 	}
 	
-	
-	public static boolean isQueryValid(final Query query, final Model model, QuerySolutionMap bindings) {
-		QueryExecution exec = QueryExecutionFactory.create(query, model, bindings);
+	public static boolean isQueryValid(final String queryString) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString);
+		
 		ResultSet results = exec.execSelect();
 		boolean isValid = true;
 		try {

@@ -1,34 +1,33 @@
 package at.ac.tuwien.shacl.sparql;
 
 import java.util.Map;
-import java.util.Set;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 //TODO Add method for building SELECT and ASK queries
 public class QueryBuilder {
-	private Query query;
+	private String queryString;
 	private QuerySolutionMap bindings;
 	
-	public QueryBuilder(String queryString) {
+	public QueryBuilder(String queryString, Map<String, String> prefixes) {
 		System.out.println("sparql query:"+queryString);
-		this.query = QueryFactory.create(queryString);
+		this.queryString = queryString;
 		this.bindings = new QuerySolutionMap();
+		this.addPrefixes(prefixes);
 	}
 	
-	public void addPrefixes() {
-		//query.addNamedGraphURI(uri);
+	public void addPrefixes(Map<String, String> prefixes) {
+		String prefs = "";
+		for(Map.Entry<String,String> p : prefixes.entrySet()) {
+			prefs = prefs + "\n" + "PREFIX " + p.getKey() + ": <" + p.getValue() + ">";
+		}
+		queryString = prefs + "\n" + queryString;
 	}
 	
-	public void addPrefix() {
-		
-	}
-	
-	public Query getQuery() {
-		return query;
+	public String getQueryString() {
+		return queryString;
 	}
 	
 	public void addBindings(Map<String, Resource> bindings) {
@@ -37,8 +36,8 @@ public class QueryBuilder {
 		}
 	}
 	
-	public void addBinding(String name, Resource resource) {
-		this.bindings.add(name, resource);
+	public void addBinding(String name, RDFNode node) {
+		this.bindings.add(name, node);
 	}
 	
 	public QuerySolutionMap getBindings() {
@@ -50,6 +49,7 @@ public class QueryBuilder {
 		bindings.add("this", thiz);
 	}
 	
+	//TODO
 	public Object executeSelect() {
 		return null;
 	}

@@ -8,13 +8,15 @@ import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 public class Main {
-	private static String MAVEN_RES_PATH = "src/main/resources/";
-	
 	public static void main(String[] args) throws FileNotFoundException {
 		Model model = ModelFactory.createDefaultModel();
-		model.read(Config.base_res_dir + "query3.ttl");
+		model.read(Config.base_res_dir + "queryMinMaxInvalid.ttl");
+
 		
 //		SHACLConstraintRegistry registry = new SHACLConstraintRegistry();
 //		registry.register(model);

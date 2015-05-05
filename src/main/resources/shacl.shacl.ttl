@@ -870,7 +870,7 @@ sh:AbstractDatatypePropertyConstraint
 	] ;
 	sh:message "Values must have datatype {?datatype}" ;
 	sh:sparql """
-		SELECT ?this (?this AS ?subject) ?predicate ?object ?datatype
+		SELECT ?this (?this AS ?subject) ?predicate ?object
 		WHERE {
 			?this ?predicate ?object .
 			FILTER (!sh:hasDatatype(?object, ?datatype)) .

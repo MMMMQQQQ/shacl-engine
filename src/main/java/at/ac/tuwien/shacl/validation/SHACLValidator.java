@@ -13,6 +13,7 @@ import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
+import com.hp.hpl.jena.query.ParameterizedSparqlString;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -39,7 +40,7 @@ public class SHACLValidator {
 	public Model validateGraph() {
 		List<Statement> shapes = this.getInstantiatedShapeTriplets();
 		Model errorModel = ModelFactory.createDefaultModel();
-		
+		System.out.println("number of shape data: "+shapes.size());
 		for(Statement shape : shapes) {
 			errorModel.add(this.validateNodeAgainstShape(shape.getSubject(), shape.getObject().asResource()));
 		}
@@ -49,7 +50,7 @@ public class SHACLValidator {
 	
 	public Model validateNodeAgainstShape(Resource focusNode, Resource shape) {
 		Model errorModel = ModelFactory.createDefaultModel();
-		
+		System.out.println("shape: "+shape);
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
 			errorModel.add(this.validateConstraint(focusNode, p.getObject().asResource()));
 		}
@@ -59,15 +60,17 @@ public class SHACLValidator {
 	public Model validateConstraint(Resource focusNode, Resource constraint) {
 		Model errorModel = ModelFactory.createDefaultModel();
 		Set<String> propertyConstraints = registry.getConstraintsURIs();
-
-		Map<String, Resource> tempStore = new HashMap<String, Resource>();
+		System.out.println("constraint: "+constraint.getProperty(SHACL.predicate).getObject());
+		Map<String, RDFNode> tempStore = new HashMap<String, RDFNode>();
 	
 		//add sh:predicate
 		Statement constraintPredicate = constraint.getProperty(SHACL.predicate);
 		tempStore.put(constraintPredicate.getPredicate().getURI(), constraintPredicate.getObject().asResource());
 
 		for(Statement objectProps : constraint.listProperties().toList()) {
-			Resource res = objectProps.getObject().asResource();
+//			System.out.println("objectProps: "+objectProps.getObject());
+			RDFNode res = objectProps.getObject();
+			
 			Property predicate = objectProps.getPredicate();
 			
 			if(!predicate.getURI().equals(SHACL.predicate.getURI())) {
@@ -75,7 +78,8 @@ public class SHACLValidator {
 
 				if(propertyConstraints.contains(predicate.getURI())) {
 					QueryBuilder qb = new QueryBuilder(
-							registry.getConstraintTemplate(predicate.getURI()).getExecutableBody());
+							registry.getConstraintTemplate(predicate.getURI()).getExecutableBody(),
+							model.getNsPrefixMap());
 					boolean isComplete = true;
 					
 					for(Argument a : registry.getConstraintTemplate(predicate.getURI()).getArguments()) {
@@ -90,10 +94,11 @@ public class SHACLValidator {
 					if(isComplete) {
 						qb.addBinding(SHACL.predicate.getLocalName(), tempStore.get(SHACL.predicate.getURI()));
 						qb.addThisBinding(focusNode);
-						if(!SPARQLQueryExecutor.isQueryValid(qb.getQuery(), model, qb.getBindings())) {
+
+						if(!SPARQLQueryExecutor.isQueryValid(qb.getQueryString(), model, qb.getBindings())) {
 							ConstraintViolation error = new ConstraintViolation(
 									SHACL.Error, focusNode, focusNode, 
-									ResourceFactory.createProperty(tempStore.get(SHACL.predicate.getURI()).getURI()), 
+									ResourceFactory.createProperty(((Resource)tempStore.get(SHACL.predicate.getURI())).getURI()), 
 									null);
 							errorModel.add(error.getModel());
 						}
@@ -104,8 +109,7 @@ public class SHACLValidator {
 		
 		return errorModel;
 	}
-	
-	
+
 	public Model validateNode(Resource focusNode) {
 		return null;
 	}
@@ -124,6 +128,7 @@ public class SHACLValidator {
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		statements.addAll(model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList());
+		System.out.println(model.listStatements().toList());
 		//TODO implement rdf:type
 		return statements;
 	}
