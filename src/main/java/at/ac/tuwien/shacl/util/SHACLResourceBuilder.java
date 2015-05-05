@@ -84,7 +84,9 @@ public class SHACLResourceBuilder {
 	public static Function build(List<Statement> statements, Function function) {
 		
 		for(Statement property : statements) {
+			//System.out.println(property);
 			if(property.getPredicate().equals(SHACL.sparql)) {
+				//System.out.println("sparql object: "+property.getObject());
 				function.setExecutableBody(property.getString());
 			} else if(property.getPredicate().equals(SHACL.argument)) {
 				Argument argument = build(property.getObject().asResource().listProperties().toList(), new Argument());

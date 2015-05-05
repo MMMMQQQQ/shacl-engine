@@ -2,6 +2,8 @@ package at.ac.tuwien.shacl.sparql;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.node.ValueNode;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -12,7 +14,6 @@ public class QueryBuilder {
 	private QuerySolutionMap bindings;
 	
 	public QueryBuilder(String queryString, Map<String, String> prefixes) {
-		System.out.println("sparql query:"+queryString);
 		this.queryString = queryString;
 		this.bindings = new QuerySolutionMap();
 		this.addPrefixes(prefixes);
@@ -41,7 +42,7 @@ public class QueryBuilder {
 	}
 	
 	public QuerySolutionMap getBindings() {
-		System.out.println("bindings: "+bindings);
+		//System.out.println("bindings: "+bindings);
 		return this.bindings;
 	}
 

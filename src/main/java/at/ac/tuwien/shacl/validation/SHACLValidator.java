@@ -30,10 +30,11 @@ import com.hp.hpl.jena.rdf.model.Statement;
 public class SHACLValidator {
 	private SHACLMetaModelRegistry registry;
 	
-	private Model model;
+	//TODO change
+	public static Model model;
 	
 	public SHACLValidator(Model model) {
-		this.registry = new SHACLMetaModelRegistry();
+		this.registry = SHACLMetaModelRegistry.getInstance();
 		this.model = model;
 	}
 	

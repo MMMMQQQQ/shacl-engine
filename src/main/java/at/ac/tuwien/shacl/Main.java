@@ -15,7 +15,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		Model model = ModelFactory.createDefaultModel();
-		model.read(Config.base_res_dir + "queryMinMaxInvalid.ttl");
+		model.read(Config.base_res_dir + "queryValueType.ttl");
 
 		
 //		SHACLConstraintRegistry registry = new SHACLConstraintRegistry();
@@ -23,6 +23,7 @@ public class Main {
 		
 		SHACLValidator validator = new SHACLValidator(model);
 		Model errorModel = validator.validateGraph();
+		System.out.println("Error Model:");
 		errorModel.write(System.out, "TURTLE");
 		//get all sh:sparql
 //		model.read(Config.base_res_dir + "shacl.shacl.ttl");

@@ -3,6 +3,7 @@ package at.ac.tuwien.shacl.sparql;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
@@ -35,9 +36,26 @@ public class SPARQLQueryExecutor {
 //	}
 //	
 	
+	public static boolean execAsk(final String queryString, final Model model, QuerySolutionMap bindings) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+		//System.out.println(exec.getQuery());
+		boolean result = exec.execAsk();
+		return result;
+	}
+	
+	public static RDFNode execSelect(final String queryString, final Model model, QuerySolutionMap bindings) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+		//System.out.println(exec.getQuery());
+		ResultSet result = exec.execSelect();
+
+		RDFNode r = result.next().get("result");
+		
+		return r;
+	}
+	
 	public static boolean isQueryValid(final String queryString, final Model model, QuerySolutionMap bindings) {
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println(exec.getQuery());
+		//System.out.println(exec.getQuery());
 		ResultSet results = exec.execSelect();
 		boolean isValid = true;
 		try {
@@ -61,7 +79,7 @@ public class SPARQLQueryExecutor {
 			if(results.hasNext()) {
 				isValid = false;
 			}
-			
+			System.out.println("ARQ result:");
 			System.out.println(ResultSetFormatter.asText(results));
 			return isValid;
 		} finally {
@@ -85,5 +103,15 @@ public class SPARQLQueryExecutor {
 	//TODO							
 	public RDFNode executeQuery(Query query, QuerySolutionMap bindings, Model model) {
 		return null;
+	}
+	
+	public static boolean isAskQuery(String query) {
+		Query q = QueryFactory.create(query);
+		return q.isAskType();
+	}
+	
+	public static boolean isSelectQuery(String query) {
+		Query q = QueryFactory.create(query);
+		return q.isSelectType();
 	}
 }

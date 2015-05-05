@@ -2,7 +2,7 @@
 
 ## Description
 * This is a Java project for an engine supporting the Shapes Constraint Language (SHACL). 
-* It is based on this proposal: [https://w3c.github.io/data-shapes/shacl/]. 
+* It is based on this proposal: https://w3c.github.io/data-shapes/shacl/. 
 * The current status is work in progess.
 
 ## Basic validation process
