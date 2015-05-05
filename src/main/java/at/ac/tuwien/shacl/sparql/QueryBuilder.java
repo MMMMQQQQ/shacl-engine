@@ -8,7 +8,6 @@ import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-//TODO Add method for building SELECT and ASK queries
 public class QueryBuilder {
 	private String queryString;
 	private QuerySolutionMap bindings;
@@ -17,6 +16,7 @@ public class QueryBuilder {
 		this.queryString = queryString;
 		this.bindings = new QuerySolutionMap();
 		this.addPrefixes(prefixes);
+		//System.out.println(this.queryString);
 	}
 	
 	public void addPrefixes(Map<String, String> prefixes) {
@@ -38,11 +38,15 @@ public class QueryBuilder {
 	}
 	
 	public void addBinding(String name, RDFNode node) {
+		//System.out.println(node.);
+//		if(name.equals("allowedValues")) {
+//			System.out.println("before binding: "+((Resource)node).listProperties().toList());
+//		}
 		this.bindings.add(name, node);
 	}
 	
 	public QuerySolutionMap getBindings() {
-		//System.out.println("bindings: "+bindings);
+		System.out.println("bindings: "+bindings);
 		return this.bindings;
 	}
 

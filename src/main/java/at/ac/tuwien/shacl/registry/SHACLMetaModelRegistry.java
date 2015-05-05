@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import at.ac.tuwien.shacl.arq.functions.AskFunctionFactory;
-import at.ac.tuwien.shacl.arq.functions.SelectFunctionFactory;
+import at.ac.tuwien.shacl.arq.AskFunctionFactory;
+import at.ac.tuwien.shacl.arq.SelectFunctionFactory;
 import at.ac.tuwien.shacl.model.Argument;
 import at.ac.tuwien.shacl.model.ConstraintTemplate;
 import at.ac.tuwien.shacl.model.Function;

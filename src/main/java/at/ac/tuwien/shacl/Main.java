@@ -16,7 +16,7 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		Model model = ModelFactory.createDefaultModel();
 		model.read(Config.base_res_dir + "queryValueType.ttl");
-
+		//model.write(System.out);
 		
 //		SHACLConstraintRegistry registry = new SHACLConstraintRegistry();
 //		registry.register(model);

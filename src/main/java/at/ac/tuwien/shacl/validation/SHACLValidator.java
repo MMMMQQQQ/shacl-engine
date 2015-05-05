@@ -69,7 +69,7 @@ public class SHACLValidator {
 		tempStore.put(constraintPredicate.getPredicate().getURI(), constraintPredicate.getObject().asResource());
 
 		for(Statement objectProps : constraint.listProperties().toList()) {
-//			System.out.println("objectProps: "+objectProps.getObject());
+
 			RDFNode res = objectProps.getObject();
 			
 			Property predicate = objectProps.getPredicate();
@@ -82,20 +82,20 @@ public class SHACLValidator {
 							registry.getConstraintTemplate(predicate.getURI()).getExecutableBody(),
 							model.getNsPrefixMap());
 					boolean isComplete = true;
-					
 					for(Argument a : registry.getConstraintTemplate(predicate.getURI()).getArguments()) {
 						if(tempStore.containsKey(a.getPredicate().getURI())) {
 							qb.addBinding(a.getPredicate().getLocalName(), tempStore.get(a.getPredicate().getURI()));
+							
 						} else {
-							isComplete = false;
-							break;
+							if(!a.isOptional()) {
+								isComplete = false;
+								break;
+							}
 						}
 					}
-					
 					if(isComplete) {
 						qb.addBinding(SHACL.predicate.getLocalName(), tempStore.get(SHACL.predicate.getURI()));
 						qb.addThisBinding(focusNode);
-
 						if(!SPARQLQueryExecutor.isQueryValid(qb.getQueryString(), model, qb.getBindings())) {
 							ConstraintViolation error = new ConstraintViolation(
 									SHACL.Error, focusNode, focusNode, 
@@ -129,7 +129,7 @@ public class SHACLValidator {
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		statements.addAll(model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList());
-		System.out.println(model.listStatements().toList());
+		System.out.println("data triplets: "+model.listStatements().toList());
 		//TODO implement rdf:type
 		return statements;
 	}

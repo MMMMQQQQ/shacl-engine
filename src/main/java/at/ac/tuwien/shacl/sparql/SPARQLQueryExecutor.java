@@ -72,7 +72,7 @@ public class SPARQLQueryExecutor {
 	
 	public static boolean isQueryValid(final String queryString) {
 		QueryExecution exec = QueryExecutionFactory.create(queryString);
-		
+		System.out.println("inquery");
 		ResultSet results = exec.execSelect();
 		boolean isValid = true;
 		try {

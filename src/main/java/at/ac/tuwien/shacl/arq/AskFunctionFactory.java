@@ -1,18 +1,17 @@
-package at.ac.tuwien.shacl.arq.functions;
+package at.ac.tuwien.shacl.arq;
 
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.validation.SHACLValidator;
 
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.Function;
 import com.hp.hpl.jena.sparql.function.FunctionBase2;
 import com.hp.hpl.jena.sparql.function.FunctionFactory;
 
-public class SelectFunctionFactory extends FunctionBase2 implements FunctionFactory {
+public class AskFunctionFactory extends FunctionBase2 implements FunctionFactory {
 	String uri;
 	
 	@Override
@@ -23,13 +22,12 @@ public class SelectFunctionFactory extends FunctionBase2 implements FunctionFact
 
 	@Override
 	public NodeValue exec(NodeValue arg0, NodeValue arg1) {
-		RDFNode result = null;
+		boolean result = true;
 		
 		if(SHACLMetaModelRegistry.getInstance().getFunction(uri)!= null) {
 			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getInstance().getFunction(uri).getExecutableBody(),
 					SHACLValidator.model.getNsPrefixMap());
 
-			//System.out.println("prefixes:"+SHACLValidator.model.getNsPrefixMap());
 			//TODO not working
 			qb.addBinding("arg1", ResourceFactory.createResource(arg0.toString()));
 			qb.addBinding("arg2", ResourceFactory.createResource(arg1.toString()));
@@ -38,9 +36,13 @@ public class SelectFunctionFactory extends FunctionBase2 implements FunctionFact
 			String queryString = qb.getQueryString();
 			queryString = queryString.replaceAll("\\?arg1", arg0.toString());
 			queryString = queryString.replaceAll("\\?arg2", arg1.toString());
-			result = SPARQLQueryExecutor.execSelect(queryString, SHACLValidator.model, qb.getBindings());
-		}
 
-		return NodeValue.makeNode(result.asNode());
+			result = SPARQLQueryExecutor.execAsk(queryString, SHACLValidator.model, qb.getBindings());
+		}
+		
+		//System.out.println("result: "+result);
+		return NodeValue.makeBoolean(result);
 	}
 }
+
+

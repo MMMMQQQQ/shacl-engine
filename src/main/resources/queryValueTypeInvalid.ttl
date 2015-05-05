@@ -5,13 +5,19 @@
 @prefix schema: <http://schema.org/#>.
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 
-ex:AllowedValuesExampleShape
+ex:ValueTypeExampleShape
 	a sh:Shape ;
 	sh:property [
 		sh:predicate ex:someProperty ;
-		sh:allowedValues ( ex:Value1 ex:Value2 ex:Value3 ) ;
+		sh:valueType ex:ClassA ;
 	] .
+	
+ex:InstanceOfClassA
+	a ex:ClassA .
 
-ex:AllowedValuesExampleInvalidResource
-	sh:nodeShape ex:AllowedValuesExampleShape;
-	ex:property ex:abc .
+ex:InstanceOfClassB
+	a ex:ClassB .
+
+ex:ValueTypeExampleInvalidResource
+	sh:nodeShape ex:ValueTypeExampleShape;
+	ex:someProperty ex:InstanceOfClassB .
