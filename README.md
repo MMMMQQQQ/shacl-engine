@@ -18,8 +18,6 @@
 
 #### Property Constraints 
 Validation engine partially implemented. Known issue points:
-* ```sh:datatype``` needs to have function ```sh:hasDatatype``` (SPARQL query) implemented and linked
+* ```sh:valueShape``` won't be implemented since there is no formal specification available currently
 * ```sh:allowedValues`` query is not working, might have something to do with the passed list of allowedValues
-* ```sh:minCount```/```sh:maxCount``` needs to have function ```sh:valueDatatype``` (SPARQL query) implemented and linked
-* ```sh:nodeKind``` needs to have function ```sh:hasNodeKind``` (SPARQL query) implemented and linked
-* ```sh:valueShape``` needs to have function ```sh:valueShape``` (SPARQL query) implemented and linked
+* ```sh:valueType``` is not working right now
