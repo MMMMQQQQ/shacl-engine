@@ -1,26 +1,25 @@
 # SHACL Engine
 
-#### Basic validation process
+#### Description ####
+* This is a Java project for an engine supporting the Shapes Constraint Language (SHACL). 
+* It is based on this proposal: [https://w3c.github.io/data-shapes/shacl/!][https://w3c.github.io/data-shapes/shacl/]. 
+* The current status is work in progess.
+
+#### Basic validation process ####
 1. The input must be a valid RDF graph
 2. A jena RDF model is created from the input
 3. A validator (in this case we use SPARQL to validate the input) takes the model and looks for violations. To do so, the input must contain some data instances to evaluate from (i.e. they must be linked to a Shape through a shape selector)
 4. If there is data to be evaluated, the validator checks for constraints violations. A model containing the errors is returned. If the input is valid, the error model is empty, otherwise it contains a RDF graph.
 
-#### Architecture
-There are 6 main class types:
-* SHACLEntity classes: Contain necessary parameters of a SHACL vocable
-* ModelBuilder classes: Create SHACLEntity and ConstraintViolation classes from a RDF node type
-* SPARQLConstraintQuery and subclasses: Contain all needed information so that a SPARQL query can be executed
-* SHACL class: Contains the SHACL RDF information
-* SPARQLValidator: Validates a RDF model
-* ModelRegistry: Registers and links ModelBuilder classes and SPARQLConstraintQuery classes together. This is important as we need to know which ModelBuilder belongs to which Query to automate the process of constraint checking (otherwise every constraint would need to be checked separately).
+#### Current status ####
+## Validation engine ##
+* shape validation for ```rdfs:Class```/```rdf:type``` not implemented yet
+* only property constraints are currently supported
 
-Furthermore, there are several helper classes.
-
-The validator is the main access point as it ties the different functions together.
-* On instantiating, the ModelRegistry registers all ModelBuilder subclasses and SPARQLConstraintQuery subclasses and ties them together.
-* The validator then checks for data instances to be evaluated
-* Then it checks for constraint violations:
-	* It iterates over all registered ModelBuilder classes in the registry. Each ModelBuilder represents on constraint that needs to be  checked.
-	* Each ModelBuilder instance extracts all necessary information and stores it into a SHACLEntity object
-	* The SPARQLConstraintQuery class that is linked with the ModelBuilder class takes the generated SHACLEntity and with a SPARQL query checks whether the entity violates the model. If so, a non empty error model is returned.
+## Property Constraints ##
+Validation engine partially implemented. Known issue points:
+* ```sh:datatype``` needs to have function ```sh:hasDatatype``` (SPARQL query) implemented and linked
+* ```sh:allowedValues`` query is not working, might have something to do with the passed list of allowedValues
+* ```sh:minCount```/```sh:maxCount``` needs to have function ```sh:valueDatatype``` (SPARQL query) implemented and linked
+* ```sh:nodeKind``` needs to have function ```sh:hasNodeKind``` (SPARQL query) implemented and linked
+* ```sh:valueShape``` needs to have function ```sh:valueShape``` (SPARQL query) implemented and linked
