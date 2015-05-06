@@ -3,7 +3,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import at.ac.tuwien.shacl.util.HelperClass;
+import at.ac.tuwien.shacl.test.util.HelperClass;
 import at.ac.tuwien.shacl.validation.SHACLValidator;
 
 import com.hp.hpl.jena.rdf.model.Model;

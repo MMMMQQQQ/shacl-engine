@@ -3,6 +3,7 @@ package at.ac.tuwien.shacl.sparql;
 import at.ac.tuwien.shacl.registry.ModelRegistry;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.Function;
@@ -10,11 +11,19 @@ import com.hp.hpl.jena.sparql.function.FunctionBase2;
 import com.hp.hpl.jena.sparql.function.FunctionFactory;
 
 public class AskFunctionFactory extends FunctionBase2 implements FunctionFactory {
-	String uri;
+	private String uri;
+	
+	private Model model;
 	
 	@Override
 	public Function create(String uri) {
 		this.uri = uri;
+		return this;
+	}
+	
+	public Function create(String uri, Model model) {
+		this.model = model;
+		this.create(uri);
 		return this;
 	}
 

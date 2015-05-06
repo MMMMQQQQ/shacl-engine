@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import at.ac.tuwien.shacl.model.ConstraintTemplate;
+import at.ac.tuwien.shacl.model.Function;
 import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
 import at.ac.tuwien.shacl.model.impl.ConstraintTemplateImpl;
 import at.ac.tuwien.shacl.model.impl.FunctionImpl;
@@ -39,15 +41,15 @@ public class SHACLMetaModelRegistry {
 		return registry;
 	}
 	
-	//all defined constraintTemplates of the meta model and potential user defined templates
-	private Map<String, ConstraintTemplateImpl> constraintTemplates;
+	//all defined property constraints of the meta model and potential user defined templates
+	private Map<String, ConstraintTemplate> propertyConstraints;
 	
 	//all defined functions of the meta model and potential user defined functions
-	private Map<String, FunctionImpl> functions;
+	private Map<String, Function> functions;
 	
 	public SHACLMetaModelRegistry() {
-		this.constraintTemplates = new HashMap<String, ConstraintTemplateImpl>();
-		this.functions = new HashMap<String, FunctionImpl>();
+		this.propertyConstraints = new HashMap<String, ConstraintTemplate>();
+		this.functions = new HashMap<String, Function>();
 		this.register(SHACL.getModel());
 	}
 	
@@ -57,11 +59,11 @@ public class SHACLMetaModelRegistry {
 	}
 	
 	public Set<String> getConstraintsURIs() {
-		return this.constraintTemplates.keySet();
+		return this.propertyConstraints.keySet();
 	}
 	
-	public ConstraintTemplateImpl getConstraintTemplate(String constraintURI) {
-		return this.constraintTemplates.get(constraintURI);
+	public ConstraintTemplate getPropertyConstraintTemplate(String constraintURI) {
+		return this.propertyConstraints.get(constraintURI);
 	}
 	
 	public void registerFunctions(Model model) {
@@ -71,6 +73,7 @@ public class SHACLMetaModelRegistry {
 		//extract values for property constraint
 		for(Statement s : pcStatements) {
 			//properties of each function definition
+			
 			List<Statement> properties = s.getSubject().asResource().listProperties().toList();
 			//System.out.println("function: "+s.getSubject());
 
@@ -93,7 +96,7 @@ public class SHACLMetaModelRegistry {
 		}
 	}
 	
-	public FunctionImpl getFunction(String uri) {
+	public Function getFunction(String uri) {
 		return this.functions.get(uri);
 	}
 	
@@ -111,7 +114,7 @@ public class SHACLMetaModelRegistry {
 			ConstraintTemplateImpl propertyConstraint = (ConstraintTemplateImpl)SHACLResourceBuilder.build(properties, new ConstraintTemplateImpl());
 			for(ArgumentImpl argument : propertyConstraint.getArguments()) {
 				if(!argument.getPredicate().getURI().equals(SHACL.predicate.getURI())) {
-					constraintTemplates.put(argument.getPredicate().getURI(), propertyConstraint);
+					propertyConstraints.put(argument.getPredicate().getURI(), propertyConstraint);
 				}
 			}
 		}

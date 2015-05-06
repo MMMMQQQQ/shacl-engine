@@ -82,10 +82,10 @@ public class SHACLValidator {
 
 				if(propertyConstraints.contains(predicate.getURI())) {
 					QueryBuilder qb = new QueryBuilder(
-							registry.getConstraintTemplate(predicate.getURI()).getExecutableBody(),
+							registry.getPropertyConstraintTemplate(predicate.getURI()).getExecutableBody(),
 							model.getNsPrefixMap());
 					boolean isComplete = true;
-					for(ArgumentImpl a : registry.getConstraintTemplate(predicate.getURI()).getArguments()) {
+					for(ArgumentImpl a : registry.getPropertyConstraintTemplate(predicate.getURI()).getArguments()) {
 						if(tempStore.containsKey(a.getPredicate().getURI())) {
 							qb.addBinding(a.getPredicate().getLocalName(), tempStore.get(a.getPredicate().getURI()));
 							

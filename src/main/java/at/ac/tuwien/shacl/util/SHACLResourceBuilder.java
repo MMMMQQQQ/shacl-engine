@@ -41,7 +41,7 @@ public class SHACLResourceBuilder {
 			} else if(property.getPredicate().equals(SHACL.labelTemplate)){
 				template.setLabelTemplate(property.getString());
 			} else {
-				//System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+"VALUE: "+property.getObject());
+				System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+"VALUE: "+property.getObject());
 			}
 		}	
 		return template;

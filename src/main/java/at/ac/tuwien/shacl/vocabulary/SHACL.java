@@ -32,8 +32,6 @@ public class SHACL {
 
     public final static Resource OrConstraint = ResourceFactory.createResource(NS + "OrConstraint");
 
-    public final static Resource AbstractPropertyConstraint = ResourceFactory.createResource(NS + "AbstractPropertyConstraint");
-
     public final static Resource AbstractRule = ResourceFactory.createResource(NS + "AbstractRule");
 
     public final static Resource Argument = ResourceFactory.createResource(NS + "Argument");
@@ -62,6 +60,8 @@ public class SHACL {
 
     public final static Resource GlobalConstraint = ResourceFactory.createResource(NS + "GlobalConstraint");
 
+    public final static Resource GlobalNativeConstraint = ResourceFactory.createResource(NS + "GlobalNativeConstraint");
+    
     public final static Resource Graph = ResourceFactory.createResource(NS + "Graph");
 
     public final static Resource GraphConstraintCheckingTestCase = ResourceFactory.createResource(NS + "GraphConstraintCheckingTestCase");
