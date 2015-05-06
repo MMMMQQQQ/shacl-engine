@@ -3,9 +3,9 @@ package at.ac.tuwien.shacl.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.ac.tuwien.shacl.model.Argument;
-import at.ac.tuwien.shacl.model.Function;
-import at.ac.tuwien.shacl.model.Template;
+import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
+import at.ac.tuwien.shacl.model.impl.FunctionImpl;
+import at.ac.tuwien.shacl.model.impl.TemplateImpl;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -14,14 +14,14 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SHACLResourceBuilder {
-	public static Template build(List<Statement> statements, Template template) {
+	public static TemplateImpl build(List<Statement> statements, TemplateImpl template) {
 		for(Statement property : statements) {
 			if(property.getPredicate().equals(SHACL.sparql)) {
 				template.setExecutableBody(property.getString());
 			} else if(property.getPredicate().equals(SHACL.message)) {
 				//TODO implement sh:message
 			} else if(property.getPredicate().equals(SHACL.argument)) {
-				Argument argument = build(property.getObject().asResource().listProperties().toList(), new Argument());
+				ArgumentImpl argument = build(property.getObject().asResource().listProperties().toList(), new ArgumentImpl());
 				template.addArgument(argument);
 			} else if(property.getPredicate().equals(SHACL.private_)) {
 				//TODO sh:private is not mentioned in the SHACL specification!!
@@ -47,11 +47,11 @@ public class SHACLResourceBuilder {
 		return template;
 	}
 	
-	private static List<Argument> buildArgumentsOfSuperclass(Resource resource) {
-		List<Argument> arguments = new ArrayList<Argument>();
+	private static List<ArgumentImpl> buildArgumentsOfSuperclass(Resource resource) {
+		List<ArgumentImpl> arguments = new ArrayList<ArgumentImpl>();
 		for(Statement s : resource.listProperties().toList()) {
 			if(s.getPredicate().equals(SHACL.argument)) {
-				Argument argument = build(s.getObject().asResource().listProperties().toList(), new Argument());
+				ArgumentImpl argument = build(s.getObject().asResource().listProperties().toList(), new ArgumentImpl());
 				arguments.add(argument);
 			} else if(s.getPredicate().equals(RDFS.subClassOf)) {
 				arguments.addAll(buildArgumentsOfSuperclass(s.getObject().asResource()));
@@ -60,7 +60,7 @@ public class SHACLResourceBuilder {
 		return arguments;
 	}
 		
-	public static Argument build(List<Statement> argumentProperties, Argument argument) {
+	public static ArgumentImpl build(List<Statement> argumentProperties, ArgumentImpl argument) {
 		for(Statement prop : argumentProperties) {
 			if(prop.getPredicate().equals(RDFS.comment)) {
 				argument.addComment("default", prop.getString());
@@ -81,7 +81,7 @@ public class SHACLResourceBuilder {
 		return argument;
 	}
 	
-	public static Function build(List<Statement> statements, Function function) {
+	public static FunctionImpl build(List<Statement> statements, FunctionImpl function) {
 		
 		for(Statement property : statements) {
 			//System.out.println(property);
@@ -89,7 +89,7 @@ public class SHACLResourceBuilder {
 				//System.out.println("sparql object: "+property.getObject());
 				function.setExecutableBody(property.getString());
 			} else if(property.getPredicate().equals(SHACL.argument)) {
-				Argument argument = build(property.getObject().asResource().listProperties().toList(), new Argument());
+				ArgumentImpl argument = build(property.getObject().asResource().listProperties().toList(), new ArgumentImpl());
 				function.addArgument(argument);
 			} else if(property.getPredicate().equals(RDFS.comment)) {
 				//TODO replace hard coded language flag

@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.model.impl;
 
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 

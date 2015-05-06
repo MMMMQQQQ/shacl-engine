@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import at.ac.tuwien.shacl.model.Argument;
-import at.ac.tuwien.shacl.model.ConstraintViolation;
+import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
+import at.ac.tuwien.shacl.model.impl.ConstraintViolationImpl;
+import at.ac.tuwien.shacl.registry.ModelRegistry;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
-import com.hp.hpl.jena.query.ParameterizedSparqlString;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -21,6 +21,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Covers section 11, supported operations
@@ -31,11 +32,12 @@ public class SHACLValidator {
 	private SHACLMetaModelRegistry registry;
 	
 	//TODO change
-	public static Model model;
+	private Model model;
 	
 	public SHACLValidator(Model model) {
 		this.registry = SHACLMetaModelRegistry.getInstance();
 		this.model = model;
+		ModelRegistry.setCurrentModel(model);
 	}
 	
 	public Model validateGraph() {
@@ -43,7 +45,8 @@ public class SHACLValidator {
 		Model errorModel = ModelFactory.createDefaultModel();
 		System.out.println("number of shape data: "+shapes.size());
 		for(Statement shape : shapes) {
-			errorModel.add(this.validateNodeAgainstShape(shape.getSubject(), shape.getObject().asResource()));
+			System.out.println();
+			//errorModel.add(this.validateNodeAgainstShape(shape.getSubject(), shape.getObject().asResource()));
 		}
 		
 		return errorModel;
@@ -82,7 +85,7 @@ public class SHACLValidator {
 							registry.getConstraintTemplate(predicate.getURI()).getExecutableBody(),
 							model.getNsPrefixMap());
 					boolean isComplete = true;
-					for(Argument a : registry.getConstraintTemplate(predicate.getURI()).getArguments()) {
+					for(ArgumentImpl a : registry.getConstraintTemplate(predicate.getURI()).getArguments()) {
 						if(tempStore.containsKey(a.getPredicate().getURI())) {
 							qb.addBinding(a.getPredicate().getLocalName(), tempStore.get(a.getPredicate().getURI()));
 							
@@ -97,7 +100,7 @@ public class SHACLValidator {
 						qb.addBinding(SHACL.predicate.getLocalName(), tempStore.get(SHACL.predicate.getURI()));
 						qb.addThisBinding(focusNode);
 						if(!SPARQLQueryExecutor.isQueryValid(qb.getQueryString(), model, qb.getBindings())) {
-							ConstraintViolation error = new ConstraintViolation(
+							ConstraintViolationImpl error = new ConstraintViolationImpl(
 									SHACL.Error, focusNode, focusNode, 
 									ResourceFactory.createProperty(((Resource)tempStore.get(SHACL.predicate.getURI())).getURI()), 
 									null);
@@ -129,6 +132,7 @@ public class SHACLValidator {
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		statements.addAll(model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList());
+		//statements.addAll(model.listStatements(null, RDF.type, (RDFNode)null).toList());
 		System.out.println("data triplets: "+model.listStatements().toList());
 		//TODO implement rdf:type
 		return statements;

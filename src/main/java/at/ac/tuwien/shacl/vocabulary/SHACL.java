@@ -209,7 +209,7 @@ public class SHACL {
     
     public static Model getModel() {
     	Model model = ModelFactory.createDefaultModel();
-		model.read(Config.base_res_dir+"shacl.shacl.ttl");
+		model.read(Config.Base_res_dir+"shacl.shacl.ttl");
 		return model;
     }
 }

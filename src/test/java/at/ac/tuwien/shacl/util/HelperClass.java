@@ -8,12 +8,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class HelperClass {
-	private static String MAVEN_RES_PATH = "src/main/resources/";
+	public static final String Base_propConst_dir = "basic_propertyconstraints/";
+
+	public static final String Base_dir = "src/test/resources/";
 	
 	public static Model getModelFromFile(String filename) {
 		Model model = ModelFactory.createDefaultModel();
 		try {
-			model.read(new FileInputStream(new File(MAVEN_RES_PATH+filename)), null, "TURTLE");
+			model.read(new FileInputStream(new File(Config.Base_res_dir+filename)), null, "TURTLE");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

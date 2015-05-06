@@ -1,5 +1,6 @@
 package at.ac.tuwien.shacl.arq;
 
+import at.ac.tuwien.shacl.registry.ModelRegistry;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
@@ -26,7 +27,7 @@ public class AskFunctionFactory extends FunctionBase2 implements FunctionFactory
 		
 		if(SHACLMetaModelRegistry.getInstance().getFunction(uri)!= null) {
 			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getInstance().getFunction(uri).getExecutableBody(),
-					SHACLValidator.model.getNsPrefixMap());
+					ModelRegistry.getCurrentModel().getNsPrefixMap());
 
 			//TODO not working
 			qb.addBinding("arg1", ResourceFactory.createResource(arg0.toString()));
@@ -37,7 +38,7 @@ public class AskFunctionFactory extends FunctionBase2 implements FunctionFactory
 			queryString = queryString.replaceAll("\\?arg1", arg0.toString());
 			queryString = queryString.replaceAll("\\?arg2", arg1.toString());
 
-			result = SPARQLQueryExecutor.execAsk(queryString, SHACLValidator.model, qb.getBindings());
+			result = SPARQLQueryExecutor.execAsk(queryString, ModelRegistry.getCurrentModel(), qb.getBindings());
 		}
 		
 		//System.out.println("result: "+result);

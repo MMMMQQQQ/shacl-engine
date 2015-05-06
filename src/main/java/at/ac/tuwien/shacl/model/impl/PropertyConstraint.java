@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.model.impl;
 /**
  * - Constraint that defines restrictions on the values of a given property of a focus node
    - The focus node is the subject and the property is the predicate of relevant triples

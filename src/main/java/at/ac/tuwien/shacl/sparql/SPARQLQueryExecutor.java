@@ -55,7 +55,7 @@ public class SPARQLQueryExecutor {
 	
 	public static boolean isQueryValid(final String queryString, final Model model, QuerySolutionMap bindings) {
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		//System.out.println(exec.getQuery());
+		System.out.println(exec.getQuery());
 		ResultSet results = exec.execSelect();
 		boolean isValid = true;
 		try {

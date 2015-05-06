@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.model.impl;
 
 /** 12.1 Function Arguments
  * 
@@ -17,6 +17,6 @@ package at.ac.tuwien.shacl.model;
  * @author xlin
  *
  */
-public class FunctionArgument extends Argument {
+public class FunctionArgument extends ArgumentImpl {
 
 }

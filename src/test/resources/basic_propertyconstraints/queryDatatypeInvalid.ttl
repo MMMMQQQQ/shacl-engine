@@ -11,7 +11,6 @@ ex:DatatypeExampleShape
 		sh:datatype xsd:string ;
 	] .
 
-ex:DatatypeShapeExampleValidResource
+ex:DatatypeShapeExampleInvalidResource
 	sh:nodeShape ex:DatatypeExampleShape;
-	ex:someProperty "Some value" .
-	#does not work ex:someProperty "Value with language tag"@en .
+	ex:someProperty 42 .

@@ -1,7 +1,9 @@
 package at.ac.tuwien.shacl.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import at.ac.tuwien.shacl.model.impl.ConstraintViolationType;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -9,97 +11,40 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public class ConstraintViolation extends SHACLResource{
-	//key: lang, value: message
-	private Map<String, String> messages;
+public interface ConstraintViolation extends SHACLResource {
+	public Resource getType();
+
+	public void setType(Resource type);
+
+	public Resource getRoot();
+
+	public void setRoot(Resource root);
 	
-	//sh:detail: links a (parent) constraint violation with one or more other (child) constraint violations to provide further details about the cause of the (parent) violation; may include failures of nested constraints (via sh:valueShape)
-	private Object detail;
+	public Resource getSubject();
+
+	public void setSubject(Resource subject);
+
+	public Resource getObject();
+
+	public void setObject(Resource object);
+
+	public Resource getSource();
+
+	public void setSource(Resource source);
+
+	public Property getPredicate();
+
+	public void setPredicate(Property predicate);
 	
-	//linkable through "rdfs:subClassOf sh:ConstraintViolation"
-	//three currently: warning, error and fatalerror
-	private Resource type;
+	public Model getModel();
 	
-	//sh:root: IRI or blank node that produced the violation, usually the focus node
-	private Resource root;
+	public void addMessage(String lang, String message);
 	
-	private Resource subject;
+	public Map<String, String> getMessages();
 	
-	private Property predicate;
-	
-	private Resource object;
-	
-	//sh:source: constraint violation (one sh:Constraint) that caused the violation
-	private Resource source;
+	public void setMessages(Map<String, String> messages);
 
-	public ConstraintViolation(Resource type, Resource root, Resource subject, Property predicate, Resource object) {
-		this.setType(type);
-		this.setRoot(root);
-		this.setSubject(subject);
-		this.setPredicate(predicate);
-		this.setObject(object);
-	}
-	
-	public Resource getType() {
-		return type;
-	}
+	public Object getDetail();
 
-	public void setType(Resource type) {
-		if(ConstraintViolationType.isConstraintViolationType(type)) {
-			this.type = type;
-		}
-	}
-
-	public Resource getRoot() {
-		return root;
-	}
-
-	public void setRoot(Resource root) {
-		this.root = root;
-	}
-
-	public Resource getSubject() {
-		return subject;
-	}
-
-	public void setSubject(Resource subject) {
-		this.subject = subject;
-	}
-
-	public Resource getObject() {
-		return object;
-	}
-
-	public void setObject(Resource object) {
-		this.object = object;
-	}
-
-	public Resource getSource() {
-		return source;
-	}
-
-	public void setSource(Resource source) {
-		this.source = source;
-	}
-
-	public Property getPredicate() {
-		return predicate;
-	}
-
-	public void setPredicate(Property predicate) {
-		this.predicate = predicate;
-	}
-	
-	public Model getModel() {
-		Model errorModel = ModelFactory.createDefaultModel();
-		
-		Resource error = errorModel.createResource(this.type);
-
-		if(this.getObject() != null) error.addProperty(SHACL.object, this.getObject());
-		if(this.getPredicate() != null) error.addProperty(SHACL.predicate, this.getPredicate());
-		if(this.getSubject() != null) error.addProperty(SHACL.subject, this.getSubject());
-		if(this.getRoot() != null) error.addProperty(SHACL.root, this.getRoot());
-		
-		return errorModel;
-	}
+	public void setDetail(Object detail);
 }

@@ -1,41 +1,19 @@
 package at.ac.tuwien.shacl.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Macro extends SHACLResource {
+import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
 
-	private String executableBody;
-	
-	private List<Argument> arguments;
-	
-	public String getExecutableBody() {
-		return executableBody;
-	}
+public interface Macro extends SHACLResource {
+	public String getExecutableBody();
 
-	public void setExecutableBody(String executableBody) {
-		this.executableBody = executableBody;
-	}
+	public void setExecutableBody(String executableBody);
 	
-	public List<Argument> getArguments() {
-		return arguments;
-	}
+	public List<ArgumentImpl> getArguments();
 
-	public void setArguments(List<Argument> arguments) {
-		this.arguments = arguments;
-	}
+	public void setArguments(List<ArgumentImpl> arguments);
 	
-	public void addArgument(Argument argument) {
-		if(this.arguments == null) {
-			arguments = new ArrayList<Argument>();
-		}
-		arguments.add(argument);
-	}
+	public void addArgument(ArgumentImpl argument);
 	
-	public void addArguments(List<Argument> arguments) {
-		if(this.arguments == null) {
-			this.arguments = new ArrayList<Argument>();
-		}
-		this.arguments.addAll(arguments);
-	}
+	public void addArguments(List<ArgumentImpl> arguments);
 }

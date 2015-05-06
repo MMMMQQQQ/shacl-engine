@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.model.impl;
 
 import java.util.List;
 
@@ -10,6 +10,6 @@ import java.util.List;
  * @author xlin
  *
  */
-public class Shape extends SHACLResource {
+public class Shape extends SHACLResourceImpl {
 	List<Constraint> constraints;
 }
