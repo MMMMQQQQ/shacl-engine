@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.arq;
+package at.ac.tuwien.shacl.sparql;
 
 public class SHACLFunctionFactory {
 

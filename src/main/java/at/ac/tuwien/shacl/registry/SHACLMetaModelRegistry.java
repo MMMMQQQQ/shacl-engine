@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import at.ac.tuwien.shacl.arq.AskFunctionFactory;
-import at.ac.tuwien.shacl.arq.SelectFunctionFactory;
 import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
 import at.ac.tuwien.shacl.model.impl.ConstraintTemplateImpl;
 import at.ac.tuwien.shacl.model.impl.FunctionImpl;
+import at.ac.tuwien.shacl.sparql.AskFunctionFactory;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
+import at.ac.tuwien.shacl.sparql.SelectFunctionFactory;
 import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 

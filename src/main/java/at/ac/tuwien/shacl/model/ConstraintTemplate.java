@@ -1,11 +1,8 @@
 package at.ac.tuwien.shacl.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import at.ac.tuwien.shacl.model.impl.ConstraintViolationType;
 import at.ac.tuwien.shacl.model.impl.ResultAnnotation;
 
 import com.hp.hpl.jena.rdf.model.Property;

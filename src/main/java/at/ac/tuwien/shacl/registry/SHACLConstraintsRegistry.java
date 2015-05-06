@@ -7,9 +7,9 @@ import com.hp.hpl.jena.rdf.model.Model;
  * @author xlin
  *
  */
-public class ConstraintRegistry {
+public class SHACLConstraintsRegistry {
 	
-	public ConstraintRegistry() {
+	public SHACLConstraintsRegistry() {
 		
 	}
 	
@@ -51,11 +51,11 @@ public class ConstraintRegistry {
 		
 	}
 	
-	private static ConstraintRegistry registry;
+	private static SHACLConstraintsRegistry registry;
 	
-	public static ConstraintRegistry getRegistry() {
+	public static SHACLConstraintsRegistry getRegistry() {
 		if(registry == null) {
-			registry = new ConstraintRegistry();
+			registry = new SHACLConstraintsRegistry();
 		}
 		return registry;
 	}
