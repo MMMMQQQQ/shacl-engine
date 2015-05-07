@@ -35,7 +35,7 @@ public class SHACLValidator {
 	private Model model;
 	
 	public SHACLValidator(Model model) {
-		this.registry = SHACLMetaModelRegistry.getInstance();
+		this.registry = SHACLMetaModelRegistry.getRegistry();
 		this.model = model;
 		ModelRegistry.setCurrentModel(model);
 	}

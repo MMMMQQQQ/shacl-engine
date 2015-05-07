@@ -25,6 +25,7 @@ public enum ConstraintViolationType {
 		for(ConstraintViolationType c : ConstraintViolationType.values()) {
 			if(c.getViolationType().getURI().equals(resource.getURI())) {
 				isViolation = true;
+				break;
 			}
 		}
 		

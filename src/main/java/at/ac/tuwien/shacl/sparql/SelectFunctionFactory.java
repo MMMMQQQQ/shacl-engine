@@ -24,8 +24,8 @@ public class SelectFunctionFactory extends FunctionBase2 implements FunctionFact
 	public NodeValue exec(NodeValue arg0, NodeValue arg1) {
 		RDFNode result = null;
 		
-		if(SHACLMetaModelRegistry.getInstance().getFunction(uri)!= null) {
-			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getInstance().getFunction(uri).getExecutableBody(),
+		if(SHACLMetaModelRegistry.getRegistry().getFunction(uri)!= null) {
+			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getRegistry().getFunction(uri).getExecutableBody(),
 					ModelRegistry.getCurrentModel().getNsPrefixMap());
 
 			//System.out.println("prefixes:"+SHACLValidator.model.getNsPrefixMap());

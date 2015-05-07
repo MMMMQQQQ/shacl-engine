@@ -18,6 +18,12 @@ public class SHACL {
 
     public final static String PREFIX = "sh";
     
+    public final static Resource ResultAnnotation = ResourceFactory.createResource(NS + "ResultAnnotation");
+    
+    public final static Property resultAnnotation = ResourceFactory.createProperty(NS + "resultAnnotation");
+    
+    public final static Property severity = ResourceFactory.createProperty(NS + "severity");
+    
     public final static Property object = ResourceFactory.createProperty(NS + "object");
 
     public final static Property subject = ResourceFactory.createProperty(NS + "subject");
@@ -158,7 +164,7 @@ public class SHACL {
 
     public final static Property nodeShape = ResourceFactory.createProperty(NS + "nodeShape");
 
-    public final static Property nodeType = ResourceFactory.createProperty(NS + "nodeType");
+    public final static Property nodeKind = ResourceFactory.createProperty(NS + "nodeKind");
 
     public final static Resource objectCount = ResourceFactory.createResource(NS + "objectCount");
 
@@ -201,6 +207,8 @@ public class SHACL {
     public final static Resource walkObjects = ResourceFactory.createResource(NS + "walkObjects");
 
     public final static Resource walkSubjects = ResourceFactory.createResource(NS + "walkSubjects");
+
+	public final static Property optionalWhenInherited = ResourceFactory.createProperty(NS + "optionalWhenInherited");
 
 
     public static String getURI() {

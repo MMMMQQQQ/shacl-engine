@@ -14,11 +14,13 @@ import at.ac.tuwien.shacl.sparql.AskFunctionFactory;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.sparql.SelectFunctionFactory;
+import at.ac.tuwien.shacl.util.GraphTraverser;
 import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -33,7 +35,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class SHACLMetaModelRegistry {
 	private static SHACLMetaModelRegistry registry;
 	
-	public static SHACLMetaModelRegistry getInstance() {
+	public static SHACLMetaModelRegistry getRegistry() {
 		if(registry == null) {
 			registry = new SHACLMetaModelRegistry();
 		}
@@ -41,29 +43,37 @@ public class SHACLMetaModelRegistry {
 		return registry;
 	}
 	
-	//all defined property constraints of the meta model and potential user defined templates
-	private Map<String, ConstraintTemplate> propertyConstraints;
+	//all registered property constraint templates
+	private Map<String, ConstraintTemplate> propertyConstraintTs;
+		
+	//all registered inverse property constraint templates
+	private Map<String, ConstraintTemplate> inversePropertyConstraintTs;
 	
 	//all defined functions of the meta model and potential user defined functions
 	private Map<String, Function> functions;
 	
 	public SHACLMetaModelRegistry() {
-		this.propertyConstraints = new HashMap<String, ConstraintTemplate>();
+		this.propertyConstraintTs = new HashMap<String, ConstraintTemplate>();
+		this.inversePropertyConstraintTs = new HashMap<String, ConstraintTemplate>();
 		this.functions = new HashMap<String, Function>();
 		this.register(SHACL.getModel());
 	}
 	
-	public void register(Model model) {
+	private void register(Model model) {
 		this.registerPropertyConstraints(model);
 		this.registerFunctions(model);
 	}
 	
+	public Set<String> getInversePropertyConstraintsURIs() {
+		return this.inversePropertyConstraintTs.keySet();
+	}
+	
 	public Set<String> getConstraintsURIs() {
-		return this.propertyConstraints.keySet();
+		return this.propertyConstraintTs.keySet();
 	}
 	
 	public ConstraintTemplate getPropertyConstraintTemplate(String constraintURI) {
-		return this.propertyConstraints.get(constraintURI);
+		return this.propertyConstraintTs.get(constraintURI);
 	}
 	
 	public void registerFunctions(Model model) {
@@ -101,22 +111,7 @@ public class SHACLMetaModelRegistry {
 	}
 	
 	public void registerPropertyConstraints(Model model) {
-		//get all meta model nodes of property constraints
-		List<Statement> pcStatements = model.listStatements(
-				SHACL.PropertyConstraint, RDFS.subClassOf, (RDFNode) null).toList();
-		
-		//extract values for property constraint
-		for(Statement s : pcStatements) {
-			//properties of each constraint definition
-			List<Statement> properties = s.getObject().asResource().listProperties().toList();
-			
-			//populate property constraint object
-			ConstraintTemplateImpl propertyConstraint = (ConstraintTemplateImpl)SHACLResourceBuilder.build(properties, new ConstraintTemplateImpl());
-			for(ArgumentImpl argument : propertyConstraint.getArguments()) {
-				if(!argument.getPredicate().getURI().equals(SHACL.predicate.getURI())) {
-					propertyConstraints.put(argument.getPredicate().getURI(), propertyConstraint);
-				}
-			}
-		}
+		this.inversePropertyConstraintTs.putAll(ConstraintExtractor.getPropertyConstraints(model, true));
+		this.propertyConstraintTs.putAll(ConstraintExtractor.getPropertyConstraints(model, false));
 	}
 }

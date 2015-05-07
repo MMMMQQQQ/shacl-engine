@@ -1,5 +1,6 @@
 package at.ac.tuwien.shacl.model;
 
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 public interface Argument extends SHACLResource {
@@ -11,9 +12,9 @@ public interface Argument extends SHACLResource {
 
 	public void setOptional(boolean optional);
 
-	public Object getDefaultValue();
+	public RDFNode getDefaultValue();
 
-	public void setDefaultValue(Object defaultValue);
+	public void setDefaultValue(RDFNode defaultValue);
 
 	public Resource getValueType();
 
@@ -22,4 +23,12 @@ public interface Argument extends SHACLResource {
 	public Resource getDatatype();
 
 	public void setDatatype(Resource datatype);
+	
+	public void setOptionalWhenInherited(boolean optionalWhenInherited);
+	
+	public boolean getOptionalWhenInherited();
+	
+	public void setNodeKind(Resource nodeKind);
+	
+	public Resource getNodeKind();
 }

@@ -12,7 +12,7 @@ package at.ac.tuwien.shacl.model.impl;
  * @author xlin
  *
  */
-public class PropertyConstraint extends Constraint {
+public class PropertyConstraint extends SHACLResourceImpl {
 	//Property constraints may have a single value for sh:defaultValue. 
 	//It does not have fixed semantics in SHACL, 
 	//but may be used by user interface tools to pre-populate input widgets.

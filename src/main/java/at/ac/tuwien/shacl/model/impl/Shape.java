@@ -11,5 +11,5 @@ import java.util.List;
  *
  */
 public class Shape extends SHACLResourceImpl {
-	List<Constraint> constraints;
+	//List<Constraint> constraints;
 }

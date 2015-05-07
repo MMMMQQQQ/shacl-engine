@@ -31,8 +31,8 @@ public class AskFunctionFactory extends FunctionBase2 implements FunctionFactory
 	public NodeValue exec(NodeValue arg0, NodeValue arg1) {
 		boolean result = true;
 		
-		if(SHACLMetaModelRegistry.getInstance().getFunction(uri)!= null) {
-			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getInstance().getFunction(uri).getExecutableBody(),
+		if(SHACLMetaModelRegistry.getRegistry().getFunction(uri)!= null) {
+			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getRegistry().getFunction(uri).getExecutableBody(),
 					ModelRegistry.getCurrentModel().getNsPrefixMap());
 
 			//TODO not working

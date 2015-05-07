@@ -80,7 +80,7 @@ public class TestBasicPropertyConstraints {
 		Model model;
 
 		model = ModelFactory.createDefaultModel();
-		model.read(HelperClass.Base_dir+HelperClass.Base_propConst_dir+filename);
+		model.read(HelperClass.Base_dir+HelperClass.Basic_propConst_dir+filename);
 		SHACLValidator validator = new SHACLValidator(model);
 		Model errorModel = validator.validateGraph();
 		if(validModel) {

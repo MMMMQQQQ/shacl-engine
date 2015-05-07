@@ -3,9 +3,10 @@ package at.ac.tuwien.shacl.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.ac.tuwien.shacl.model.NativeConstraint;
+import at.ac.tuwien.shacl.model.Template;
 import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
 import at.ac.tuwien.shacl.model.impl.FunctionImpl;
-import at.ac.tuwien.shacl.model.impl.TemplateImpl;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -14,7 +15,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SHACLResourceBuilder {
-	public static TemplateImpl build(List<Statement> statements, TemplateImpl template) {
+	public static Template build(List<Statement> statements, Template template) {
 		for(Statement property : statements) {
 			if(property.getPredicate().equals(SHACL.sparql)) {
 				template.setExecutableBody(property.getString());
@@ -41,12 +42,40 @@ public class SHACLResourceBuilder {
 			} else if(property.getPredicate().equals(SHACL.labelTemplate)){
 				template.setLabelTemplate(property.getString());
 			} else {
-				System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+"VALUE: "+property.getObject());
+				System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+" VALUE: "+property.getObject()+" SUBJECT: "+property.getSubject());
 			}
 		}	
 		return template;
 	}
 	
+	public static NativeConstraint build(List<Statement> statements, NativeConstraint constraint) {
+		for(Statement property : statements) {
+			if(property.getPredicate().equals(SHACL.sparql)) {
+				constraint.setExecutableBody(property.getString());
+			} else if(property.getPredicate().equals(SHACL.message)) {
+				//TODO implement sh:message
+			} else if(property.getPredicate().equals(SHACL.abstract_)) {
+				constraint.setAbstract(property.getBoolean());
+			} else if(property.getPredicate().equals(RDFS.comment)) {
+				//TODO replace hard coded language flag
+				constraint.addComment("default", property.getString());
+			} else if(property.getPredicate().equals(RDFS.label)) {
+				//TODO replace hard coded language flag
+				constraint.addLabel("default", property.getString());
+			} else if(property.getPredicate().equals(RDF.type)) {
+				//do nothing
+			} else if(property.getPredicate().equals(SHACL.severity)) {
+				constraint.setSeverity(property.getResource());
+			} else if(property.getPredicate().equals(SHACL.resultAnnotation)) {
+				//TODO build result annotation
+			} else {
+				System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+" VALUE: "+property.getObject()+" SUBJECT: "+property.getSubject());
+			}
+		}	
+		
+		return constraint;
+	}
+
 	private static List<ArgumentImpl> buildArgumentsOfSuperclass(Resource resource) {
 		List<ArgumentImpl> arguments = new ArrayList<ArgumentImpl>();
 		for(Statement s : resource.listProperties().toList()) {
@@ -74,8 +103,14 @@ public class SHACLResourceBuilder {
 				argument.setValueType(prop.getObject().asResource());
 			} else if(prop.getPredicate().equals(SHACL.datatype)) {
 				argument.setDatatype(prop.getObject().asResource());
+			} else if(prop.getPredicate().equals(SHACL.optionalWhenInherited)){
+				argument.setOptionalWhenInherited(prop.getBoolean());
+			} else if(prop.getPredicate().equals(SHACL.defaultValue)){
+				argument.setDefaultValue(prop.getObject());
+			} else if(prop.getPredicate().equals(SHACL.nodeKind)){
+				argument.setDefaultValue(prop.getObject());
 			} else {
-				//System.out.println("undefined argument "+prop.getPredicate());
+				System.out.println("undefined argument "+prop.getPredicate());
 			}
 		}
 		return argument;

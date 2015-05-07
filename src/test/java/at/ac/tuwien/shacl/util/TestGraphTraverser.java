@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import at.ac.tuwien.shacl.registry.ConstraintExtractor;
+import at.ac.tuwien.shacl.test.util.HelperClass;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -21,7 +23,7 @@ public class TestGraphTraverser {
 	public void testSubclassTraversing() {
 		Model model = SHACL.getModel();
 		
-		List<Statement> result = GraphTraverser.listAllSubclassesOfNode(ResourceFactory.createResource(SHACL.NS+"Macro"), model);
+		List<Statement> result = GraphTraverser.listAllSubclassesOfNodeAsSubject(ResourceFactory.createResource(SHACL.NS+"Macro"), model);
 		
 		//sh:Macro has 3 direct and indirect subclasses: sh:Template, sh:Function and sh:ConstraintTemplate
 		assertEquals(3, result.size());
@@ -39,7 +41,7 @@ public class TestGraphTraverser {
 	@Test
 	public void testSuperclassTraversing() {
 		Model model = SHACL.getModel();
-		List<Statement> result = GraphTraverser.listDirectSuperclassesOfNode(SHACL.GlobalNativeConstraint, model);
+		List<Statement> result = GraphTraverser.listDirectSuperclassesOfNodeAsObject(SHACL.GlobalNativeConstraint, model);
 		
 		assertEquals(2, result.size());
 		
@@ -51,5 +53,13 @@ public class TestGraphTraverser {
 		for(Statement s : result) {
 			assertTrue(shaclR.contains(s.getObject().asResource()));
 		}
+	}
+	
+	@Test
+	public void testRdfTypeSubclassing() {
+		Model model = HelperClass.getModelFromFile(HelperClass.GlobalNativeConstraint_dir+"globalNativeConstraint1.ttl");
+		model.add(SHACL.getModel());
+		List<Statement> result = GraphTraverser.listAllAndSubclassesOfRdfTypeAsSubject(SHACL.Constraint, model);
+		assertEquals(2, result.size());
 	}
 }
