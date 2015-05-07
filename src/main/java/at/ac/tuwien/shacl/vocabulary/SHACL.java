@@ -18,6 +18,8 @@ public class SHACL {
 
     public final static String PREFIX = "sh";
     
+    public final static Resource ShapeClass = ResourceFactory.createResource(NS + "ShapeClass");
+    
     public final static Resource ResultAnnotation = ResourceFactory.createResource(NS + "ResultAnnotation");
     
     public final static Property resultAnnotation = ResourceFactory.createProperty(NS + "resultAnnotation");
@@ -186,7 +188,7 @@ public class SHACL {
 
     public final static Property rule = ResourceFactory.createProperty(NS + "rule");
 
-    public final static Property scope = ResourceFactory.createProperty(NS + "scope");
+    public final static Property scopeShape = ResourceFactory.createProperty(NS + "scopeShape");
 
     public final static Property shape1 = ResourceFactory.createProperty(NS + "shape1");
 

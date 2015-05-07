@@ -14,4 +14,4 @@ ex:AllowedValuesExampleShape
 
 ex:AllowedValuesExampleValidResource
 	sh:nodeShape ex:AllowedValuesExampleShape;
-	ex:property ex:Value2 .
+	ex:someProperty ex:Value2 .

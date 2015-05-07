@@ -45,8 +45,7 @@ public class SHACLValidator {
 		Model errorModel = ModelFactory.createDefaultModel();
 		System.out.println("number of shape data: "+shapes.size());
 		for(Statement shape : shapes) {
-			System.out.println();
-			//errorModel.add(this.validateNodeAgainstShape(shape.getSubject(), shape.getObject().asResource()));
+			errorModel.add(this.validateNodeAgainstShape(shape.getSubject(), shape.getObject().asResource()));
 		}
 		
 		return errorModel;
@@ -54,7 +53,6 @@ public class SHACLValidator {
 	
 	public Model validateNodeAgainstShape(Resource focusNode, Resource shape) {
 		Model errorModel = ModelFactory.createDefaultModel();
-		System.out.println("shape: "+shape);
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
 			errorModel.add(this.validateConstraint(focusNode, p.getObject().asResource()));
 		}
@@ -72,7 +70,7 @@ public class SHACLValidator {
 		tempStore.put(constraintPredicate.getPredicate().getURI(), constraintPredicate.getObject().asResource());
 
 		for(Statement objectProps : constraint.listProperties().toList()) {
-
+			System.out.println("objectProps" + objectProps.getObject());
 			RDFNode res = objectProps.getObject();
 			
 			Property predicate = objectProps.getPredicate();

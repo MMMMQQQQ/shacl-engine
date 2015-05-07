@@ -791,9 +791,9 @@ sh:AbstractAllowedValuesPropertyConstraint
 		WHERE {
 			?this ?predicate ?object .
 			FILTER NOT EXISTS {
-				GRAPH ?shapesGraph {
+			
 					?allowedValues (rdf:rest*)/rdf:first ?object .
-				}
+		
 			}
 		}
 		""" ;
