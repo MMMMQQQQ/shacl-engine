@@ -70,7 +70,6 @@ public class SHACLValidator {
 		tempStore.put(constraintPredicate.getPredicate().getURI(), constraintPredicate.getObject().asResource());
 
 		for(Statement objectProps : constraint.listProperties().toList()) {
-			System.out.println("objectProps" + objectProps.getObject());
 			RDFNode res = objectProps.getObject();
 			
 			Property predicate = objectProps.getPredicate();
@@ -126,10 +125,22 @@ public class SHACLValidator {
 	 * 		- the shape definition as object
 	 * 		- the selection property (sh:nodeShape/rdf:type) as predicate
 	 */
-	private List<Statement> getInstantiatedShapeTriplets() {
+	public List<Statement> getInstantiatedShapeTriplets() {
 		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> shapes = model.listStatements(null, RDF.type, SHACL.Shape).toList();
+		System.out.println("shapes: "+shapes);
+		//statements.addAll(model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList());
 		
-		statements.addAll(model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList());
+		for(Statement s : shapes) {
+			statements.addAll(model.listStatements(null, RDF.type, s.getSubject()).toList());
+			statements.addAll(model.listStatements(null, SHACL.nodeShape, s.getSubject()).toList());
+			
+			//TODO
+			//System.out.println("by scope class:"+s.getSubject().getProperty(SHACL.scopeClass));
+		
+			//model.listStatements(s.getSubject(), SHACL.scopeClass, (RDFNode)null);
+		}
+		
 		//statements.addAll(model.listStatements(null, RDF.type, (RDFNode)null).toList());
 		System.out.println("data triplets: "+model.listStatements().toList());
 		//TODO implement rdf:type

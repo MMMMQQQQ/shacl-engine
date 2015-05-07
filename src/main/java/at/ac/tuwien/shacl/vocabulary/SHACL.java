@@ -188,7 +188,7 @@ public class SHACL {
 
     public final static Property rule = ResourceFactory.createProperty(NS + "rule");
 
-    public final static Property scopeShape = ResourceFactory.createProperty(NS + "scopeShape");
+    public final static Property scopeClass = ResourceFactory.createProperty(NS + "scopeClass");
 
     public final static Property shape1 = ResourceFactory.createProperty(NS + "shape1");
 
