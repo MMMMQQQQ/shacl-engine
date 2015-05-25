@@ -18,6 +18,10 @@ public class SHACL {
 
     public final static String PREFIX = "sh";
     
+    public final static Property sparqlEntailment = ResourceFactory.createProperty(NS + "sparqlEntailment");
+    
+    public final static Resource ClosedShapeConstraint = ResourceFactory.createResource(NS + "ClosedShapeConstraint");
+    
     public final static Resource ShapeClass = ResourceFactory.createResource(NS + "ShapeClass");
     
     public final static Resource ResultAnnotation = ResourceFactory.createResource(NS + "ResultAnnotation");
@@ -56,8 +60,6 @@ public class SHACL {
 
     public final static Resource ConstraintViolation = ResourceFactory.createResource(NS + "ConstraintViolation");
 
-    public final static Resource CountConstraint = ResourceFactory.createResource(NS + "CountConstraint");
-
     public final static Resource Error = ResourceFactory.createResource(NS + "Error");
 
     public final static Resource FatalError = ResourceFactory.createResource(NS + "FatalError");
@@ -66,10 +68,6 @@ public class SHACL {
 
     public final static Resource Functions = ResourceFactory.createResource(NS + "Functions");
 
-    public final static Resource GlobalConstraint = ResourceFactory.createResource(NS + "GlobalConstraint");
-
-    public final static Resource GlobalNativeConstraint = ResourceFactory.createResource(NS + "GlobalNativeConstraint");
-    
     public final static Resource Graph = ResourceFactory.createResource(NS + "Graph");
 
     public final static Resource GraphConstraintCheckingTestCase = ResourceFactory.createResource(NS + "GraphConstraintCheckingTestCase");
@@ -219,7 +217,7 @@ public class SHACL {
     
     public static Model getModel() {
     	Model model = ModelFactory.createDefaultModel();
-		model.read(Config.Base_res_dir+"shacl.shacl.ttl");
+		model.read(Config.SHACL_METAMODEL_FILE_LOCATION);
 		return model;
     }
 }

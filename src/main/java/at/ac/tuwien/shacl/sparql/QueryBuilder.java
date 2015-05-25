@@ -2,9 +2,12 @@ package at.ac.tuwien.shacl.sparql;
 
 import java.util.Map;
 
+import at.ac.tuwien.shacl.util.SparqlUtil;
+
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
@@ -52,6 +55,20 @@ public class QueryBuilder {
 
 	public void addThisBinding(Resource thiz) {
 		bindings.add("this", thiz);
+	}
+	
+	public void addShapesGraphBinding(RDFNode graph) {
+		bindings.add("shapesGraph", graph);
+	}
+	
+	public void addCurrentShapeBinding(Resource shape) {
+		bindings.add("currentShape", shape);
+	}
+	
+	public void addPreBinding(Resource thiz, Resource shapesGraph, Resource currentShape) {
+		this.addThisBinding(thiz);
+		this.addShapesGraphBinding(shapesGraph);
+		this.addCurrentShapeBinding(currentShape);
 	}
 	
 	//TODO

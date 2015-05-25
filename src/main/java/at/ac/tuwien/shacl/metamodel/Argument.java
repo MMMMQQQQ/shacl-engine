@@ -1,12 +1,13 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.metamodel;
 
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 public interface Argument extends SHACLResource {
-	public Resource getPredicate();
+	public Property getPredicate();
 
-	public void setPredicate(Resource predicate);
+	public void setPredicate(Property predicate);
 
 	public boolean isOptional();
 

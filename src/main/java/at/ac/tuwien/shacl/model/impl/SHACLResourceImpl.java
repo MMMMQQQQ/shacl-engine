@@ -1,14 +1,11 @@
 package at.ac.tuwien.shacl.model.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-
-import at.ac.tuwien.shacl.vocabulary.SHACL;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.Set;
 
 public class SHACLResourceImpl {
 	//only one value (label) per language (key)
@@ -66,5 +63,40 @@ public class SHACLResourceImpl {
 	
 	public void setAbstract(boolean isAbstract) {
 		this.isAbstract = isAbstract;
+	}
+	
+
+	private String executableBody;
+	
+	private Set<ArgumentImpl> arguments;
+	
+	public String getExecutableBody() {
+		return executableBody;
+	}
+
+	public void setExecutableBody(String executableBody) {
+		this.executableBody = executableBody;
+	}
+	
+	public Set<ArgumentImpl> getArguments() {
+		return arguments;
+	}
+
+	public void setArguments(Set<ArgumentImpl> arguments) {
+		this.arguments = arguments;
+	}
+	
+	public void addArgument(ArgumentImpl argument) {
+		if(this.arguments == null) {
+			arguments = new HashSet<ArgumentImpl>();
+		}
+		arguments.add(argument);
+	}
+	
+	public void addArguments(Set<ArgumentImpl> arguments) {
+		if(this.arguments == null) {
+			this.arguments = new HashSet<ArgumentImpl>();
+		}
+		this.arguments.addAll(arguments);
 	}
 }

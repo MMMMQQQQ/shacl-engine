@@ -1,7 +1,8 @@
 package at.ac.tuwien.shacl.model.impl;
 
-import at.ac.tuwien.shacl.model.Argument;
+import at.ac.tuwien.shacl.metamodel.Argument;
 
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
@@ -24,7 +25,7 @@ public class ArgumentImpl extends SHACLResourceImpl implements Argument {
 	//The local names of the values of sh:predicate must match the conditions:
 	//	- local name must be a valid SPARQL VARNAME
 	//	- no other declared sh:Argument for the same template that has a sh:predicate with the same local name
-	private Resource predicate;
+	private Property predicate;
 
 	//sh:Argument with property sh:optional of true indicates that the argument is not mandatory
 	private boolean optional;
@@ -47,11 +48,11 @@ public class ArgumentImpl extends SHACLResourceImpl implements Argument {
 	
 	private Resource nodeKind;
 
-	public Resource getPredicate() {
+	public Property getPredicate() {
 		return predicate;
 	}
 
-	public void setPredicate(Resource predicate) {
+	public void setPredicate(Property predicate) {
 		this.predicate = predicate;
 	}
 

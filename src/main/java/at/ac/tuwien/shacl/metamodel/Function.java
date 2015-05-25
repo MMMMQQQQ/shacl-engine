@@ -1,8 +1,8 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.metamodel;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public interface Function extends Macro {
+public interface Function extends SHACLResource {
 	public Resource getReturnType();
 	
 	public void setReturnType(Resource returnType);

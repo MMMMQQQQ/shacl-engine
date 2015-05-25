@@ -13,7 +13,7 @@ public class TestTemplateRegistry {
 	public void testPropertyConstraintTemplates() {
 		SHACLMetaModelRegistry registry = SHACLMetaModelRegistry.getRegistry();
 
-		assertTrue(registry.getConstraintsURIs().size()>0);
+		assertTrue(registry.getPropertyConstraintsURIs().size()>0);
 		assertTrue(registry.getInversePropertyConstraintsURIs().size()>0);
 	}
 }

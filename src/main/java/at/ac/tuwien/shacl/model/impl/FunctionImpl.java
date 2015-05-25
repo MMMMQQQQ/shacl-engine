@@ -1,10 +1,10 @@
 package at.ac.tuwien.shacl.model.impl;
 
-import at.ac.tuwien.shacl.model.Function;
+import at.ac.tuwien.shacl.metamodel.Function;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public class FunctionImpl extends MacroImpl implements Function {
+public class FunctionImpl extends SHACLResourceImpl implements Function {
 	private Resource returnType;
 	
 	private boolean cachable;

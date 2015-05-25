@@ -4,6 +4,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 public class ModelRegistry {
 	private static Model model;
+	private static SHACLMetaModelRegistry registry;
 	
 	public static void setCurrentModel(Model model) {
 		ModelRegistry.model = model;

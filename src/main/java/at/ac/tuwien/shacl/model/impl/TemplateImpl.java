@@ -1,7 +1,5 @@
 package at.ac.tuwien.shacl.model.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *  - Used to encapsulate and parameterize executable bodies based on arguments
@@ -13,7 +11,7 @@ import java.util.List;
  * @author xlin
  *
  */
-public class TemplateImpl extends MacroImpl {
+public class TemplateImpl extends SHACLResourceImpl {
 	private String labelTemplate;
 
 	public String getLabelTemplate() {

@@ -1,6 +1,6 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.metamodel;
 
-public interface Template extends Macro {
+public interface Template extends SHACLResource {
 	public String getLabelTemplate();
 
 	public void setLabelTemplate(String labelTemplate);

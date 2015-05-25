@@ -60,7 +60,7 @@ public class GraphTraverser {
 	public static List<Statement> listDirectSuperclassesOfNodeAsObject(Resource node, Model model) {
 		return model.listStatements(node, RDFS.subClassOf, (RDFNode) null).toList();
 	}
-	
+
 	/**
 	 * Get all statements where the object node is of rdf:type
 	 * 
@@ -89,6 +89,7 @@ public class GraphTraverser {
 		
 		return removeDuplicates(statements);
 	}
+	
 	
 	private static List<Statement> removeDuplicates(List<Statement> statements) {
 		Set<String> known = new HashSet<String>();

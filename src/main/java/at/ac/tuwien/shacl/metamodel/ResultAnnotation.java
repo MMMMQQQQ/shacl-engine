@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.metamodel;
 
 import java.util.List;
 

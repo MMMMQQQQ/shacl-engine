@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import at.ac.tuwien.shacl.model.ConstraintTemplate;
+import at.ac.tuwien.shacl.metamodel.ConstraintTemplate;
+import at.ac.tuwien.shacl.util.Config;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -18,6 +19,11 @@ public class ConstraintTemplateImpl extends TemplateImpl implements ConstraintTe
 	private Property predicate;
 	
 	private List<ResultAnnotation> resultAnnotations;
+	
+	public ConstraintTemplateImpl() {
+		this.messages = new HashMap<String, String>();
+		this.resultAnnotations = new ArrayList<ResultAnnotation>();
+	}
 	
 	public void setSeverity(Resource severity) {
 		if(ConstraintViolationType.isConstraintViolationType(severity)) {
@@ -32,10 +38,6 @@ public class ConstraintTemplateImpl extends TemplateImpl implements ConstraintTe
 	}
 	
 	public void addMessage(String lang, String message) {
-		if(this.messages==null) {
-			this.messages = new HashMap<String, String>();
-		}
-		
 		messages.put(lang, message);
 	}
 	
@@ -43,17 +45,21 @@ public class ConstraintTemplateImpl extends TemplateImpl implements ConstraintTe
 		return this.messages;
 	}
 	
+	public String getMessage() {
+		return this.messages.get(Config.DEFAULT_LANG);
+	}
+	
 	public void setMessages(Map<String, String> messages) {
 		this.messages = messages;
 	}
 
-	public Property getPredicate() {
-		return predicate;
-	}
-
-	public void setPredicate(Property predicate) {
-		this.predicate = predicate;
-	}
+//	public Property getPredicate() {
+//		return predicate;
+//	}
+//
+//	public void setPredicate(Property predicate) {
+//		this.predicate = predicate;
+//	}
 
 	public List<ResultAnnotation> getResultAnnotations() {
 		return resultAnnotations;
@@ -64,9 +70,6 @@ public class ConstraintTemplateImpl extends TemplateImpl implements ConstraintTe
 	}
 	
 	public void addResultAnnotation(ResultAnnotation annotation) {
-		if(resultAnnotations==null) {
-			this.resultAnnotations = new ArrayList<ResultAnnotation>();
-		}
 		this.resultAnnotations.add(annotation);
 	}
 }

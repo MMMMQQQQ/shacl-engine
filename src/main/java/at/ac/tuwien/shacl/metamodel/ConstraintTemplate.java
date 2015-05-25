@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl.model;
+package at.ac.tuwien.shacl.metamodel;
 
 import java.util.List;
 import java.util.Map;
@@ -17,11 +17,13 @@ public interface ConstraintTemplate extends Template {
 	
 	public Map<String, String> getMessages();
 	
+	public String getMessage();
+	
 	public void setMessages(Map<String, String> messages);
 
-	public Property getPredicate();
+	//public Property getPredicate();
 
-	public void setPredicate(Property predicate);
+	//public void setPredicate(Property predicate);
 
 	public List<ResultAnnotation> getResultAnnotations();
 	

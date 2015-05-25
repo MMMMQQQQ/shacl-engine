@@ -3,7 +3,8 @@ package at.ac.tuwien.shacl.model.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.ac.tuwien.shacl.model.ConstraintViolation;
+import at.ac.tuwien.shacl.metamodel.ConstraintViolation;
+import at.ac.tuwien.shacl.util.Config;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -47,7 +48,9 @@ public class ConstraintViolationImpl extends SHACLResourceImpl implements Constr
 	}
 
 	public void setType(Resource type) {
-		if(ConstraintViolationType.isConstraintViolationType(type)) {
+		if(type == null) {
+			this.type = Config.DEFAULT_SEVERITY;
+		} else if(ConstraintViolationType.isConstraintViolationType(type)) {
 			this.type = type;
 		}
 	}
@@ -101,6 +104,11 @@ public class ConstraintViolationImpl extends SHACLResourceImpl implements Constr
 		if(this.getPredicate() != null) error.addProperty(SHACL.predicate, this.getPredicate());
 		if(this.getSubject() != null) error.addProperty(SHACL.subject, this.getSubject());
 		if(this.getRoot() != null) error.addProperty(SHACL.root, this.getRoot());
+		for(Map.Entry<String, String> message : messages.entrySet()) {
+			if(message.getValue() != null) {
+				error.addProperty(SHACL.message, message.getValue());
+			}
+		}
 		
 		return errorModel;
 	}
@@ -119,6 +127,10 @@ public class ConstraintViolationImpl extends SHACLResourceImpl implements Constr
 	
 	public void setMessages(Map<String, String> messages) {
 		this.messages = messages;
+	}
+	
+	public void addMessage(String message) {
+		this.addMessage(Config.DEFAULT_LANG, message);
 	}
 
 	public Object getDetail() {

@@ -8,10 +8,10 @@
 ex:AllowedValuesExampleShape
 	a sh:Shape ;
 	sh:property [
-		sh:predicate ex:someProperty ;
+		sh:predicate ex:someProperty1 ;
 		sh:allowedValues ( ex:Value1 ex:Value2 ex:Value3 ) ;
 	] .
 
 ex:AllowedValuesExampleValidResource
 	sh:nodeShape ex:AllowedValuesExampleShape;
-	ex:property ex:Value2 .
+	ex:someProperty1 ex:Value1.

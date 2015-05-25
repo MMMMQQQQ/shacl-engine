@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import at.ac.tuwien.shacl.registry.ConstraintExtractor;
 import at.ac.tuwien.shacl.test.util.HelperClass;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
@@ -37,23 +36,23 @@ public class TestGraphTraverser {
 			assertTrue(shaclR.contains(s.getSubject()));
 		}
 	}
-	
-	@Test
-	public void testSuperclassTraversing() {
-		Model model = SHACL.getModel();
-		List<Statement> result = GraphTraverser.listDirectSuperclassesOfNodeAsObject(SHACL.GlobalNativeConstraint, model);
-		
-		assertEquals(2, result.size());
-		
-		//has two superclasses: sh:GlobalConstraint and sh:NativeConstraint
-		Set<Resource> shaclR = new HashSet<Resource>();
-		shaclR.add(SHACL.GlobalConstraint);
-		shaclR.add(SHACL.NativeConstraint);
-		
-		for(Statement s : result) {
-			assertTrue(shaclR.contains(s.getObject().asResource()));
-		}
-	}
+//	
+//	@Test
+//	public void testSuperclassTraversing() {
+//		Model model = SHACL.getModel();
+//		List<Statement> result = GraphTraverser.listDirectSuperclassesOfNodeAsObject(SHACL.GlobalNativeConstraint, model);
+//		
+//		assertEquals(2, result.size());
+//		
+//		//has two superclasses: sh:GlobalConstraint and sh:NativeConstraint
+//		Set<Resource> shaclR = new HashSet<Resource>();
+//		shaclR.add(SHACL.GlobalConstraint);
+//		shaclR.add(SHACL.NativeConstraint);
+//		
+//		for(Statement s : result) {
+//			assertTrue(shaclR.contains(s.getObject().asResource()));
+//		}
+//	}
 	
 	@Test
 	public void testRdfTypeSubclassing() {
