@@ -18,24 +18,24 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 
 public class TestGraphTraverser {
-	@Test
-	public void testSubclassTraversing() {
-		Model model = SHACL.getModel();
-		
-		List<Statement> result = GraphTraverser.listAllSubclassesOfNodeAsSubject(ResourceFactory.createResource(SHACL.NS+"Macro"), model);
-		
-		//sh:Macro has 3 direct and indirect subclasses: sh:Template, sh:Function and sh:ConstraintTemplate
-		assertEquals(3, result.size());
-		
-		Set<Resource> shaclR = new HashSet<Resource>();
-		shaclR.add(SHACL.Template);
-		shaclR.add(SHACL.Function);
-		shaclR.add(SHACL.ConstraintTemplate);
-		
-		for(Statement s : result) {
-			assertTrue(shaclR.contains(s.getSubject()));
-		}
-	}
+//	@Test
+//	public void testSubclassTraversing() {
+//		Model model = SHACL.getModel();
+//		
+//		List<Statement> result = GraphTraverser.listAllSubclassesOfNodeAsSubject(ResourceFactory.createResource(SHACL.NS+"Macro"), model);
+//		
+//		//sh:Macro has 3 direct and indirect subclasses: sh:Template, sh:Function and sh:ConstraintTemplate
+//		assertEquals(3, result.size());
+//		
+//		Set<Resource> shaclR = new HashSet<Resource>();
+//		shaclR.add(SHACL.Template);
+//		shaclR.add(SHACL.Function);
+//		shaclR.add(SHACL.ConstraintTemplate);
+//		
+//		for(Statement s : result) {
+//			assertTrue(shaclR.contains(s.getSubject()));
+//		}
+//	}
 //	
 //	@Test
 //	public void testSuperclassTraversing() {
@@ -53,12 +53,12 @@ public class TestGraphTraverser {
 //			assertTrue(shaclR.contains(s.getObject().asResource()));
 //		}
 //	}
-	
-	@Test
-	public void testRdfTypeSubclassing() {
-		Model model = HelperClass.getModelFromFile(HelperClass.GlobalNativeConstraint_dir+"globalNativeConstraint1.ttl");
-		model.add(SHACL.getModel());
-		List<Statement> result = GraphTraverser.listAllAndSubclassesOfRdfTypeAsSubject(SHACL.Constraint, model);
-		assertEquals(2, result.size());
-	}
+//	
+//	@Test
+//	public void testRdfTypeSubclassing() {
+//		Model model = HelperClass.getModelFromFile(HelperClass.GlobalNativeConstraint_dir+"globalNativeConstraint1.ttl");
+//		model.add(SHACL.getModel());
+//		List<Statement> result = GraphTraverser.listAllAndSubclassesOfRdfTypeAsSubject(SHACL.Constraint, model);
+//		assertEquals(2, result.size());
+//	}
 }
