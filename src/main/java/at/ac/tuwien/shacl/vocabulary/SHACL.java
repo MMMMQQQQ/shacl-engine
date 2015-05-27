@@ -1,5 +1,12 @@
 package at.ac.tuwien.shacl.vocabulary;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import at.ac.tuwien.shacl.util.Config;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -217,7 +224,9 @@ public class SHACL {
     
     public static Model getModel() {
     	Model model = ModelFactory.createDefaultModel();
-		model.read(Config.SHACL_METAMODEL_FILE_LOCATION);
+    	InputStream in = SHACL.class.getResourceAsStream("/"+Config.SHACL_METAMODEL_FILE_LOCATION);
+    	model.read(in, "", "TURTLE");
+
 		return model;
     }
 }
