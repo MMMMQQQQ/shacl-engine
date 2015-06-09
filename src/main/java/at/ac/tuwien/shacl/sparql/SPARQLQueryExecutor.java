@@ -46,15 +46,23 @@ public class SPARQLQueryExecutor {
 //	
 	
 	public static boolean execAsk(final String queryString, final Model model, QuerySolutionMap bindings) {
+		System.out.println("ask method");
+		System.out.println("query string: "+queryString);
+		System.out.println("bindings"+bindings);
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		//System.out.println(exec.getQuery());
+		System.out.println("exec is: "+exec);
+		System.out.println("in ask: "+exec.getQuery());
 		boolean result = exec.execAsk();
 		return result;
 	}
 	
 	public static RDFNode execSelect(final String queryString, final Model model, QuerySolutionMap bindings) {
+		System.out.println("select method");
+		System.out.println("query string: "+queryString);
+		System.out.println("bindings"+bindings);
+		System.out.println("------------");
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		//System.out.println(exec.getQuery());
+		System.out.println(exec.getQuery());
 		ResultSet result = exec.execSelect();
 
 		RDFNode r = result.next().get("result");

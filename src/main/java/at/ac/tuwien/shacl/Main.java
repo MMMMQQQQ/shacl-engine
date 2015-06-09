@@ -14,7 +14,7 @@ public class Main {
 		Model model = ModelFactory.createDefaultModel();
 		//model.read("queryOrConstraint.ttl", "TURTLE");
 		//model.read("queryOrConstraint.ttl", "TURTLE");
-		model.read("queryNativeConstraint.ttl", "TURTLE");
+		model.read("query4.ttl", "TURTLE");
 		model.write(System.out, "TURTLE");
 		
 		SHACLValidator validator = new SHACLValidator(model);

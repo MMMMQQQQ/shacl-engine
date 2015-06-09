@@ -8,7 +8,6 @@ import java.util.Set;
 import at.ac.tuwien.shacl.metamodel.Argument;
 import at.ac.tuwien.shacl.metamodel.ConstraintTemplate;
 import at.ac.tuwien.shacl.metamodel.Function;
-import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
 import at.ac.tuwien.shacl.model.impl.ConstraintTemplateImpl;
 import at.ac.tuwien.shacl.model.impl.FunctionImpl;
 import at.ac.tuwien.shacl.sparql.AskFunctionFactory;
@@ -21,12 +20,10 @@ import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * Register every known constraint and (built-in) function of the SHACL definition model 

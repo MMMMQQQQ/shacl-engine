@@ -3,6 +3,7 @@ package at.ac.tuwien.shacl.sparql;
 import at.ac.tuwien.shacl.registry.ModelRegistry;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 
+import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
@@ -10,45 +11,15 @@ import com.hp.hpl.jena.sparql.function.Function;
 import com.hp.hpl.jena.sparql.function.FunctionBase2;
 import com.hp.hpl.jena.sparql.function.FunctionFactory;
 
-public class AskFunctionFactory extends FunctionBase2 implements FunctionFactory {
-	private String uri;
-	
-	private Model model;
-	
+public class AskFunctionFactory extends SHACLFunctionFactory {
 	@Override
-	public Function create(String uri) {
-		this.uri = uri;
-		return this;
-	}
-	
-	public Function create(String uri, Model model) {
-		this.model = model;
-		this.create(uri);
-		return this;
-	}
+	protected NodeValue executeQuery(String query, Model model,
+			QuerySolutionMap qsm) {
+		System.out.println("qsm: "+qsm);
+	boolean result = SPARQLQueryExecutor.execAsk(query, ModelRegistry.getCurrentModel(), qsm);
 
-	@Override
-	public NodeValue exec(NodeValue arg0, NodeValue arg1) {
-		boolean result = true;
-		
-		if(SHACLMetaModelRegistry.getRegistry().getFunction(uri)!= null) {
-			QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getRegistry().getFunction(uri).getExecutableBody(),
-					ModelRegistry.getCurrentModel().getNsPrefixMap());
-
-			//TODO not working
-			qb.addBinding("arg1", ResourceFactory.createResource(arg0.toString()));
-			qb.addBinding("arg2", ResourceFactory.createResource(arg1.toString()));
-			
-			//TODO try to find a way to make things work with bindings instead
-			String queryString = qb.getQueryString();
-			queryString = queryString.replaceAll("\\?arg1", arg0.toString());
-			queryString = queryString.replaceAll("\\?arg2", arg1.toString());
-
-			result = SPARQLQueryExecutor.execAsk(queryString, ModelRegistry.getCurrentModel(), qb.getBindings());
-		}
-		
-		//System.out.println("result: "+result);
-		return NodeValue.makeBoolean(result);
+	System.out.println("ask result: "+result);
+	return NodeValue.makeBoolean(result);
 	}
 }
 

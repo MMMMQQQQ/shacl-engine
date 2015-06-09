@@ -57,6 +57,7 @@ public class SHACLValidator {
 	public Model validateGraph() throws SHACLParsingException {
 		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes();
 		Model errorModel = ModelFactory.createDefaultModel();
+
 		System.out.println("number of shape data: "+shapes.size());
 		
 		//TODO implement graph-level constraints
@@ -64,8 +65,13 @@ public class SHACLValidator {
 			errorModel.add(this.validateNodeAgainstShape(shape.getInstance(), shape.getShape()));
 		}
 
-		errorModel.write(System.out, "Turtle");
-
+		System.out.println("*******constraint violations*******");
+		if(errorModel.isEmpty()) {
+			System.out.println("{}");
+		} else {
+			errorModel.write(System.out, "Turtle");
+		}
+		
 		return errorModel;
 	}
 	
@@ -84,7 +90,6 @@ public class SHACLValidator {
 						p.getResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.PropertyConstraint)) {
 					System.out.println("focus node: "+focusNode + " object: "+p.getObject().asResource());
 					errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), false));
-					System.out.println("res: "+p.getObject().asResource());
 				}
 			} else {
 				throw new SHACLParsingException("sh:property must contain a constraint definition, but was " + p.getObject());
