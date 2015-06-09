@@ -16,6 +16,7 @@ import at.ac.tuwien.shacl.registry.ModelRegistry;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
+import at.ac.tuwien.shacl.util.SHACLParsingException;
 import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
 import at.ac.tuwien.shacl.util.ValueInjector;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
@@ -53,7 +54,7 @@ public class SHACLValidator {
 	 * 
 	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
-	public Model validateGraph() {
+	public Model validateGraph() throws SHACLParsingException {
 		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes();
 		Model errorModel = ModelFactory.createDefaultModel();
 		System.out.println("number of shape data: "+shapes.size());
@@ -75,39 +76,50 @@ public class SHACLValidator {
 		?shape	sh:Shape	The shape that has the constraints.
 		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
-	public Model validateNodeAgainstShape(Resource focusNode, Resource shape) {
-		
+	public Model validateNodeAgainstShape(Resource focusNode, Resource shape) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
-			System.out.println("validating");
-			if(p.getObject().asResource().getProperty(RDF.type) == null || 
-					p.getObject().asResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.PropertyConstraint)) {
-				System.out.println("focus node: "+focusNode + " object: "+p.getObject().asResource());
-				errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), false));
-				System.out.println("res: "+p.getObject().asResource());
+			if(p.getObject().isResource()) {
+				if(p.getObject().asResource().getProperty(RDF.type) == null || 
+						p.getResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.PropertyConstraint)) {
+					System.out.println("focus node: "+focusNode + " object: "+p.getObject().asResource());
+					errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), false));
+					System.out.println("res: "+p.getObject().asResource());
+				}
 			} else {
-				//TODO invalid constraint -> create fatal error and end validation
+				throw new SHACLParsingException("sh:property must contain a constraint definition, but was " + p.getObject());
 			}
+				
 		}
 		for(Statement s : shape.listProperties(SHACL.inverseProperty).toList()) {
-			if(s.getObject().asResource().getProperty(RDF.type) == null || 
-					s.getObject().asResource().getProperty(RDF.type).getObject().asResource().getURI()
-					.equals(SHACL.PropertyConstraint.getURI())) {
-				errorModel.add(this.validatePropertyConstraint(focusNode, s.getObject().asResource(), true));
+			if(s.getObject().isResource()) {
+				if(s.getObject().asResource().getProperty(RDF.type) == null || 
+						s.getObject().asResource().getProperty(RDF.type).getObject().asResource().getURI()
+						.equals(SHACL.PropertyConstraint.getURI())) {
+					errorModel.add(this.validatePropertyConstraint(focusNode, s.getObject().asResource(), true));
+				}
 			} else {
-				//TODO invalid constraint -> create fatal error and end validation
+				throw new SHACLParsingException("sh:inverseProperty must contain a constraint definition, but was " + s.getObject());
 			}
+			
+			
 		}
 		for(Statement c : shape.listProperties(SHACL.constraint).toList()) {
-			System.out.println("constraint triple: "+c);
-			System.out.println(c.getObject().asResource().getProperty(RDF.type));
+			if(c.getObject().isResource()) {
+				//check, if it's a native constraint
+				//native constraint are either unmarked or have rdf:type sh:NativeConstraint
+				if(c.getObject().asResource().getProperty(RDF.type) == null || 
+						c.getObject().asResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.NativeConstraint)) {
+					errorModel.add(this.validateNativeConstraint(focusNode, c.getObject().asResource()));
+				} else {
+					//TODO implement template constraints here
+					//throw new SHACLParsingException("Unrecognized constraint type " + c.getObject().asResource().getProperty(RDF.type).getObject());
+				}
+			} else {
+				throw new SHACLParsingException("sh:constraint must contain a constraint definition, but was " + c.getObject());
+			}
 			
-			//check, if it's a native constraint
-			//native constraint are either unmarked or have rdf:type sh:NativeConstraint
-			if(c.getObject().asResource().getProperty(RDF.type) == null || 
-					c.getObject().asResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.NativeConstraint)) {
-				errorModel.add(this.validateNativeConstraint(focusNode, c.getObject().asResource()));
-			} //else if(c.getObject().asResource())
+			
 			
 		}
 		
@@ -195,8 +207,9 @@ public class SHACLValidator {
 	 * @param focusNode
 	 * @param constraint
 	 * @return
+	 * @throws SHACLParsingException 
 	 */
-	private Model validateNativeConstraint(Resource focusNode, Resource constraint) {
+	private Model validateNativeConstraint(Resource focusNode, Resource constraint) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
 		NativeConstraint nativeConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new NativeConstraint());
@@ -207,12 +220,19 @@ public class SHACLValidator {
 		qb.addThisBinding(focusNode);
 		//qb.addShapesGraphBinding(model.);
 		System.out.println("queryString: "+nativeConstraint.getExecutableBody());
-		if(!SPARQLQueryExecutor.isQueryValid(qb.getQueryString(), model, qb.getBindings())) {
+		Map<String, Object> result = SPARQLQueryExecutor.getMapResultsForQuery(qb.getQueryString(), model, qb.getBindings());
+		
+		if(result.size() > 0) {
 			ConstraintViolationImpl violation = new ConstraintViolationImpl(
 					nativeConstraint.getSeverity(), focusNode, focusNode, 
 					nativeConstraint.getPredicate(), 
 					null);
-			violation.addMessage(nativeConstraint.getMessage());
+			
+			Map<String, String> messages = (nativeConstraint.getMessages());
+			messages = this.injectToMessage(messages, result);
+			
+			violation.setMessages(messages);
+			
 			errorModel.add(violation.getModel());
 		}
 		
@@ -226,8 +246,9 @@ public class SHACLValidator {
 	 * @param focusNode
 	 * @param constraint
 	 * @return
+	 * @throws SHACLParsingException 
 	 */
-	private Model validatePropertyConstraint(Resource focusNode, Resource constraint, boolean isInverse) {
+	private Model validatePropertyConstraint(Resource focusNode, Resource constraint, boolean isInverse) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
 		PropertyConstraint propertyConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new PropertyConstraint(), false);
@@ -303,10 +324,11 @@ public class SHACLValidator {
 							propertyConstraint.getPredicate(), 
 							null);
 					
-					String message = ValueInjector.inject(((ConstraintTemplate)cs.getTemplate()).getMessage(), result);
-					violation.addMessage(message);
+					Map<String, String> messages = ((ConstraintTemplate)cs.getTemplate()).getMessages();
+					messages = this.injectToMessage(messages, result);
 					
-					
+					violation.setMessages(messages);
+
 					errorModel.add(violation.getModel());
 
 				}
@@ -315,8 +337,25 @@ public class SHACLValidator {
 		
 		return errorModel;
 	}
+	
+	/**
+	 * Inject variable values to message
+	 * 
+	 * @param messages
+	 * @param variables
+	 * @return
+	 */
+	private Map<String, String> injectToMessage(Map<String, String> messages,
+			Map<String, Object> variables) {
+		
+		for(Map.Entry<String, String> message : messages.entrySet()) {
+			message.setValue(ValueInjector.inject(message.getValue(), variables));
+		}
+		
+		return messages;
+	}
 
-	/* This operation validates a single node against all shapes associated with it, based on in-graph mappings.
+	/** This operation validates a single node against all shapes associated with it, based on in-graph mappings.
 
 		Argument	Type	Description
 		?focusNode	rdfs:Resource	The focus node to validate

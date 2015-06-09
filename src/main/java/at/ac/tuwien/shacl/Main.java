@@ -3,6 +3,7 @@ package at.ac.tuwien.shacl;
 import java.io.FileNotFoundException;
 
 import at.ac.tuwien.shacl.util.Config;
+import at.ac.tuwien.shacl.util.SHACLParsingException;
 import at.ac.tuwien.shacl.validation.SHACLValidator;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -13,9 +14,14 @@ public class Main {
 		Model model = ModelFactory.createDefaultModel();
 		//model.read("queryOrConstraint.ttl", "TURTLE");
 		//model.read("queryOrConstraint.ttl", "TURTLE");
-		model.read("queryWine.ttl", "TURTLE");
+		model.read("queryNativeConstraint.ttl", "TURTLE");
+		model.write(System.out, "TURTLE");
 		
 		SHACLValidator validator = new SHACLValidator(model);
-		validator.validateGraph();
+		try {
+			validator.validateGraph();
+		} catch (SHACLParsingException e) {
+			e.printStackTrace();
+		}
 	}
 }

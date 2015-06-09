@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 import at.ac.tuwien.shacl.test.util.HelperClass;
+import at.ac.tuwien.shacl.util.SHACLParsingException;
 import at.ac.tuwien.shacl.validation.SHACLValidator;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -82,13 +83,20 @@ public class TestBasicPropertyConstraints {
 		model = ModelFactory.createDefaultModel();
 		model.read(HelperClass.Base_dir+HelperClass.Basic_propConst_dir+filename);
 		SHACLValidator validator = new SHACLValidator(model);
-		Model errorModel = validator.validateGraph();
-
-		if(validModel) {
-			assertFalse(!errorModel.isEmpty());
-		} else {
-			assertFalse(errorModel.isEmpty());
+		Model errorModel;
+		try {
+			errorModel = validator.validateGraph();
+			if(validModel) {
+				assertFalse(!errorModel.isEmpty());
+			} else {
+				assertFalse(errorModel.isEmpty());
+			}
+		} catch (SHACLParsingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		
 	}
 	
 	private void testModelValid(String filename) {

@@ -41,7 +41,7 @@ public class ValueInjector {
 				} else {
 					System.out.println("unknown variable" + variable);
 					//TODO create constraint violation type sh:Warning
-					//that variable doesnt exist
+					//that variable doesnt exist OR log error
 				}
 			}
 		}

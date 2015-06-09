@@ -19,7 +19,6 @@ public class QueryBuilder {
 		this.queryString = queryString;
 		this.bindings = new QuerySolutionMap();
 		this.addPrefixes(prefixes);
-		//System.out.println(this.queryString);
 	}
 	
 	public void addPrefixes(Map<String, String> prefixes) {
@@ -41,10 +40,6 @@ public class QueryBuilder {
 	}
 	
 	public void addBinding(String name, RDFNode node) {
-		//System.out.println(node.);
-//		if(name.equals("allowedValues")) {
-//			System.out.println("before binding: "+((Resource)node).listProperties().toList());
-//		}
 		this.bindings.add(name, node);
 	}
 	

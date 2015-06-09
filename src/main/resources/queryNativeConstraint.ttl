@@ -12,7 +12,7 @@ ex:ExampleLabelShape
 
 ex:ExampleLabelConstraint
 	a sh:NativeConstraint ;
-	sh:message "Deutsch is verboten" ;
+	sh:message "Deutsch is verboten"@de ;
 	sh:predicate rdfs:label ;
 	sh:severity sh:Warning ;
 	sh:sparql """

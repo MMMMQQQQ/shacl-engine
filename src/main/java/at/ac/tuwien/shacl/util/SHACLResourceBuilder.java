@@ -19,12 +19,16 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SHACLResourceBuilder {
-	public static ConstraintTemplate build(List<Statement> statements, ConstraintTemplate template) {
+	public static ConstraintTemplate build(List<Statement> statements, ConstraintTemplate template) throws SHACLParsingException {
 		for(Statement property : statements) {
 			if(property.getPredicate().equals(SHACL.sparql)) {
 				template.setExecutableBody(property.getString());
 			} else if(property.getPredicate().equals(SHACL.message)) {
-				template.addMessage(Config.DEFAULT_LANG, property.getString());
+				if(property.getLanguage().length() > 0) {
+					template.addMessage(property.getLanguage(), property.getString());
+				} else {
+					template.addMessage(Config.DEFAULT_LANG, property.getString());
+				}
 			} else if(property.getPredicate().equals(SHACL.argument)) {
 				ArgumentImpl argument = build(property.getObject().asResource().listProperties().toList(), new ArgumentImpl());
 				template.addArgument(argument);
@@ -33,11 +37,17 @@ public class SHACLResourceBuilder {
 			} else if(property.getPredicate().equals(SHACL.abstract_)) {
 				template.setAbstract(property.getBoolean());
 			} else if(property.getPredicate().equals(RDFS.comment)) {
-				//TODO replace hard coded language flag
-				template.addComment("default", property.getString());
+				if(property.getLanguage().length() > 0) {
+					template.addComment(property.getLanguage(), property.getString());
+				} else {
+					template.addComment(Config.DEFAULT_LANG, property.getString());
+				}
 			} else if(property.getPredicate().equals(RDFS.label)) {
-				//TODO replace hard coded language flag
-				template.addLabel("default", property.getString());
+				if(property.getLanguage().length() > 0) {
+					template.addLabel(property.getLanguage(), property.getString());
+				} else {
+					template.addLabel(Config.DEFAULT_LANG, property.getString());
+				}
 			} else if(property.getPredicate().equals(RDFS.subClassOf)) {
 				template.addArguments(buildArgumentsOfSuperclass(property.getObject().asResource()));
 				//TODO might need some checking whether datatype constraint or not
@@ -45,8 +55,14 @@ public class SHACLResourceBuilder {
 				//do nothing
 			} else if(property.getPredicate().equals(SHACL.labelTemplate)){
 				template.setLabelTemplate(property.getString());
+			} else if(property.getPredicate().equals(SHACL.property)) {
+				//TODO implement sh:property constraints inside templates
+			} else if(property.getPredicate().equals(SHACL.inverseProperty)) {
+				//TODO implement sh:inverseProperty constraint inside templates
+			} else if(property.getPredicate().equals(SHACL.constraint)) {
+				//TODO implement sh:constraint constraints inside templates
 			} else {
-				System.out.println("UNDEFINED TEMPLATE PROPERTY: "+property.getPredicate()+" VALUE: "+property.getObject()+" SUBJECT: "+property.getSubject());
+				throw new SHACLParsingException("Undefined template property " + property.getPredicate());
 			}
 		}	
 		return template;
@@ -68,9 +84,17 @@ public class SHACLResourceBuilder {
 	public static ArgumentImpl build(List<Statement> argumentProperties, ArgumentImpl argument) {
 		for(Statement prop : argumentProperties) {
 			if(prop.getPredicate().equals(RDFS.comment)) {
-				argument.addComment("default", prop.getString());
+				if(prop.getLanguage().length() > 0) {
+					argument.addComment(prop.getLanguage(), prop.getString());
+				} else {
+					argument.addComment(Config.DEFAULT_LANG, prop.getString());
+				}
 			} else if(prop.getPredicate().equals(RDFS.label)) {
-				argument.addLabel("default", prop.getString());
+				if(prop.getLanguage().length() > 0) {
+					argument.addLabel(prop.getLanguage(), prop.getString());
+				} else {
+					argument.addLabel(Config.DEFAULT_LANG, prop.getString());
+				}
 			} else if(prop.getPredicate().equals(SHACL.optional)) {
 				argument.setOptional(prop.getBoolean());
 			} else if(prop.getPredicate().equals(SHACL.predicate)) {
@@ -85,6 +109,8 @@ public class SHACLResourceBuilder {
 				argument.setDefaultValue(prop.getObject());
 			} else if(prop.getPredicate().equals(SHACL.nodeKind)){
 				argument.setDefaultValue(prop.getObject());
+			} else if(prop.getPredicate().equals(SHACL.defaultValueType)) {
+				//TODO implement sh:defaultValueType
 			} else {
 				System.out.println("undefined argument "+prop.getPredicate());
 			}
@@ -92,7 +118,7 @@ public class SHACLResourceBuilder {
 		return argument;
 	}
 	
-	public static FunctionImpl build(List<Statement> statements, FunctionImpl function) {
+	public static FunctionImpl build(List<Statement> statements, FunctionImpl function) throws SHACLParsingException {
 		
 		for(Statement property : statements) {
 			//System.out.println(property);
@@ -103,62 +129,77 @@ public class SHACLResourceBuilder {
 				ArgumentImpl argument = build(property.getObject().asResource().listProperties().toList(), new ArgumentImpl());
 				function.addArgument(argument);
 			} else if(property.getPredicate().equals(RDFS.comment)) {
-				//TODO replace hard coded language flag
-				function.addComment("default", property.getString());
+				if(property.getLanguage().length() > 0) {
+					function.addComment(property.getLanguage(), property.getString());
+				} else {
+					function.addComment(Config.DEFAULT_LANG, property.getString());
+				}
 			} else if(property.getPredicate().equals(RDFS.label)) {
-				//TODO replace hard coded language flag
-				function.addLabel("default", property.getString());
+				if(property.getLanguage().length() > 0) {
+					function.addLabel(property.getLanguage(), property.getString());
+				} else {
+					function.addLabel(Config.DEFAULT_LANG, property.getString());
+				}
 			} else if(property.getPredicate().equals(RDFS.subClassOf)) {
 				//TODO might need some checking whether datatype constraint or not
 			} else if(property.getPredicate().equals(RDF.type)) {
 				//do nothing
 			} else if(property.getPredicate().equals(SHACL.returnType)) {
 				function.setReturnType(property.getObject().asResource());
+			} else if(property.getPredicate().equals(SHACL.abstract_)) {
+				//TODO implement sh:abstract
 			} else {
-				//System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+"VALUE: "+property.getObject()+" FROM SUBJECT: "+property.getSubject());
+				throw new SHACLParsingException("Undefined function property " + property.getPredicate());
 			}
 		}	
 		
 		return function;
 	}
 	
-	public static NativeConstraint build(List<Statement> statements, NativeConstraint constraint) {
+	public static NativeConstraint build(List<Statement> statements, NativeConstraint constraint) throws SHACLParsingException {
 		for(Statement property : statements) {			
 			System.out.println("Property: "+property);
 			if(property.getPredicate().equals(SHACL.sparql)) {
-				System.out.println("sparql object: "+property.getObject());
 				constraint.setExecutableBody(property.getString());
+			} else if(property.getPredicate().equals(RDF.type)) {
+				//TODO implement inheriting from others?
 			} else if(property.getPredicate().equals(RDFS.comment)) {
-				//TODO replace hard coded language flag
-				constraint.addComment(property.getString());
+				if(property.getLanguage().length() > 0) {
+					constraint.addComment(property.getLanguage(), property.getString());
+				} else {
+					constraint.addComment(property.getString());
+				}
 			} else if(property.getPredicate().equals(SHACL.sparqlEntailment)) {
 				//TODO implement sparqlEntailment
 			} else if(property.getPredicate().equals(SHACL.severity)) {
 				//TODO implement checking whether it's really a constraintViolation type
 				constraint.setSeverity(property.getObject().asResource());
 			} else if(property.getPredicate().equals(SHACL.message)) {
-				constraint.addMessage(property.getString());
+				if(property.getLanguage().length() > 0) {
+					constraint.addMessage(property.getLanguage(), property.getString());
+				} else {
+					constraint.addMessage(property.getString());
+				}
 			} else if(property.getPredicate().equals(SHACL.predicate)) {
 				
 				constraint.setPredicate(ResourceFactory.createProperty(property.getObject().asResource().getURI()));
 			} else if(property.getPredicate().equals(SHACL.resultAnnotation)) {
 				//TODO add resultAnnotation object
 				//constraint.addResultAnnotation(property.getObject());
-			}
-			
-			else {
-				//System.out.println("UNDEFINED PROPERTY: "+property.getPredicate()+"VALUE: "+property.getObject()+" FROM SUBJECT: "+property.getSubject());
+			} else {
+				throw new SHACLParsingException("Undefined constraint property " + property.getPredicate());
 			}
 		}	
 		
 		return constraint;
 	}
 	
-	public static PropertyConstraint build(List<Statement> statements, PropertyConstraint constraint, boolean isInverse) {
+	public static PropertyConstraint build(List<Statement> statements, PropertyConstraint constraint, boolean isInverse) throws SHACLParsingException {
 		for(Statement property : statements) {			
-			System.out.println("Property: "+property);
 			if(property.getPredicate().equals(SHACL.predicate)) {
 				constraint.setPredicate(ResourceFactory.createProperty(property.getObject().asResource().getURI()));
+			} else if(property.getPredicate().equals(RDF.type)) {
+				//TODO implement inheriting from others?
 			} else if(property.getPredicate().equals(RDFS.label)) {
 				//TODO add case of string containing language tag
 				constraint.addLabel(property.getString());
@@ -169,9 +210,8 @@ public class SHACLResourceBuilder {
 				constraint.addConstraint(property.getPredicate(), property.getObject());
 			} else if(isInverse && SHACLMetaModelRegistry.getRegistry().getInversePropertyConstraintsURIs().contains(property.getPredicate().getURI())) {
 				constraint.addConstraint(property.getPredicate(), property.getObject());
-			}  else {
-				System.out.println("UNDEFINED PROPERTY of PROPERTY CONSTRAINT: "+property.getPredicate()+"VALUE: "+property.getObject()+" FROM SUBJECT: "+property.getSubject());
-				//TODO add constraintViolation for unknown property
+			} else {
+				throw new SHACLParsingException("Undefined constraint property " + property.getPredicate());
 			}
 		}
 		

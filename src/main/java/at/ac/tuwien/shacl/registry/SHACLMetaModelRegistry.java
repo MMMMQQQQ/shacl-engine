@@ -16,6 +16,7 @@ import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.sparql.SelectFunctionFactory;
 import at.ac.tuwien.shacl.util.GraphTraverser;
+import at.ac.tuwien.shacl.util.SHACLParsingException;
 import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
@@ -112,8 +113,14 @@ public class SHACLMetaModelRegistry {
 			////System.out.println("properties: "+properties);
 			////System.out.println("template uri: "+r.getURI());
 			
-			ConstraintTemplate constraintTemplate = (ConstraintTemplateImpl) SHACLResourceBuilder.build(
-					properties, new ConstraintTemplateImpl());
+			ConstraintTemplate constraintTemplate = null;
+			try {
+				constraintTemplate = (ConstraintTemplateImpl) SHACLResourceBuilder.build(
+						properties, new ConstraintTemplateImpl());
+			} catch (SHACLParsingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			//add template, if it's not already contained in template list and 
 			//if it has an executable body
@@ -177,7 +184,12 @@ public class SHACLMetaModelRegistry {
 			////System.out.println("function: "+s.getSubject());
 
 			//populate function object
-			FunctionImpl function = SHACLResourceBuilder.build(properties, new FunctionImpl());
+			FunctionImpl function = null;
+			try {
+				function = SHACLResourceBuilder.build(properties, new FunctionImpl());
+			} catch (SHACLParsingException e) {
+				e.printStackTrace();
+			}
 			
 			//TODO remove constraint eventually
 			if(function.getExecutableBody() != null) {
