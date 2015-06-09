@@ -82,10 +82,10 @@ public class TestBasicPropertyConstraints {
 
 		model = ModelFactory.createDefaultModel();
 		model.read(HelperClass.Base_dir+HelperClass.Basic_propConst_dir+filename);
-		SHACLValidator validator = new SHACLValidator(model);
+		SHACLValidator validator = new SHACLValidator();
 		Model errorModel;
 		try {
-			errorModel = validator.validateGraph();
+			errorModel = validator.validateGraph(model);
 			if(validModel) {
 				assertFalse(!errorModel.isEmpty());
 			} else {

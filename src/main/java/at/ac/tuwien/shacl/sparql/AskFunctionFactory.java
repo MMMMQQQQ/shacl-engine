@@ -16,7 +16,7 @@ public class AskFunctionFactory extends SHACLFunctionFactory {
 	protected NodeValue executeQuery(String query, Model model,
 			QuerySolutionMap qsm) {
 		System.out.println("qsm: "+qsm);
-	boolean result = SPARQLQueryExecutor.execAsk(query, ModelRegistry.getCurrentModel(), qsm);
+	boolean result = SPARQLQueryExecutor.execAsk(query, model, qsm);
 
 	System.out.println("ask result: "+result);
 	return NodeValue.makeBoolean(result);

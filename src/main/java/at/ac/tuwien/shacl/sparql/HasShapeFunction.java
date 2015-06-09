@@ -1,6 +1,25 @@
 package at.ac.tuwien.shacl.sparql;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
+import at.ac.tuwien.shacl.util.SHACLParsingException;
+import at.ac.tuwien.shacl.validation.SHACLValidator;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.Function;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.function.FunctionFactory;
 
 
 /**
@@ -12,15 +31,20 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
  * @author xlin
  *
  */
-public class HasShapeFunction {
-	public static boolean hasShape() {
-		//just a dummy function, remove when real method (see below) is implemented
-		boolean hasShape = false;
-		
-		return hasShape;
+public class HasShapeFunction implements Function, FunctionFactory {
+	//from function factory
+	@Override
+	public Function create(String uri) {
+		return this;
 	}
-	
-	/*
+
+	//from function
+	@Override
+	public void build(String uri, ExprList args) {
+	}
+
+	//from function
+	/**
 	 * The function sh:hasShape returns true if	a given node (?arg1) matches a given shape (?arg2). 
 	   The return type of this function is xsd:boolean.
 
@@ -33,10 +57,40 @@ public class HasShapeFunction {
 		The function must return true if the operation returns no error-level constraint violations, 
 		false if any error-level constraint violations exist.
 	 */
-	public static boolean hasShape(NodeValue arg1, NodeValue arg2, NodeValue arg3) {
-		//TODO implement hasShape
-		boolean hasShape = false;
-				
-		return hasShape;		
+	@Override
+	public NodeValue exec(Binding binding, ExprList args, String uri,
+			FunctionEnv env) {
+        if ( args == null) {
+        	throw new ARQInternalErrorException("Null args list") ;
+        } else if(args.size() != 3) {
+        	throw new ExprEvalException("Missing arguments");
+        }
+        
+        List<NodeValue> evalArgs = new ArrayList<>() ;
+        
+        for ( Expr e : args )
+        {
+            NodeValue x = e.eval( binding, env );
+            evalArgs.add( x );
+        }
+        
+        Model model = ModelFactory.createModelForGraph(env.getActiveGraph());
+        
+        Resource arg1 = model.getResource(evalArgs.get(0).asString());
+        Resource arg2 = model.getResource(evalArgs.get(1).asString());
+        
+        Model errorModel = null;
+		try {
+			errorModel = SHACLValidator.getValidator().validateNodeAgainstShape(arg1, arg2, model);
+		} catch (SHACLParsingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+        if(errorModel.isEmpty()) {
+        	return NodeValue.makeBoolean(true);
+        } else {
+        	return NodeValue.makeBoolean(false);
+        }
 	}
 }

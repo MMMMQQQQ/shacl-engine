@@ -17,9 +17,9 @@ public class Main {
 		model.read("query4.ttl", "TURTLE");
 		model.write(System.out, "TURTLE");
 		
-		SHACLValidator validator = new SHACLValidator(model);
+		SHACLValidator validator = new SHACLValidator();
 		try {
-			validator.validateGraph();
+			validator.validateGraph(model);
 		} catch (SHACLParsingException e) {
 			e.printStackTrace();
 		}

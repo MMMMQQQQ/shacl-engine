@@ -37,14 +37,11 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 public class SHACLValidator {
 	private SHACLMetaModelRegistry registry;
+
+	private static SHACLValidator validator;
 	
-	//TODO change
-	private Model model;
-	
-	public SHACLValidator(Model model) {
+	public SHACLValidator() {
 		this.registry = SHACLMetaModelRegistry.getRegistry();
-		this.model = model;
-		ModelRegistry.setCurrentModel(model);
 		System.out.println("--------------initializing done");
 	}
 	
@@ -54,15 +51,15 @@ public class SHACLValidator {
 	 * 
 	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
-	public Model validateGraph() throws SHACLParsingException {
-		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes();
+	public Model validateGraph(Model model) throws SHACLParsingException {
+		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes(model);
 		Model errorModel = ModelFactory.createDefaultModel();
 
 		System.out.println("number of shape data: "+shapes.size());
 		
 		//TODO implement graph-level constraints
 		for(ShapeInstanceMap shape : shapes) {
-			errorModel.add(this.validateNodeAgainstShape(shape.getInstance(), shape.getShape()));
+			errorModel.add(this.validateNodeAgainstShape(shape.getInstance(), shape.getShape(), model));
 		}
 
 		System.out.println("*******constraint violations*******");
@@ -82,14 +79,14 @@ public class SHACLValidator {
 		?shape	sh:Shape	The shape that has the constraints.
 		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
-	public Model validateNodeAgainstShape(Resource focusNode, Resource shape) throws SHACLParsingException {
+	public Model validateNodeAgainstShape(Resource focusNode, Resource shape, Model model) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
 			if(p.getObject().isResource()) {
 				if(p.getObject().asResource().getProperty(RDF.type) == null || 
 						p.getResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.PropertyConstraint)) {
 					System.out.println("focus node: "+focusNode + " object: "+p.getObject().asResource());
-					errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), false));
+					errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), model, false));
 				}
 			} else {
 				throw new SHACLParsingException("sh:property must contain a constraint definition, but was " + p.getObject());
@@ -101,7 +98,7 @@ public class SHACLValidator {
 				if(s.getObject().asResource().getProperty(RDF.type) == null || 
 						s.getObject().asResource().getProperty(RDF.type).getObject().asResource().getURI()
 						.equals(SHACL.PropertyConstraint.getURI())) {
-					errorModel.add(this.validatePropertyConstraint(focusNode, s.getObject().asResource(), true));
+					errorModel.add(this.validatePropertyConstraint(focusNode, s.getObject().asResource(), model, true));
 				}
 			} else {
 				throw new SHACLParsingException("sh:inverseProperty must contain a constraint definition, but was " + s.getObject());
@@ -115,7 +112,7 @@ public class SHACLValidator {
 				//native constraint are either unmarked or have rdf:type sh:NativeConstraint
 				if(c.getObject().asResource().getProperty(RDF.type) == null || 
 						c.getObject().asResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.NativeConstraint)) {
-					errorModel.add(this.validateNativeConstraint(focusNode, c.getObject().asResource()));
+					errorModel.add(this.validateNativeConstraint(focusNode, c.getObject().asResource(), model));
 				} else {
 					//TODO implement template constraints here
 					//throw new SHACLParsingException("Unrecognized constraint type " + c.getObject().asResource().getProperty(RDF.type).getObject());
@@ -214,7 +211,7 @@ public class SHACLValidator {
 	 * @return
 	 * @throws SHACLParsingException 
 	 */
-	private Model validateNativeConstraint(Resource focusNode, Resource constraint) throws SHACLParsingException {
+	private Model validateNativeConstraint(Resource focusNode, Resource constraint, Model model) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
 		NativeConstraint nativeConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new NativeConstraint());
@@ -253,7 +250,7 @@ public class SHACLValidator {
 	 * @return
 	 * @throws SHACLParsingException 
 	 */
-	private Model validatePropertyConstraint(Resource focusNode, Resource constraint, boolean isInverse) throws SHACLParsingException {
+	private Model validatePropertyConstraint(Resource focusNode, Resource constraint, Model model, boolean isInverse) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
 		PropertyConstraint propertyConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new PropertyConstraint(), false);
@@ -393,7 +390,7 @@ public class SHACLValidator {
 	 *  There are three shape selection properties currently: sh:nodeShape, sh:scopeClass and rdf:type
 	 *  (Section 11.1)
 	 */
-	public List<ShapeInstanceMap> getInstantiatedShapes() {
+	public List<ShapeInstanceMap> getInstantiatedShapes(Model model) {
 		List<ShapeInstanceMap> shapeInstances = new ArrayList<ShapeInstanceMap>();
 
 		for(Statement shapeS : model.listStatements(null, RDF.type, SHACL.Shape).toList()) {
@@ -424,5 +421,13 @@ public class SHACLValidator {
 		}
 		
 		return shapeInstances;
+	}
+	
+	public static SHACLValidator getValidator() {
+		if(validator == null) {
+			validator = new SHACLValidator();
+		}
+		
+		return validator;
 	}
 }

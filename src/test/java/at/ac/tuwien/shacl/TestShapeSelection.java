@@ -13,21 +13,21 @@ public class TestShapeSelection {
 //	@Test
 	public void testShapeClassSelection() {
 		Model model = HelperClass.getModelFromFile("shapeselection/scopeclass.ttl");
-		SHACLValidator validator = new SHACLValidator(model);
-		assertEquals(1, validator.getInstantiatedShapes().size());
+		SHACLValidator validator = new SHACLValidator();
+		assertEquals(1, validator.getInstantiatedShapes(model).size());
 	}
 	
 	@Test
 	public void testRdfTypeSelection() {
 		Model model = HelperClass.getModelFromFile("shapeselection/rdftype.ttl");
-		SHACLValidator validator = new SHACLValidator(model);
-		assertEquals(2, validator.getInstantiatedShapes().size());
+		SHACLValidator validator = new SHACLValidator();
+		assertEquals(2, validator.getInstantiatedShapes(model).size());
 	}
 	
 //	@Test
 	public void testNodeShapeSelection() {
 		Model model = HelperClass.getModelFromFile("shapeselection/nodeshape.ttl");
-		SHACLValidator validator = new SHACLValidator(model);
-		assertEquals(1, validator.getInstantiatedShapes().size());
+		SHACLValidator validator = new SHACLValidator();
+		assertEquals(1, validator.getInstantiatedShapes(model).size());
 	}
 }

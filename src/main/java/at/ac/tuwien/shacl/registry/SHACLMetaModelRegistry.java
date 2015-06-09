@@ -196,9 +196,9 @@ public class SHACLMetaModelRegistry {
 					FunctionRegistry.get().put(s.getSubject().getURI(), new AskFunctionFactory());
 				} else if(SPARQLQueryExecutor.isSelectQuery(q.getQueryString())) {
 					FunctionRegistry.get().put(s.getSubject().getURI(), new SelectFunctionFactory());
-				} else {
-					//TODO throw exception
 				}
+			} else if(s.getSubject().equals(SHACL.hasShape)) {
+				System.out.println("no body for function" + s.getSubject());
 			}
 		}
 	}
