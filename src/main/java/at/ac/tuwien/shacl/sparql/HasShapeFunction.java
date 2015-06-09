@@ -1,5 +1,7 @@
 package at.ac.tuwien.shacl.sparql;
 
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+
 
 /**
  * This function implements sh:hasShape
@@ -11,6 +13,13 @@ package at.ac.tuwien.shacl.sparql;
  *
  */
 public class HasShapeFunction {
+	public static boolean hasShape() {
+		//just a dummy function, remove when real method (see below) is implemented
+		boolean hasShape = false;
+		
+		return hasShape;
+	}
+	
 	/*
 	 * The function sh:hasShape returns true if	a given node (?arg1) matches a given shape (?arg2). 
 	   The return type of this function is xsd:boolean.
@@ -24,9 +33,10 @@ public class HasShapeFunction {
 		The function must return true if the operation returns no error-level constraint violations, 
 		false if any error-level constraint violations exist.
 	 */
-	public static boolean hasShape() {
+	public static boolean hasShape(NodeValue arg1, NodeValue arg2, NodeValue arg3) {
+		//TODO implement hasShape
 		boolean hasShape = false;
-		
-		return hasShape;
+				
+		return hasShape;		
 	}
 }

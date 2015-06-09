@@ -17,6 +17,7 @@ import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
+import at.ac.tuwien.shacl.util.ValueInjector;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -25,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -42,22 +44,23 @@ public class SHACLValidator {
 		this.registry = SHACLMetaModelRegistry.getRegistry();
 		this.model = model;
 		ModelRegistry.setCurrentModel(model);
+		System.out.println("--------------initializing done");
 	}
 	
 	/*
 	 * This operation validates a whole graph against all shapes associated with its resources, 
 	 * based on in-graph mappings.
-
-		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
+	 * 
+	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
 	public Model validateGraph() {
-		List<Statement> shapes = this.getInstantiatedShapeTriplets();
+		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes();
 		Model errorModel = ModelFactory.createDefaultModel();
 		System.out.println("number of shape data: "+shapes.size());
 		
 		//TODO implement graph-level constraints
-		for(Statement shape : shapes) {
-			errorModel.add(this.validateNodeAgainstShape(shape.getSubject(), shape.getObject().asResource()));
+		for(ShapeInstanceMap shape : shapes) {
+			errorModel.add(this.validateNodeAgainstShape(shape.getInstance(), shape.getShape()));
 		}
 
 		errorModel.write(System.out, "Turtle");
@@ -73,10 +76,13 @@ public class SHACLValidator {
 		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
 	public Model validateNodeAgainstShape(Resource focusNode, Resource shape) {
+		
 		Model errorModel = ModelFactory.createDefaultModel();
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
+			System.out.println("validating");
 			if(p.getObject().asResource().getProperty(RDF.type) == null || 
 					p.getObject().asResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.PropertyConstraint)) {
+				System.out.println("focus node: "+focusNode + " object: "+p.getObject().asResource());
 				errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), false));
 				System.out.println("res: "+p.getObject().asResource());
 			} else {
@@ -225,7 +231,7 @@ public class SHACLValidator {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
 		PropertyConstraint propertyConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new PropertyConstraint(), false);
-
+		System.out.println("constraints:"+propertyConstraint.getPredicate());
 		Map<Property, RDFNode> constraints = propertyConstraint.getConstraints();
 		Set<ConstraintSet> constraintSets = new HashSet<ConstraintSet>();
 		
@@ -288,13 +294,21 @@ public class SHACLValidator {
 						qb.addBinding(c.getKey().getLocalName(), c.getValue());
 					}
 				}
-				if(!SPARQLQueryExecutor.isQueryValid(qb.getQueryString(), model, qb.getBindings())) {
+				
+				Map<String, Object> result = SPARQLQueryExecutor.getMapResultsForQuery(qb.getQueryString(), model, qb.getBindings());
+
+				if(result.size() > 0) {
 					ConstraintViolationImpl violation = new ConstraintViolationImpl(
 							((ConstraintTemplate)cs.getTemplate()).getSeverity(), focusNode, focusNode, 
 							propertyConstraint.getPredicate(), 
 							null);
-					violation.addMessage(((ConstraintTemplate)cs.getTemplate()).getMessage());
+					
+					String message = ValueInjector.inject(((ConstraintTemplate)cs.getTemplate()).getMessage(), result);
+					violation.addMessage(message);
+					
+					
 					errorModel.add(violation.getModel());
+
 				}
 			}
 		}
@@ -311,37 +325,60 @@ public class SHACLValidator {
 	public Model validateNode(Resource focusNode) {
 		return null;
 	}
+	
+	private class ShapeInstanceMap {
+		private Resource shape;
+		private Resource instance;
+		
+		public ShapeInstanceMap(Resource shape, Resource instance) {
+			this.shape = shape;
+			this.instance = instance;
+		}
+		
+		public Resource getShape() {
+			return this.shape;
+		}
+		
+		public Resource getInstance() {
+			return this.instance;
+		}
+	}
 
 	/**
 	 *  Determine which nodes need to be evaluated against which shapes.
-	 *  There are two shape selection properties currently: sh:nodeShape and rdf:type
+	 *  There are three shape selection properties currently: sh:nodeShape, sh:scopeClass and rdf:type
 	 *  (Section 11.1)
-	 * 
-	 * @return a list of statements (triplets) that will each contain:
-	 * 		- the instance of the shape (i.e. the concrete data) as subject
-	 * 		- the shape definition as object
-	 * 		- the selection property (sh:nodeShape/rdf:type) as predicate
 	 */
-	public List<Statement> getInstantiatedShapeTriplets() {
-		List<Statement> statements = new ArrayList<Statement>();
-		List<Statement> shapes = model.listStatements(null, RDF.type, SHACL.Shape).toList();
-		System.out.println("shapes: "+shapes);
-		//statements.addAll(model.listStatements(null, SHACL.nodeShape, (RDFNode)null).toList());
-		
-		for(Statement s : shapes) {
-			statements.addAll(model.listStatements(null, RDF.type, s.getSubject()).toList());
-			//statements.addAll(model.listStatements(null, SHACL.ShapeClass, s.getSubject()).toList());
-			statements.addAll(model.listStatements(null, SHACL.nodeShape, s.getSubject()).toList());
+	public List<ShapeInstanceMap> getInstantiatedShapes() {
+		List<ShapeInstanceMap> shapeInstances = new ArrayList<ShapeInstanceMap>();
+
+		for(Statement shapeS : model.listStatements(null, RDF.type, SHACL.Shape).toList()) {
+			for(Statement s : model.listStatements(null, SHACL.nodeShape, shapeS.getSubject()).toList()) {
+				shapeInstances.add(new ShapeInstanceMap(s.getObject().asResource(), s.getSubject()));
+				System.out.println("added shape");
+			}
 			
-			//TODO
-			//System.out.println("by scope class:"+s.getSubject().getProperty(SHACL.scopeClass));
-		
-			//model.listStatements(s.getSubject(), SHACL.scopeClass, (RDFNode)null);
+			for(Statement s : model.listStatements(null, RDF.type, shapeS.getSubject()).toList()) {
+				shapeInstances.add(new ShapeInstanceMap(s.getObject().asResource(), s.getSubject()));
+			}
+
+			if(shapeS.getSubject().getProperty(SHACL.scopeClass) != null) {
+				Resource scopeClass = shapeS.getSubject().getProperty(SHACL.scopeClass).getResource();
+				if(scopeClass != null) {
+					List<Statement> scopeStatements = model.listStatements(null, RDF.type, scopeClass).toList();
+					for(Statement s : scopeStatements) {
+						shapeInstances.add(new ShapeInstanceMap(shapeS.getSubject(), s.getSubject()));
+					}
+				}
+			}
 		}
 		
-		//statements.addAll(model.listStatements(null, RDF.type, (RDFNode)null).toList());
-		//System.out.println("data triplets: "+model.listStatements().toList());
-		//TODO implement rdf:type
-		return statements;
+		for(Statement shapeS : model.listStatements(null, RDF.type, SHACL.ShapeClass).toList()) {
+			for(Statement s : model.listStatements(null, RDF.type, shapeS.getSubject()).toList()) {
+				shapeInstances.add(new ShapeInstanceMap(s.getObject().asResource(), s.getSubject()));
+			}
+		}
+		
+		return shapeInstances;
 	}
 }

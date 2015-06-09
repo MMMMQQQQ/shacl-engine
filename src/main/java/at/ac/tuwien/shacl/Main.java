@@ -13,7 +13,7 @@ public class Main {
 		Model model = ModelFactory.createDefaultModel();
 		//model.read("queryOrConstraint.ttl", "TURTLE");
 		//model.read("queryOrConstraint.ttl", "TURTLE");
-		model.read("queryAllowedValuesValid.ttl", "TURTLE");
+		model.read("queryWine.ttl", "TURTLE");
 		
 		SHACLValidator validator = new SHACLValidator(model);
 		validator.validateGraph();

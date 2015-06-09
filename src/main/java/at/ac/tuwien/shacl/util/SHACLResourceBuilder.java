@@ -6,7 +6,7 @@ import java.util.Set;
 
 import at.ac.tuwien.shacl.core.model.NativeConstraint;
 import at.ac.tuwien.shacl.core.model.PropertyConstraint;
-import at.ac.tuwien.shacl.metamodel.Template;
+import at.ac.tuwien.shacl.metamodel.ConstraintTemplate;
 import at.ac.tuwien.shacl.model.impl.ArgumentImpl;
 import at.ac.tuwien.shacl.model.impl.FunctionImpl;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
@@ -19,12 +19,12 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SHACLResourceBuilder {
-	public static Template build(List<Statement> statements, Template template) {
+	public static ConstraintTemplate build(List<Statement> statements, ConstraintTemplate template) {
 		for(Statement property : statements) {
 			if(property.getPredicate().equals(SHACL.sparql)) {
 				template.setExecutableBody(property.getString());
 			} else if(property.getPredicate().equals(SHACL.message)) {
-				//TODO implement sh:message
+				template.addMessage(Config.DEFAULT_LANG, property.getString());
 			} else if(property.getPredicate().equals(SHACL.argument)) {
 				ArgumentImpl argument = build(property.getObject().asResource().listProperties().toList(), new ArgumentImpl());
 				template.addArgument(argument);
@@ -165,6 +165,7 @@ public class SHACLResourceBuilder {
 			} else if(property.getPredicate().equals(RDFS.comment)) {
 				constraint.addComment(property.getString());
 			} else if(!isInverse && SHACLMetaModelRegistry.getRegistry().getPropertyConstraintsURIs().contains(property.getPredicate().getURI())) {
+				System.out.println("constraint added");
 				constraint.addConstraint(property.getPredicate(), property.getObject());
 			} else if(isInverse && SHACLMetaModelRegistry.getRegistry().getInversePropertyConstraintsURIs().contains(property.getPredicate().getURI())) {
 				constraint.addConstraint(property.getPredicate(), property.getObject());

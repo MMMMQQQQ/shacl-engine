@@ -1,14 +1,23 @@
 package at.ac.tuwien.shacl.sparql;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.sparql.resultset.RDFOutput;
+import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * Execute a query. Currently only supported for constraint checking queries.
@@ -58,12 +67,13 @@ public class SPARQLQueryExecutor {
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
 		System.out.println(exec.getQuery());
 		ResultSet results = exec.execSelect();
+
 		boolean isValid = true;
 		try {
 			if(results.hasNext()) {
 				isValid = false;
 			}
-			
+
 			System.out.println(ResultSetFormatter.asText(results));
 			return isValid;
 		} finally {
@@ -71,9 +81,96 @@ public class SPARQLQueryExecutor {
 		}
 	}
 	
+	public static Model executeQuery(String queryString, final Model model, QuerySolutionMap bindings) {
+
+		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+		System.out.println(exec.getQuery());
+		ResultSet results = exec.execSelect();
+		
+		Model resultmodel = null;
+		
+		try {
+			resultmodel = RDFOutput.encodeAsModel(results);
+			
+			resultmodel.write(System.out, "TURTLE");
+			
+			if(resultmodel.listStatements(null, ResultSetGraphVocab.size, (RDFNode) null)
+					.toList().get(0).getInt() == 0) {
+				resultmodel = null;
+			}
+
+			return resultmodel;
+		} finally {
+			exec.close();
+		}
+	}
+	
+	public static QuerySolution getQuerySolutionForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
+
+		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+		System.out.println(exec.getQuery());
+		ResultSet results = exec.execSelect();
+		
+		QuerySolution solution = null;
+
+		try {
+			List<QuerySolution> list = ResultSetFormatter.toList(results);
+			
+			if(list.size() > 0) {
+				solution = list.get(0);
+			}
+
+			return solution;
+		} finally {
+			exec.close();
+		}
+	}
+	
+	/**
+	 * Execute query and return a map containing all variables and their values.
+	 * Note: If more than one row is returned, the map will only contain the values for the
+	 * first row.
+	 * 
+	 * @param queryString
+	 * @param model
+	 * @param bindings
+	 * @return
+	 */
+	public static Map<String, Object> getMapResultsForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
+
+		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+		System.out.println(exec.getQuery());
+		ResultSet results = exec.execSelect();
+		
+		try {
+			List<QuerySolution> list = ResultSetFormatter.toList(results);
+			HashMap<String, Object> variables = new HashMap<String, Object>();
+			
+			if(list.size() > 0) {
+				Iterator<String> it = list.get(0).varNames();
+				
+				while(it.hasNext()) {
+					String varName = it.next();
+					RDFNode node = list.get(0).get(varName);
+					
+					if(node.isLiteral()) {
+						variables.put(varName, list.get(0).get(varName).asLiteral().getString());
+					} else {
+						variables.put(varName, list.get(0).get(varName));
+					}
+					
+					
+				}
+			}
+
+			return variables;
+		} finally {
+			exec.close();
+		}
+	}
+	
 	public static boolean isQueryValid(final String queryString) {
 		QueryExecution exec = QueryExecutionFactory.create(queryString);
-		System.out.println("inquery");
 		ResultSet results = exec.execSelect();
 		boolean isValid = true;
 		try {
@@ -87,20 +184,7 @@ public class SPARQLQueryExecutor {
 			exec.close();
 		}
 	}
-	
-	//TODO
-	public RDFNode executeQuery(Query query, Model model) {
-		//how to map sparql query result with graph
-//		while (results.hasNext()) {
-//	        QuerySolution result=results.next();
-//	        RDFNode s=result.get("this");
-//	        RDFNode p=result.get("predicate");
-//	        RDFNode o=result.get("xxxxx");
-//	        System.out.println(" { " + s + " "+ p+ " "+ o+ " . }");
-//	      }
-		return null;
-	}
-	
+
 	//TODO							
 	public RDFNode executeQuery(Query query, QuerySolutionMap bindings, Model model) {
 		return null;

@@ -1,0 +1,25 @@
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vin:   <http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix ex: <http://example.com/ns#> .
+
+ex:SevreEtMaineShape
+	a sh:Shape ;
+	sh:property [
+		sh:predicate vin:hasMaker ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		sh:hasValue vin:SevreEtMaine ;
+	] ;
+	sh:property [
+		sh:predicate rdf:type ;
+		sh:allowedValues ( vin:Muscadet ) ;
+	].
+	
+vin:SevreEtMaineMuscadet
+	a            vin:Muscadet ;
+	sh:nodeShape ex:SevreEtMaineShape ;
+	vin:hasMaker vin:SevreEtMaine ;
+	vin:hasMaker vin:Se .

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 public class DummyMain {
 	public static void main(String[] args) {
 		Model model = ModelFactory.createDefaultModel();
-		model.read("querData.ttl");
+		model.read("queryData.ttl");
 		model.write(System.out, "Turtle");
 //		List<Statement> ps = model.listStatements(null, SHACL.sparql, (RDFNode) null).toList();
 //		

@@ -104,7 +104,9 @@ public class ConstraintViolationImpl extends SHACLResourceImpl implements Constr
 		if(this.getPredicate() != null) error.addProperty(SHACL.predicate, this.getPredicate());
 		if(this.getSubject() != null) error.addProperty(SHACL.subject, this.getSubject());
 		if(this.getRoot() != null) error.addProperty(SHACL.root, this.getRoot());
+		System.out.println("messages: "+messages);
 		for(Map.Entry<String, String> message : messages.entrySet()) {
+			
 			if(message.getValue() != null) {
 				error.addProperty(SHACL.message, message.getValue());
 			}
