@@ -7,19 +7,19 @@
 
 ## Current status
 ```
-CORE FEATURE		|	STATUS
-Shapes			|	implemented
+CORE FEATURE			|	STATUS
+Shapes					|	implemented
 Property Constraints	|	implemented
 Other core constraints	|	implemented
 Scope of Constr. & Shps.|	implemented
 Constraint Violations	|	implemented
 
-ADVANCED FEATURE	|	STATUS
+ADVANCED FEATURE		|	STATUS
 General Shape Constr.	|	implemented
-Templates		|	partially implemented
-Profiles		|	not implemented
+Templates				|	partially implemented
+Profiles				|	not implemented
 Supported Operations	|	partially implemented
-Functions		|	implemented
+Functions				|	implemented
 SPARQL-based Execution	|	implemented
 SPARQL Fct. in SHACL NS	|	implemented
 SPARQL Def. of SHACL Tmp|	implemented
