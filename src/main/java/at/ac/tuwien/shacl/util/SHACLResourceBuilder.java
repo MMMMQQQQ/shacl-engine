@@ -158,7 +158,6 @@ public class SHACLResourceBuilder {
 	
 	public static NativeConstraint build(List<Statement> statements, NativeConstraint constraint) throws SHACLParsingException {
 		for(Statement property : statements) {			
-			System.out.println("Property: "+property);
 			if(property.getPredicate().equals(SHACL.sparql)) {
 				constraint.setExecutableBody(property.getString());
 			} else if(property.getPredicate().equals(RDF.type)) {
@@ -206,7 +205,6 @@ public class SHACLResourceBuilder {
 			} else if(property.getPredicate().equals(RDFS.comment)) {
 				constraint.addComment(property.getString());
 			} else if(!isInverse && SHACLMetaModelRegistry.getRegistry().getPropertyConstraintsURIs().contains(property.getPredicate().getURI())) {
-				System.out.println("constraint added");
 				constraint.addConstraint(property.getPredicate(), property.getObject());
 			} else if(isInverse && SHACLMetaModelRegistry.getRegistry().getInversePropertyConstraintsURIs().contains(property.getPredicate().getURI())) {
 				constraint.addConstraint(property.getPredicate(), property.getObject());

@@ -65,9 +65,4 @@ public class QueryBuilder {
 		this.addShapesGraphBinding(shapesGraph);
 		this.addCurrentShapeBinding(currentShape);
 	}
-	
-	//TODO
-	public Object executeSelect() {
-		return null;
-	}
 }

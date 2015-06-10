@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -15,8 +16,10 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.sparql.modify.GraphStoreBasic;
 import com.hp.hpl.jena.sparql.resultset.RDFOutput;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
+import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
@@ -26,113 +29,69 @@ import com.hp.hpl.jena.vocabulary.XSD;
  *
  */
 public class SPARQLQueryExecutor {
-	
-	//TODO transform to other query methods
-//	public static boolean isQueryValid(final Query query, final Model model) {
-//		QueryExecution exec = QueryExecutionFactory.create(query, model);
-//		ResultSet results = exec.execSelect();
-//
-//		boolean isValid = true;
-//		try {
-//			if(results.hasNext()) {
-//				isValid = false;
-//			}
-//			System.out.println(ResultSetFormatter.asText(results));
-//			return isValid;
-//		} finally {
-//			exec.close();
-//		}
-//	}
-//	
-	
-	public static boolean execAsk(final String queryString, final Model model, QuerySolutionMap bindings) {
-		System.out.println("ask method");
-		System.out.println("query string: "+queryString);
-		System.out.println("bindings"+bindings);
+	public boolean execAsk(final String queryString, final Model model, QuerySolutionMap bindings) {
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println("exec is: "+exec);
-		System.out.println("in ask: "+exec.getQuery());
+		//System.out.println("query string: "+queryString);
+		//System.out.println("bindings"+bindings);
+		return execAsk(exec);
+	}
+	
+	public boolean execAsk(final String queryString, final Dataset dataset, QuerySolutionMap bindings) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString, dataset, bindings);
+		//System.out.println("query string: "+queryString);
+		//System.out.println("bindings"+bindings);
+		return execAsk(exec);
+	}
+	
+	private boolean execAsk(QueryExecution exec) {
+		
 		boolean result = exec.execAsk();
 		return result;
 	}
 	
-	public static RDFNode execSelect(final String queryString, final Model model, QuerySolutionMap bindings) {
-		System.out.println("select method");
-		System.out.println("query string: "+queryString);
-		System.out.println("bindings"+bindings);
-		System.out.println("------------");
+	public RDFNode execSelect(final String queryString, final Model model, QuerySolutionMap bindings) {
 		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println(exec.getQuery());
+		//System.out.println("query string: "+queryString);
+		//System.out.println("bindings"+bindings);
+		return execSelect(exec);
+	}
+	
+	public RDFNode execSelect(final String queryString, final Dataset dataset, QuerySolutionMap bindings) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString, dataset, bindings);
+		//System.out.println("query string: "+queryString);
+		//System.out.println("bindings"+bindings);
+		return execSelect(exec);
+	}
+	
+	private RDFNode execSelect(final QueryExecution exec) {
+		//System.out.println(exec.getQuery());
 		ResultSet result = exec.execSelect();
-
+		
 		RDFNode r = result.next().get("result");
 		
 		return r;
 	}
-	
-	public static boolean isQueryValid(final String queryString, final Model model, QuerySolutionMap bindings) {
-		
-		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println(exec.getQuery());
-		ResultSet results = exec.execSelect();
 
-		boolean isValid = true;
-		try {
-			if(results.hasNext()) {
-				isValid = false;
-			}
-
-			System.out.println(ResultSetFormatter.asText(results));
-			return isValid;
-		} finally {
-			exec.close();
-		}
-	}
-	
-	public static Model executeQuery(String queryString, final Model model, QuerySolutionMap bindings) {
-
-		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println(exec.getQuery());
-		ResultSet results = exec.execSelect();
-		
-		Model resultmodel = null;
-		
-		try {
-			resultmodel = RDFOutput.encodeAsModel(results);
-			
-			resultmodel.write(System.out, "TURTLE");
-			
-			if(resultmodel.listStatements(null, ResultSetGraphVocab.size, (RDFNode) null)
-					.toList().get(0).getInt() == 0) {
-				resultmodel = null;
-			}
-
-			return resultmodel;
-		} finally {
-			exec.close();
-		}
-	}
-	
-	public static QuerySolution getQuerySolutionForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
-
-		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println(exec.getQuery());
-		ResultSet results = exec.execSelect();
-		
-		QuerySolution solution = null;
-
-		try {
-			List<QuerySolution> list = ResultSetFormatter.toList(results);
-			
-			if(list.size() > 0) {
-				solution = list.get(0);
-			}
-
-			return solution;
-		} finally {
-			exec.close();
-		}
-	}
+//	public static QuerySolution getQuerySolutionForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
+//
+//		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+//		System.out.println(exec.getQuery());
+//		ResultSet results = exec.execSelect();
+//		
+//		QuerySolution solution = null;
+//
+//		try {
+//			List<QuerySolution> list = ResultSetFormatter.toList(results);
+//			
+//			if(list.size() > 0) {
+//				solution = list.get(0);
+//			}
+//
+//			return solution;
+//		} finally {
+//			exec.close();
+//		}
+//	}
 	
 	/**
 	 * Execute query and return a map containing all variables and their values.
@@ -144,16 +103,24 @@ public class SPARQLQueryExecutor {
 	 * @param bindings
 	 * @return
 	 */
-	public static Map<String, Object> getMapResultsForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
-
-		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
-		System.out.println(exec.getQuery());
+	public Map<String, Object> getMapResultsForQuery(String queryString, Dataset dataset, QuerySolutionMap bindings) {
+		QueryExecution exec = QueryExecutionFactory.create(queryString, dataset, bindings);
+		//System.out.println("bindings: "+bindings);
+		//System.out.println("dataset: "+dataset.getDefaultModel());
+		
+		return getMapResultsForQuery( exec);
+	}
+	
+	private Map<String, Object> getMapResultsForQuery(QueryExecution exec) {
 		ResultSet results = exec.execSelect();
 		
 		try {
+			//the query is executed here?
 			List<QuerySolution> list = ResultSetFormatter.toList(results);
+
 			HashMap<String, Object> variables = new HashMap<String, Object>();
-			
+			System.out.println("query executed");
+			System.out.println("list: "+list);
 			if(list.size() > 0) {
 				Iterator<String> it = list.get(0).varNames();
 				
@@ -177,26 +144,26 @@ public class SPARQLQueryExecutor {
 		}
 	}
 	
-	public static boolean isQueryValid(final String queryString) {
-		QueryExecution exec = QueryExecutionFactory.create(queryString);
-		ResultSet results = exec.execSelect();
-		boolean isValid = true;
-		try {
-			if(results.hasNext()) {
-				isValid = false;
-			}
-			System.out.println("ARQ result:");
-			System.out.println(ResultSetFormatter.asText(results));
-			return isValid;
-		} finally {
-			exec.close();
-		}
-	}
-
-	//TODO							
-	public RDFNode executeQuery(Query query, QuerySolutionMap bindings, Model model) {
-		return null;
-	}
+//	public static Map<String, Object> getMapResultsForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
+//		QueryExecution exec = QueryExecutionFactory.create(queryString, model, bindings);
+//		return getMapResultsForQuery(queryString, bindings, exec);
+//	}
+	
+//	public static boolean isQueryValid(final String queryString) {
+//		QueryExecution exec = QueryExecutionFactory.create(queryString);
+//		ResultSet results = exec.execSelect();
+//		boolean isValid = true;
+//		try {
+//			if(results.hasNext()) {
+//				isValid = false;
+//			}
+//			System.out.println("ARQ result:");
+//			System.out.println(ResultSetFormatter.asText(results));
+//			return isValid;
+//		} finally {
+//			exec.close();
+//		}
+//	}
 	
 	public static boolean isAskQuery(String query) {
 		Query q = QueryFactory.create(query);

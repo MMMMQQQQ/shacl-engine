@@ -39,7 +39,7 @@ public class ValueInjector {
 				if(value != null) {
 					string = string.replace("{?"+ variable +"}", value);
 				} else {
-					System.out.println("unknown variable" + variable);
+					//System.out.println("unknown variable " + variable);
 					//TODO create constraint violation type sh:Warning
 					//that variable doesnt exist OR log error
 				}

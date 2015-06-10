@@ -60,12 +60,13 @@ public class HasShapeFunction implements Function, FunctionFactory {
 	@Override
 	public NodeValue exec(Binding binding, ExprList args, String uri,
 			FunctionEnv env) {
-        if ( args == null) {
+        
+		if ( args == null) {
         	throw new ARQInternalErrorException("Null args list") ;
         } else if(args.size() != 3) {
         	throw new ExprEvalException("Missing arguments");
         }
-        
+
         List<NodeValue> evalArgs = new ArrayList<>() ;
         
         for ( Expr e : args )
@@ -77,19 +78,31 @@ public class HasShapeFunction implements Function, FunctionFactory {
         Model model = ModelFactory.createModelForGraph(env.getActiveGraph());
         
         Resource arg1 = model.getResource(evalArgs.get(0).asString());
-        Resource arg2 = model.getResource(evalArgs.get(1).asString());
+        System.out.println("was in hasShape");
+        System.out.println("arg2: "+evalArgs.get(1));
         
+        Resource arg2 = model.getResource(evalArgs.get(1).asString());
+        evalArgs.get(0);
+        System.out.println("arg1 is: "+arg1);
+        System.out.println("in hasShape");
         Model errorModel = null;
+        System.out.println("still in hasShape");
 		try {
+			System.out.println("stil still in hasShape");
 			errorModel = SHACLValidator.getValidator().validateNodeAgainstShape(arg1, arg2, model);
+		
 		} catch (SHACLParsingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        
+		
+		
         if(errorModel.isEmpty()) {
+        	System.out.println("returned has shape result true");
+            
         	return NodeValue.makeBoolean(true);
         } else {
+        	System.out.println("returned has shape result false");
+            
         	return NodeValue.makeBoolean(false);
         }
 	}

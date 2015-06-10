@@ -12,10 +12,11 @@ import at.ac.tuwien.shacl.core.model.PropertyConstraint;
 import at.ac.tuwien.shacl.metamodel.Argument;
 import at.ac.tuwien.shacl.metamodel.ConstraintTemplate;
 import at.ac.tuwien.shacl.model.impl.ConstraintViolationImpl;
-import at.ac.tuwien.shacl.registry.ModelRegistry;
+import at.ac.tuwien.shacl.registry.NamedModels;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
+import at.ac.tuwien.shacl.util.Config;
 import at.ac.tuwien.shacl.util.SHACLParsingException;
 import at.ac.tuwien.shacl.util.SHACLResourceBuilder;
 import at.ac.tuwien.shacl.util.ValueInjector;
@@ -27,7 +28,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -40,8 +40,15 @@ public class SHACLValidator {
 
 	private static SHACLValidator validator;
 	
+	private static NamedModels namedModels;
+
+	//TODO refactor
+	private Resource currentShape;
+	
 	public SHACLValidator() {
+		validator = this;
 		this.registry = SHACLMetaModelRegistry.getRegistry();
+		namedModels = new NamedModels();
 		System.out.println("--------------initializing done");
 	}
 	
@@ -52,6 +59,13 @@ public class SHACLValidator {
 	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
 	public Model validateGraph(Model model) throws SHACLParsingException {
+		return this.validateGraph(Config.DEFAULT_NAMED_MODEL.getURI(), model);
+	}
+	
+	public Model validateGraph(String uri, Model model) throws SHACLParsingException {
+		namedModels.addNamedGraph(uri, model);
+		namedModels.setDefaultModel(model);
+		
 		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes(model);
 		Model errorModel = ModelFactory.createDefaultModel();
 
@@ -69,6 +83,8 @@ public class SHACLValidator {
 			errorModel.write(System.out, "Turtle");
 		}
 		
+		//namedModels.removeNamedGraph(uri);
+		
 		return errorModel;
 	}
 	
@@ -80,12 +96,14 @@ public class SHACLValidator {
 		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
 	public Model validateNodeAgainstShape(Resource focusNode, Resource shape, Model model) throws SHACLParsingException {
+		System.out.println("*****************************");
+		
 		Model errorModel = ModelFactory.createDefaultModel();
+		currentShape = shape;
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
 			if(p.getObject().isResource()) {
 				if(p.getObject().asResource().getProperty(RDF.type) == null || 
 						p.getResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.PropertyConstraint)) {
-					System.out.println("focus node: "+focusNode + " object: "+p.getObject().asResource());
 					errorModel.add(this.validatePropertyConstraint(focusNode, p.getObject().asResource(), model, false));
 				}
 			} else {
@@ -110,15 +128,21 @@ public class SHACLValidator {
 			if(c.getObject().isResource()) {
 				//check, if it's a native constraint
 				//native constraint are either unmarked or have rdf:type sh:NativeConstraint
-				if(c.getObject().asResource().getProperty(RDF.type) == null || 
-						c.getObject().asResource().getProperty(RDF.type).getObject().asResource().equals(SHACL.NativeConstraint)) {
+				Statement stType = c.getObject().asResource().getProperty(RDF.type);
+				
+				if(stType == null || stType.getResource().equals(SHACL.NativeConstraint)) {
 					errorModel.add(this.validateNativeConstraint(focusNode, c.getObject().asResource(), model));
 				} else {
+					ConstraintTemplate template = registry.getGeneralConstraintTemplate(stType.getResource().getURI());
+					
+					if(template != null) {
+						errorModel.add(this.validateGeneralConstraint(focusNode, c.getObject().asResource(), model, template));
+					}
 					//TODO implement template constraints here
 					//throw new SHACLParsingException("Unrecognized constraint type " + c.getObject().asResource().getProperty(RDF.type).getObject());
 				}
 			} else {
-				throw new SHACLParsingException("sh:constraint must contain a constraint definition, but was " + c.getObject());
+				throw new SHACLParsingException("sh:constraint type unrecognized" + c.getObject());
 			}
 			
 			
@@ -151,56 +175,46 @@ public class SHACLValidator {
 		A sh:Warning should be produced if no suitable executable body was found.
 	 */
 //	public Model validateConstraint(Resource focusNode, Resource constraint) {
-//		Model errorModel = ModelFactory.createDefaultModel();
-//		Set<String> propertyConstraints = registry.getConstraintsURIs();
-//		System.out.println("constraint: "+constraint.getProperty(SHACL.predicate).getObject());
-//		Map<String, RDFNode> tempStore = new HashMap<String, RDFNode>();
-//	
-//		//add sh:predicate
-//		Statement constraintPredicate = constraint.getProperty(SHACL.predicate);
-//		tempStore.put(constraintPredicate.getPredicate().getURI(), constraintPredicate.getObject().asResource());
-//
-//		for(Statement objectProps : constraint.listProperties().toList()) {
-//			RDFNode res = objectProps.getObject();
-//			
-//			Property predicate = objectProps.getPredicate();
-//			
-//			if(!predicate.getURI().equals(SHACL.predicate.getURI())) {
-//				tempStore.put(predicate.getURI(), res);
-//
-//				if(propertyConstraints.contains(predicate.getURI())) {
-//					QueryBuilder qb = new QueryBuilder(
-//							registry.getPropertyConstraintTemplate(predicate.getURI()).getExecutableBody(),
-//							model.getNsPrefixMap());
-//					boolean isComplete = true;
-//					for(ArgumentImpl a : registry.getPropertyConstraintTemplate(predicate.getURI()).getArguments()) {
-//						if(tempStore.containsKey(a.getPredicate().getURI())) {
-//							qb.addBinding(a.getPredicate().getLocalName(), tempStore.get(a.getPredicate().getURI()));
-//							
-//						} else {
-//							if(!a.isOptional()) {
-//								isComplete = false;
-//								break;
-//							}
-//						}
-//					}
-//					if(isComplete) {
-//						qb.addBinding(SHACL.predicate.getLocalName(), tempStore.get(SHACL.predicate.getURI()));
-//						qb.addThisBinding(focusNode);
-//						if(!SPARQLQueryExecutor.isQueryValid(qb.getQueryString(), model, qb.getBindings())) {
-//							ConstraintViolationImpl error = new ConstraintViolationImpl(
-//									SHACL.Error, focusNode, focusNode, 
-//									ResourceFactory.createProperty(((Resource)tempStore.get(SHACL.predicate.getURI())).getURI()), 
-//									null);
-//							errorModel.add(error.getModel());
-//						}
-//					}
-//				}
-//			}
-//		}
-//		
-//		return errorModel;
 //	}
+	
+	private Model validateGeneralConstraint(Resource focusNode, Resource constraint, Model model, ConstraintTemplate template) throws SHACLParsingException {
+		Model errorModel = ModelFactory.createDefaultModel();
+				
+		QueryBuilder qb = new QueryBuilder(
+				template.getExecutableBody(),
+				model.getNsPrefixMap());
+		qb.addPreBinding(focusNode, Config.DEFAULT_NAMED_MODEL, currentShape);
+		
+		for(Argument a : template.getArguments()) {
+			System.out.println("argument: "+a.getPredicate());
+			
+			System.out.println("constraint "+constraint.getProperty(a.getPredicate()));
+			
+			if(!a.getPredicate().equals(SHACL.predicate)) {
+				qb.addBinding(a.getPredicate().getLocalName(), constraint.getProperty(a.getPredicate()).getObject());
+			}
+		}
+		
+		//System.out.println("queryString: "+template.getExecutableBody());
+		Map<String, Object> result = new SPARQLQueryExecutor().getMapResultsForQuery(qb.getQueryString(), namedModels.getDataset(), qb.getBindings());
+		System.out.println("result size: "+result.size());
+		if(result.size() > 0) {
+			
+			ConstraintViolationImpl violation = new ConstraintViolationImpl(
+					SHACL.Error, focusNode, focusNode, null,
+					null);
+			
+			Map<String, String> messages = (template.getMessages());
+			messages = this.injectToMessage(messages, result);
+			
+			violation.setMessages(messages);
+
+			errorModel.add(violation.getModel());
+
+		}
+		
+		return errorModel;
+	}
 	
 	/**
 	 * Validates a native constraint.
@@ -215,14 +229,15 @@ public class SHACLValidator {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
 		NativeConstraint nativeConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new NativeConstraint());
-
+		
 		QueryBuilder qb = new QueryBuilder(
 				nativeConstraint.getExecutableBody(),
 				model.getNsPrefixMap());
-		qb.addThisBinding(focusNode);
-		//qb.addShapesGraphBinding(model.);
-		System.out.println("queryString: "+nativeConstraint.getExecutableBody());
-		Map<String, Object> result = SPARQLQueryExecutor.getMapResultsForQuery(qb.getQueryString(), model, qb.getBindings());
+		
+		qb.addPreBinding(focusNode, Config.DEFAULT_NAMED_MODEL, currentShape);
+
+		//System.out.println("queryString: "+nativeConstraint.getExecutableBody());
+		Map<String, Object> result = new SPARQLQueryExecutor().getMapResultsForQuery(qb.getQueryString(), namedModels.getDataset(), qb.getBindings());
 		
 		if(result.size() > 0) {
 			ConstraintViolationImpl violation = new ConstraintViolationImpl(
@@ -252,9 +267,8 @@ public class SHACLValidator {
 	 */
 	private Model validatePropertyConstraint(Resource focusNode, Resource constraint, Model model, boolean isInverse) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
-		
+
 		PropertyConstraint propertyConstraint = SHACLResourceBuilder.build(constraint.listProperties().toList(), new PropertyConstraint(), false);
-		System.out.println("constraints:"+propertyConstraint.getPredicate());
 		Map<Property, RDFNode> constraints = propertyConstraint.getConstraints();
 		Set<ConstraintSet> constraintSets = new HashSet<ConstraintSet>();
 		
@@ -311,15 +325,15 @@ public class SHACLValidator {
 			
 			if(isComplete) {
 				QueryBuilder qb = new QueryBuilder(cs.getTemplate().getExecutableBody(), model.getNsPrefixMap());
-				qb.addThisBinding(focusNode);
+				qb.addPreBinding(focusNode, Config.DEFAULT_NAMED_MODEL, currentShape);
 				for(Map.Entry<Property, RDFNode> c : cs.getConstraints().entrySet()) {
 					if(c.getValue() != null) {
 						qb.addBinding(c.getKey().getLocalName(), c.getValue());
 					}
 				}
-				
-				Map<String, Object> result = SPARQLQueryExecutor.getMapResultsForQuery(qb.getQueryString(), model, qb.getBindings());
 
+				Map<String, Object> result = new SPARQLQueryExecutor().getMapResultsForQuery(qb.getQueryString(), namedModels.getDataset(), qb.getBindings());
+				
 				if(result.size() > 0) {
 					ConstraintViolationImpl violation = new ConstraintViolationImpl(
 							((ConstraintTemplate)cs.getTemplate()).getSeverity(), focusNode, focusNode, 
@@ -336,6 +350,7 @@ public class SHACLValidator {
 				}
 			}
 		}
+
 		
 		return errorModel;
 	}
@@ -425,6 +440,7 @@ public class SHACLValidator {
 	
 	public static SHACLValidator getValidator() {
 		if(validator == null) {
+			System.out.println("VALIDATOR CREATED");
 			validator = new SHACLValidator();
 		}
 		

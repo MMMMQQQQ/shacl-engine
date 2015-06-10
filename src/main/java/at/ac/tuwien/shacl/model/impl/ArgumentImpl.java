@@ -113,7 +113,7 @@ public class ArgumentImpl extends SHACLResourceImpl implements Argument {
 		if(NodeKindType.isNodeKindType(nodeKind)) {
 			this.nodeKind = nodeKind;
 		} else {
-			System.out.println("not a node kind: "+nodeKind);
+			//System.out.println("not a node kind: "+nodeKind);
 		}
 	}
 

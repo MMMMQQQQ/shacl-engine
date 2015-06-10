@@ -1,6 +1,7 @@
 package at.ac.tuwien.shacl.registry;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,7 @@ import at.ac.tuwien.shacl.metamodel.Function;
 import at.ac.tuwien.shacl.model.impl.ConstraintTemplateImpl;
 import at.ac.tuwien.shacl.model.impl.FunctionImpl;
 import at.ac.tuwien.shacl.sparql.AskFunctionFactory;
+import at.ac.tuwien.shacl.sparql.HasShapeFunction;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
 import at.ac.tuwien.shacl.sparql.SPARQLQueryExecutor;
 import at.ac.tuwien.shacl.sparql.SelectFunctionFactory;
@@ -24,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
  * Register every known constraint and (built-in) function of the SHACL definition model 
@@ -56,11 +59,14 @@ public class SHACLMetaModelRegistry {
 	//all defined functions of the meta model and potential user defined functions
 	private Map<String, Function> functions;
 	
+	private Set<String> generalConstraints;
+	
 	public SHACLMetaModelRegistry() {
 		this.templates = new HashMap<String, ConstraintTemplate>();
 		this.functions = new HashMap<String, Function>();
 		this.propertyPredicates = new HashMap<String, String>();
 		this.inversePropertyPredicates = new HashMap<String, String>();
+		this.generalConstraints = new HashSet<String>();
 		this.register(SHACL.getModel());
 	}
 	
@@ -86,6 +92,11 @@ public class SHACLMetaModelRegistry {
 		String templateUri = this.inversePropertyPredicates.get(constraintUri);
 		return templates.get(templateUri);
 	}
+	
+	public ConstraintTemplate getGeneralConstraintTemplate(String constraintUri) {
+		//throw exception, if unknown in generalConstraints
+		return templates.get(constraintUri);
+	}
 
 	private void registerTemplates(Model model) {
 		this.registerCoreConstraints(model);
@@ -104,8 +115,8 @@ public class SHACLMetaModelRegistry {
 		List<Resource> constraintTemplates = model.listSubjectsWithProperty(RDF.type, SHACL.ConstraintTemplate).toList();
 		
 		//extract values for each constraint template (each SHACL constraint is of type ConstraintTemplate)
-		for(Resource r : constraintTemplates) {
-			List<Statement> properties = r.listProperties().toList();
+		for(Resource rConstraintTempl : constraintTemplates) {
+			List<Statement> properties = rConstraintTempl.listProperties().toList();
 			////System.out.println("*****");
 			////System.out.println("properties: "+properties);
 			////System.out.println("template uri: "+r.getURI());
@@ -121,27 +132,31 @@ public class SHACLMetaModelRegistry {
 			
 			//add template, if it's not already contained in template list and 
 			//if it has an executable body
-			if(!templates.containsKey(r.getURI()) && constraintTemplate.getExecutableBody() != null) {
-				templates.put(r.getURI(), constraintTemplate);
+			if(!templates.containsKey(rConstraintTempl.getURI()) && constraintTemplate.getExecutableBody() != null) {
+				templates.put(rConstraintTempl.getURI(), constraintTemplate);
 			}
 
 			//add constraint to map, if template is a (inverse) property constraint
-			if(this.isSuperclass(r, SHACL.PropertyConstraint, model)) {
+			if(this.isSuperclass(rConstraintTempl, SHACL.PropertyConstraint, model)) {
 				for(Argument a : constraintTemplate.getArguments()) {
 					//argument sh:predicate is built from superclass
 					//add property name to constraint list, if it's not sh:predicate
 					if(!a.getPredicate().equals(SHACL.predicate)) {
-						this.propertyPredicates.put(a.getPredicate().getURI(), r.getURI());
-						////System.out.println("property constraint: "+a.getPredicate().getURI());
+						this.propertyPredicates.put(a.getPredicate().getURI(), rConstraintTempl.getURI());
+						//System.out.println("property constraint added: "+a.getPredicate().getURI());
 					}
 				}
-			} else if(this.isSuperclass(r, SHACL.InversePropertyConstraint, model)) {
+			} else if(this.isSuperclass(rConstraintTempl, SHACL.InversePropertyConstraint, model)) {
 				for(Argument a : constraintTemplate.getArguments()) {
 					if(!a.getPredicate().equals(SHACL.predicate)) {
-						this.inversePropertyPredicates.put(a.getPredicate().getURI(), r.getURI());
-						////System.out.println("inverse property constraint: "+a.getPredicate().getURI());
+						this.inversePropertyPredicates.put(a.getPredicate().getURI(), rConstraintTempl.getURI());
+						//System.out.println("inverse property constraint added: "+a.getPredicate().getURI());
 					}
 				}
+			} else if(rConstraintTempl.getProperty(RDFS.subClassOf).getObject().equals(SHACL.TemplateConstraint) &&
+					rConstraintTempl.getProperty(SHACL.abstract_) == null) {
+				this.generalConstraints.add(rConstraintTempl.getURI());
+				//System.out.println("general constraint added: " + rConstraintTempl.getURI());
 			}
 		}
 	}
@@ -166,8 +181,7 @@ public class SHACLMetaModelRegistry {
 			
 		return isSuperclass;
 	}
-	
-	//FIXME sh:hasShape is not recognized, since there is no sparql body in the SHACL spec
+
 	public void registerFunctions(Model model) {
 		
 		List<Statement> pcStatements = model.listStatements(
@@ -187,8 +201,7 @@ public class SHACLMetaModelRegistry {
 			} catch (SHACLParsingException e) {
 				e.printStackTrace();
 			}
-			
-			//TODO remove constraint eventually
+
 			if(function.getExecutableBody() != null) {
 				functions.put(s.getSubject().getURI(), function);
 				QueryBuilder q = new QueryBuilder(function.getExecutableBody(), model.getNsPrefixMap());
@@ -198,7 +211,7 @@ public class SHACLMetaModelRegistry {
 					FunctionRegistry.get().put(s.getSubject().getURI(), new SelectFunctionFactory());
 				}
 			} else if(s.getSubject().equals(SHACL.hasShape)) {
-				System.out.println("no body for function" + s.getSubject());
+				FunctionRegistry.get().put(s.getSubject().getURI(), new HasShapeFunction());
 			}
 		}
 	}

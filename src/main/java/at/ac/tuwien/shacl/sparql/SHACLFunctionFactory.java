@@ -37,6 +37,7 @@ public abstract class SHACLFunctionFactory implements FunctionFactory, Function 
 	@Override
 	public NodeValue exec(Binding binding, ExprList args, String uri,
 			FunctionEnv env) {
+		System.out.println("in function");
         if ( args == null ) {
         	throw new ARQInternalErrorException("Null args list") ;
         }
@@ -59,7 +60,8 @@ public abstract class SHACLFunctionFactory implements FunctionFactory, Function 
 		}
 
 		Model model = ModelFactory.createModelForGraph(env.getActiveGraph());
-		
+        System.out.println("is model empty?"+model.isEmpty());
+        //model.write(System.out, "TURTLE");
 		QueryBuilder qb = new QueryBuilder(SHACLMetaModelRegistry.getRegistry().getFunction(uri).getExecutableBody(),
 				model.getNsPrefixMap());
 		
@@ -79,6 +81,7 @@ public abstract class SHACLFunctionFactory implements FunctionFactory, Function 
 		
 		NodeValue nodeValue = executeQuery(qb.getQueryString(), model, qb.getBindings());
 
+		System.out.println("returned sparql result: "+nodeValue+ " uri: "+uri);
 		return nodeValue;
 	}
 	
