@@ -6,7 +6,24 @@
 * This project contains a running SHACL engine of the SHACL Core profile and some additional advanced features.
 
 ## Current status
-[[feature-table.txt]]
+```
+CORE FEATURE		|	STATUS
+Shapes			|	implemented
+Property Constraints	|	implemented
+Other core constraints	|	implemented
+Scope of Constr. & Shps.|	implemented
+Constraint Violations	|	implemented
+
+ADVANCED FEATURE	|	STATUS
+General Shape Constr.	|	implemented
+Templates		|	partially implemented
+Profiles		|	not implemented
+Supported Operations	|	partially implemented
+Functions		|	implemented
+SPARQL-based Execution	|	implemented
+SPARQL Fct. in SHACL NS	|	implemented
+SPARQL Def. of SHACL Tmp|	implemented
+```
 
 ## Basic validation process
 1. The input must be a valid RDF graph
