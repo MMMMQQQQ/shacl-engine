@@ -12,6 +12,7 @@ import at.ac.tuwien.shacl.core.model.PropertyConstraint;
 import at.ac.tuwien.shacl.metamodel.Argument;
 import at.ac.tuwien.shacl.metamodel.ConstraintTemplate;
 import at.ac.tuwien.shacl.model.impl.ConstraintViolationImpl;
+import at.ac.tuwien.shacl.registry.ModelRegistry;
 import at.ac.tuwien.shacl.registry.NamedModels;
 import at.ac.tuwien.shacl.registry.SHACLMetaModelRegistry;
 import at.ac.tuwien.shacl.sparql.QueryBuilder;
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  */
 public class SHACLValidator {
-	private SHACLMetaModelRegistry registry;
+	private ModelRegistry registry;
 
 	private static SHACLValidator validator;
 	
@@ -47,7 +48,6 @@ public class SHACLValidator {
 	
 	public SHACLValidator() {
 		validator = this;
-		this.registry = SHACLMetaModelRegistry.getRegistry();
 		namedModels = new NamedModels();
 		System.out.println("--------------initializing done");
 	}
@@ -59,6 +59,7 @@ public class SHACLValidator {
 	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
 	public Model validateGraph(Model model) throws SHACLParsingException {
+		this.registry = new ModelRegistry(model);
 		return this.validateGraph(Config.DEFAULT_NAMED_MODEL.getURI(), model);
 	}
 	
@@ -71,7 +72,6 @@ public class SHACLValidator {
 
 		System.out.println("number of shape data: "+shapes.size());
 		
-		//TODO implement graph-level constraints
 		for(ShapeInstanceMap shape : shapes) {
 			errorModel.add(this.validateNodeAgainstShape(shape.getInstance(), shape.getShape(), model));
 		}
@@ -100,6 +100,7 @@ public class SHACLValidator {
 		
 		Model errorModel = ModelFactory.createDefaultModel();
 		currentShape = shape;
+		
 		for(Statement p : shape.listProperties(SHACL.property).toList()) {
 			if(p.getObject().isResource()) {
 				if(p.getObject().asResource().getProperty(RDF.type) == null || 
@@ -137,6 +138,8 @@ public class SHACLValidator {
 					
 					if(template != null) {
 						errorModel.add(this.validateGeneralConstraint(focusNode, c.getObject().asResource(), model, template));
+					} else {
+						
 					}
 					//TODO implement template constraints here
 					//throw new SHACLParsingException("Unrecognized constraint type " + c.getObject().asResource().getProperty(RDF.type).getObject());
@@ -186,10 +189,7 @@ public class SHACLValidator {
 		qb.addPreBinding(focusNode, Config.DEFAULT_NAMED_MODEL, currentShape);
 		
 		for(Argument a : template.getArguments()) {
-			System.out.println("argument: "+a.getPredicate());
-			
-			System.out.println("constraint "+constraint.getProperty(a.getPredicate()));
-			
+			System.out.println("template arguments: "+a.getPredicate());
 			if(!a.getPredicate().equals(SHACL.predicate)) {
 				qb.addBinding(a.getPredicate().getLocalName(), constraint.getProperty(a.getPredicate()).getObject());
 			}

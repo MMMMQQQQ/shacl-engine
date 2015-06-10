@@ -1,0 +1,50 @@
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vin:   <http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix ex: <http://example.com/ns#> .
+
+sh:valCnt
+	a sh:Function ;
+	rdfs:subClassOf sh:Functions ;
+	rdfs:label "value count" ;
+	rdfs:comment "Gets the number of values of a given property (?arg2) at a given subject (?arg1). The result is the number of matches of (?arg1, ?arg2, ?object)." ;
+	sh:argument [
+		sh:predicate sh:arg1 ;
+		sh:valueType rdfs:Resource ;
+		rdfs:comment "The subject resource." ;
+	] ;
+	sh:returnType xsd:integer ;
+	sh:sparql """
+		SELECT ((COUNT(?object)) AS ?result)
+		WHERE {
+			?arg1 ?predicate ?object .
+		}
+		""" ;
+.
+
+ex:TestFunctionConstraint
+	a sh:NativeConstraint ;
+	sh:message "there can only be between 1 and 2 triples for the subject" ;
+	sh:predicate rdfs:label ;
+	sh:severity sh:Warning ;
+	sh:sparql """
+		SELECT ?this (?this AS ?subject) ?count
+		WHERE {
+			BIND (sh:valCnt(?this) AS ?count) .
+			FILTER ((?count < 1) || (?count > 2)) .
+		}
+		""" .
+
+ex:ExampleLabelShape
+	a sh:Shape ;
+	sh:constraint ex:TestFunctionConstraint ;
+.
+		
+ex:Resource1
+	sh:nodeShape ex:ExampleLabelShape;
+	rdfs:label "Eins"@de ;
+	rdfs:label "Zwei"@de ;
+	rdfs:label "Trois"@fr .

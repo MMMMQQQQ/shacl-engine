@@ -40,6 +40,7 @@ public class SHACLMetaModelRegistry {
 	public static SHACLMetaModelRegistry getRegistry() {
 		if(registry == null) {
 			registry = new SHACLMetaModelRegistry();
+			registry.register(SHACL.getModel());
 		}
 		
 		return registry;
@@ -67,11 +68,10 @@ public class SHACLMetaModelRegistry {
 		this.propertyPredicates = new HashMap<String, String>();
 		this.inversePropertyPredicates = new HashMap<String, String>();
 		this.generalConstraints = new HashSet<String>();
-		this.register(SHACL.getModel());
 	}
 	
-	private void register(Model model) {
-		this.registerTemplates(model);
+	public void register(Model model) {
+		this.registerCoreTemplates(model);
 		this.registerFunctions(model);
 	}
 	
@@ -98,7 +98,7 @@ public class SHACLMetaModelRegistry {
 		return templates.get(constraintUri);
 	}
 
-	private void registerTemplates(Model model) {
+	private void registerCoreTemplates(Model model) {
 		this.registerCoreConstraints(model);
 	}
 	
@@ -208,6 +208,7 @@ public class SHACLMetaModelRegistry {
 				if(SPARQLQueryExecutor.isAskQuery(q.getQueryString())) {
 					FunctionRegistry.get().put(s.getSubject().getURI(), new AskFunctionFactory());
 				} else if(SPARQLQueryExecutor.isSelectQuery(q.getQueryString())) {
+					System.out.println("function added to registry : "+s.getSubject().getURI());
 					FunctionRegistry.get().put(s.getSubject().getURI(), new SelectFunctionFactory());
 				}
 			} else if(s.getSubject().equals(SHACL.hasShape)) {
