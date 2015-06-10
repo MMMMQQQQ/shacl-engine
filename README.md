@@ -6,7 +6,7 @@
 * This project contains a running SHACL engine of the SHACL Core profile and some additional advanced features.
 
 ## Current status
-{{feature-table.txt}}
+[[feature-table.txt]]
 
 ## Basic validation process
 1. The input must be a valid RDF graph
