@@ -7,8 +7,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 public interface ResultAnnotation extends SHACLResource {
 	public Property getAnnotationProperty();
 
-	public void setAnnotationProperty(Property annotationProperty);
-
 	public String getAnnotationVarName();
 
 	public void setAnnotationVarName(String annotationVarName);

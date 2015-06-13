@@ -10,7 +10,7 @@ ex:SuperShape
 	a sh:Shape ;
 	sh:property [
 		sh:predicate ex:property ;
-		sh:maxCount 1 ;
+		sh:minCount 1 ;
 	] .
 
 ex:ExampleAndShape

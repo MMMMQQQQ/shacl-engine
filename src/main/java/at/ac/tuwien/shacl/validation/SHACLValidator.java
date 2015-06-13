@@ -48,7 +48,7 @@ public class SHACLValidator {
 	
 	public SHACLValidator() {
 		validator = this;
-		namedModels = new NamedModels();
+		
 		System.out.println("--------------initializing done");
 	}
 	
@@ -59,6 +59,7 @@ public class SHACLValidator {
 	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
 	public Model validateGraph(Model model) throws SHACLParsingException {
+		namedModels = new NamedModels();
 		this.registry = new ModelRegistry(model);
 		return this.validateGraph(Config.DEFAULT_NAMED_MODEL.getURI(), model);
 	}

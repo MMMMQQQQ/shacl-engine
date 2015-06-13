@@ -15,7 +15,7 @@ public class Main {
 		//model.read("queryOrConstraint.ttl", "TURTLE");
 		//model.read("queryOrConstraint.ttl", "TURTLE");
 		
-		model.read("queryCustomFunction.ttl", "TURTLE");
+		model.read("queryAndConstraint.ttl", "TURTLE");
 		//model.read("queryMinMaxInvalid.ttl", "TURTLE");
 		model.write(System.out, "TURTLE");
 		

@@ -44,9 +44,13 @@ public class SPARQLQueryExecutor {
 	}
 	
 	private boolean execAsk(QueryExecution exec) {
-		
-		boolean result = exec.execAsk();
-		return result;
+		try {
+			boolean result = exec.execAsk();
+			
+			return result;
+		} finally {
+			exec.close();
+		}
 	}
 	
 	public RDFNode execSelect(final String queryString, final Model model, QuerySolutionMap bindings) {
@@ -65,11 +69,15 @@ public class SPARQLQueryExecutor {
 	
 	private RDFNode execSelect(final QueryExecution exec) {
 		//System.out.println(exec.getQuery());
-		ResultSet result = exec.execSelect();
+		try {
+			ResultSet result = exec.execSelect();
 		
-		RDFNode r = result.next().get("result");
+			RDFNode r = result.next().get("result");
 		
-		return r;
+			return r;
+		} finally {
+			exec.close();
+		}
 	}
 
 //	public static QuerySolution getQuerySolutionForQuery(String queryString, final Model model, QuerySolutionMap bindings) {
