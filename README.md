@@ -3,7 +3,7 @@
 ## Description
 * This is a Java project for an engine supporting the Shapes Constraint Language (SHACL). 
 * It is based on this proposal: https://w3c.github.io/data-shapes/shacl/. 
-* This project contains a running SHACL engine of the SHACL Core profile and some additional advanced features.
+* The validation engine is SPARQL-based and uses [Apache Jena](https://jena.apache.org/).
 
 ## Current status
 ```
