@@ -2,101 +2,113 @@ package at.ac.tuwien.shacl.model.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public class SHACLResourceImpl {
-	//only one value (label) per language (key)
-	private Map<String, String> labels;
-	
-	//only one value (comment) per language (key)
-	private Map<String, String> comments;
-	
-	//use this, if there is only one value for label or comment
-	private String defaultLang;
-	
-	private boolean isAbstract;
+import at.ac.tuwien.shacl.model.Argument;
+import at.ac.tuwien.shacl.model.SHACLResource;
+import at.ac.tuwien.shacl.util.Config;
+import at.ac.tuwien.shacl.vocabulary.SHACL;
 
-	public Map<String, String> getLabels() {
-		return labels;
+import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+
+public class SHACLResourceImpl extends ResourceImpl implements SHACLResource {
+
+	private Map<String, String> messages;
+	
+	public SHACLResourceImpl(Node node, EnhGraph graph) {
+		super(node, graph);
 	}
 	
-	public void addLabel(String lang, String label) {
-		if(this.labels == null) {
-			this.labels = new HashMap<String, String>();
+//	@Override
+//	public boolean isSubclassOf(Resource resource) {
+//		return false;
+//	}
+//
+//	@Override
+//	public boolean isTypeOf(Resource resource) {
+//		return false;
+//	}
+
+//	@Override
+//	public List<Resource> listSubclasses() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	
+	@Override
+	public Map<String, String> getMessages() {
+		if(messages == null) {
+			this.messages = new HashMap<String, String>();
+			
+			List<Statement> statements = this.listProperties(SHACL.message).toList();
+			
+			if(statements.size() == 1) {
+				String lang = statements.get(0).getLanguage() == null ? Config.DEFAULT_LANG : statements.get(0).getLanguage();
+				messages.put(lang, statements.get(0).getString());
+			} else if(statements.size() > 1) {
+				for(Statement statement : statements) {
+					messages.put(statement.getLanguage(), statement.getString());
+				}
+			}
 		}
-		this.labels.put(lang, label);
+		
+		return messages;
 	}
 
-	public void setLabels(Map<String, String> labels) {
-		this.labels = labels;
-	}
-
-	public Map<String, String> getComments() {
-		return comments;
-	}
-	
-	public void addComment(String lang, String comment) {
-		if(this.comments == null) {
-			this.comments = new HashMap<String, String>();
+	protected Boolean getOptionalBooleanOfProperty(Property property) {
+		Statement s = this.getProperty(property);
+		
+		if(s != null) {
+			return s.getBoolean();
+		} else {
+			return null;
 		}
-		this.comments.put(lang, comment);
-	}
-
-	public void setComments(Map<String, String> comments) {
-		this.comments = comments;
-	}
-
-	public String getDefaultLang() {
-		return defaultLang;
-	}
-
-	public void setDefaultLang(String defaultLang) {
-		this.defaultLang = defaultLang;
 	}
 	
-	public boolean isAbstract() {
-		return this.isAbstract;
-	}
-	
-	public void setAbstract(boolean isAbstract) {
-		this.isAbstract = isAbstract;
-	}
-	
-
-	private String executableBody;
-	
-	private Set<ArgumentImpl> arguments;
-	
-	public String getExecutableBody() {
-		return executableBody;
-	}
-
-	public void setExecutableBody(String executableBody) {
-		this.executableBody = executableBody;
-	}
-	
-	public Set<ArgumentImpl> getArguments() {
-		return arguments;
-	}
-
-	public void setArguments(Set<ArgumentImpl> arguments) {
-		this.arguments = arguments;
-	}
-	
-	public void addArgument(ArgumentImpl argument) {
-		if(this.arguments == null) {
-			arguments = new HashSet<ArgumentImpl>();
+	protected Resource getOptionalResourceOfProperty(Property property) {
+		Statement s = this.getProperty(property);
+		
+		if(s != null) {
+			return s.getResource();
+		} else {
+			return null;
 		}
-		arguments.add(argument);
 	}
 	
-	public void addArguments(Set<ArgumentImpl> arguments) {
-		if(this.arguments == null) {
-			this.arguments = new HashSet<ArgumentImpl>();
+	protected RDFNode getOptionalNodeOfProperty(Property property) {
+		Statement s = this.getProperty(property);
+		
+		if(s != null) {
+			return s.getObject();
+		} else {
+			return null;
 		}
-		this.arguments.addAll(arguments);
+	}
+	
+	protected String getOptionalStringOfProperty(Property property) {
+		Statement s = this.getProperty(property);
+		
+		if(s != null) {
+			return s.getString();
+		} else {
+			return null;
+		}
+	}
+	
+	protected List<RDFNode> listObjectsOfProperty(Property property) {
+		List<RDFNode> nodes = new ArrayList<RDFNode>();
+		
+		for(Statement stmt : this.listProperties(property).toList()) {
+			nodes.add(stmt.getObject());
+		}
+		
+		return nodes;
 	}
 }

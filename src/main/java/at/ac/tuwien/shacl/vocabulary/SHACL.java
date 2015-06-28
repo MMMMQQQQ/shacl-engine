@@ -25,6 +25,8 @@ public class SHACL {
 
     public final static String PREFIX = "sh";
     
+    public final static Property final_ = ResourceFactory.createProperty(NS + "final");
+    
     public final static Property sparqlEntailment = ResourceFactory.createProperty(NS + "sparqlEntailment");
     
     public final static Resource ClosedShapeConstraint = ResourceFactory.createResource(NS + "ClosedShapeConstraint");
@@ -153,7 +155,7 @@ public class SHACL {
 
     public final static Resource invoke = ResourceFactory.createResource(NS + "invoke");
 
-    public final static Resource label = ResourceFactory.createResource(NS + "label");
+    public final static Property label = ResourceFactory.createProperty(NS + "label");
 
     public final static Property labelTemplate = ResourceFactory.createProperty(NS + "labelTemplate");
 
@@ -207,7 +209,7 @@ public class SHACL {
 
     public final static Property valueShape = ResourceFactory.createProperty(NS + "valueShape");
 
-    public final static Property valueType = ResourceFactory.createProperty(NS + "valueType");
+    public final static Property valueClass = ResourceFactory.createProperty(NS + "valueClass");
 
     public final static Property violation = ResourceFactory.createProperty(NS + "violation");
 
@@ -217,15 +219,20 @@ public class SHACL {
 
 	public final static Property optionalWhenInherited = ResourceFactory.createProperty(NS + "optionalWhenInherited");
 
+	public final static Property scopeShape = ResourceFactory.createProperty(NS + "scopeShape");
 
     public static String getURI() {
         return NS;
     }
     
+    private static Model model;
+    
     public static Model getModel() {
-    	Model model = ModelFactory.createDefaultModel();
-    	InputStream in = SHACL.class.getResourceAsStream("/"+Config.SHACL_METAMODEL_FILE_LOCATION);
-    	model.read(in, "", "TURTLE");
+    	if(model == null) {
+    		model = ModelFactory.createDefaultModel();
+        	InputStream in = SHACL.class.getResourceAsStream("/"+Config.SHACL_METAMODEL_FILE_LOCATION);
+        	model.read(in, "", "TURTLE");
+    	}
 
 		return model;
     }

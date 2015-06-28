@@ -11,13 +11,13 @@ ex:AllowedValuesTestTemplateConstraint
 	rdfs:comment "Test template" ;
 	sh:argument [
 		sh:predicate sh:allowVal ;
-		sh:valueType rdf:List ;
+		sh:valueClass rdf:List ;
 		rdfs:label "allowed values" ;
 		rdfs:comment "The rdf:List containing the allowed values of the property." ;
 	] ;
 	sh:argument [
 		sh:predicate sh:pred ;
-		sh:valueType rdf:Property ;
+		sh:valueClass rdf:Property ;
 		rdfs:label "allowed values" ;
 		rdfs:comment "The rdf:List containing the allowed values of the property." ;
 	] ;

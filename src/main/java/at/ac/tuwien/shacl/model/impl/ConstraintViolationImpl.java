@@ -3,7 +3,7 @@ package at.ac.tuwien.shacl.model.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import at.ac.tuwien.shacl.metamodel.ConstraintViolation;
+import at.ac.tuwien.shacl.model.ConstraintViolation;
 import at.ac.tuwien.shacl.util.Config;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
@@ -11,8 +11,9 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
-public class ConstraintViolationImpl extends SHACLResourceImpl implements ConstraintViolation {
+public class ConstraintViolationImpl implements ConstraintViolation {
 	//key: lang, value: message
 	private Map<String, String> messages;
 	
@@ -34,12 +35,16 @@ public class ConstraintViolationImpl extends SHACLResourceImpl implements Constr
 	
 	//sh:source: constraint violation (one sh:Constraint) that caused the violation
 	private Resource source;
-
-	public ConstraintViolationImpl(Resource type, Resource root, Resource subject, Property predicate, Resource object) {
-		this.setType(type);
+	
+	public ConstraintViolationImpl(Resource violationType, Resource root, 
+			Resource subject, Resource predicate, Resource object) {
+		this.setType(violationType);
 		this.setRoot(root);
 		this.setSubject(subject);
-		this.setPredicate(predicate);
+		if(predicate != null) {
+			this.setPredicate(ResourceFactory.createProperty(predicate.getURI()));
+		}
+		
 		this.setObject(object);
 	}
 	

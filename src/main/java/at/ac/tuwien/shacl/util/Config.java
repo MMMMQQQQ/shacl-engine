@@ -10,9 +10,9 @@ public class Config {
 	
 	public static final String DEFAULT_LANG = "eng";
 	
-	public static final String SHACL_METAMODEL_FILE_LOCATION = "shacl-new.shacl.ttl";
+	public static final String SHACL_METAMODEL_FILE_LOCATION = "shacl.shacl.ttl";
 	
 	public static final Resource DEFAULT_SEVERITY = SHACL.Error;
 	
-	public static final Resource DEFAULT_NAMED_MODEL = ResourceFactory.createResource("sh:namedModel");
+	public static final Resource DEFAULT_NAMED_MODEL = ResourceFactory.createResource("sh:defNamedModel");
 }
