@@ -16,14 +16,16 @@ Constraint Violations	|	implemented
 
 ADVANCED FEATURE		|	STATUS
 General Shape Constr.	|	implemented
-Templates				|	partially implemented
+Templates				|	implemented
 Profiles				|	not implemented
-Supported Operations	|	partially implemented
+Supported Operations	|	implemented
 Functions				|	implemented
 SPARQL-based Execution	|	implemented
 SPARQL Fct. in SHACL NS	|	implemented
 SPARQL Def. of SHACL Tmp|	implemented
 ```
+
+For a detailed description of the current work progress, check out the Issues page.
 
 ## Basic validation process
 1. The input must be a valid RDF graph
