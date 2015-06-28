@@ -2,8 +2,10 @@ package at.ac.tuwien.shacl.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import at.ac.tuwien.shacl.executable.Executables;
 import at.ac.tuwien.shacl.executable.sparql.SPARQLExecutableLanguage;
@@ -134,6 +136,23 @@ public class SHACLValidator {
 	 */
 	public Model validateConstraint(Resource focusNode, Resource constraint, Model model) {
 		return this.validateConstraint(focusNode, registry.getNamedConstraint(constraint.getURI()), model);
+	}
+	
+	/** This operation validates a single node against all shapes associated with it, based on in-graph mappings.
+
+	Argument	Type	Description
+	?focusNode	rdfs:Resource	The focus node to validate
+	?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
+	 * @throws SHACLParsingException 
+	*/
+	public Model validateNode(Resource focusNode, Model model) throws SHACLParsingException {
+		Model errorModel = ModelFactory.createDefaultModel();
+		
+		for(Shape shape : this.getInstantiatedShapes(focusNode, model)) {
+			errorModel.add(this.validateNodeAgainstShape(focusNode, shape, model));
+		}
+		
+		return errorModel;
 	}
 	
 	protected Model validateConstraint(Resource focusNode, Constraint constraint, Model model) {
@@ -280,16 +299,6 @@ public class SHACLValidator {
 		
 		return messages;
 	}
-
-	/** This operation validates a single node against all shapes associated with it, based on in-graph mappings.
-
-		Argument	Type	Description
-		?focusNode	rdfs:Resource	The focus node to validate
-		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
-	*/
-	public Model validateNode(Resource focusNode) {
-		return null;
-	}
 	
 	private class ShapeInstanceMap {
 		private Shape shape;
@@ -325,6 +334,36 @@ public class SHACLValidator {
 		 */
 		
 		return attachedShapes;
+	}
+	
+	//TODO merge with other instantiation shape method 
+	public Set<Shape> getInstantiatedShapes(Resource focusNode, Model model) {
+		Set<Shape> shapes = new HashSet<Shape>();
+
+		for(Statement stmt : focusNode.listProperties(SHACL.nodeShape).toList()) {
+			Shape shape = this.registry.getNamedShape(stmt.getResource().getURI());
+			if(shape != null) {
+				shapes.add(shape);
+			} else {
+				//TODO add possiblity for anonymous shapes
+			}
+		}
+		
+		//TODO only one rdf:type is recognized currently
+		for(Statement stmt : focusNode.listProperties(RDF.type).toList()) {
+			Resource potentialShape = stmt.getResource();
+			if(potentialShape.listProperties(RDF.type).toSet().contains(SHACL.Shape) || 
+					potentialShape.listProperties(RDF.type).toSet().contains(SHACL.ShapeClass)) {
+				shapes.add(this.registry.getNamedShape(potentialShape.getURI()));
+			}
+
+			if(model.listObjectsOfProperty(
+					SHACL.scopeClass).toSet().contains(potentialShape.getProperty(RDF.type))) {
+				shapes.add(this.registry.getNamedShape(potentialShape.getURI()));
+			}
+		}
+		
+		return shapes;
 	}
 
 	/**
