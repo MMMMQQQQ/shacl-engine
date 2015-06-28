@@ -10,7 +10,11 @@ ex:SuperShape
 	a sh:Shape ;
 	sh:property [
 		sh:predicate ex:property ;
+<<<<<<< HEAD
 		sh:minCount 1 ;
+=======
+		sh:minCount 0 ;
+>>>>>>> refactor
 	] .
 
 ex:ExampleAndShape
@@ -29,12 +33,6 @@ ex:ExampleAndShape
 	] .
 
 
-#ex:ValidInstance1
-#	sh:nodeShape ex:ExampleAndShape;
-#	ex:property "One" .
-
-# Invalid: more than one property
-ex:InvalidInstance2
+ex:ValidInstance1
 	sh:nodeShape ex:ExampleAndShape;
-	ex:property "One" ;
-	ex:property "Two" .
+	ex:property "One" .

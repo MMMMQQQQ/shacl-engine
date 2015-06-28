@@ -1,12 +1,10 @@
 package at.ac.tuwien.shacl.util;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * Inject values from SPARQL queries or other sources to a target and replace
@@ -19,11 +17,21 @@ import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
 public class ValueInjector {
 	private static Pattern pattern = null;
 	
-	private static void initPattern() {
+	/**
+	 * Initiate the regex pattern once, because the process takes awhile.
+	 */
+	protected static void initPattern() {
 		pattern = Pattern.compile("\\{\\?([a-zA-Z0-9\\-]+)\\}");
 	}
 	
-	public static String inject(String string, Map<String, Object> variables) {
+	/**
+	 * Inject variable values to a target string with the placeholder variables.
+	 * 
+	 * @param string the string to inject the values in
+	 * @param variables a map containing the variables and the corresponding values
+	 * @return the injected string
+	 */
+	public static String inject(String string, Map<String, RDFNode> variables) {
 		if(pattern == null) {
 			initPattern();
 		}
@@ -34,8 +42,13 @@ public class ValueInjector {
 			while (m.find())
 			{
 				String variable = m.group(1);
-				String value = variables.get(variable)!=null ? 
-						variables.get(variable).toString() : null;
+				String value = null;
+				
+				if(variables.containsKey(variable)) {
+					value = variables.get(variable).isLiteral() ? 
+							variables.get(variable).asLiteral().getString() : variables.get(variable).toString();
+				}
+
 				if(value != null) {
 					string = string.replace("{?"+ variable +"}", value);
 				} else {

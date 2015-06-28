@@ -2,6 +2,8 @@ package at.ac.tuwien.shacl.metamodel;
 
 import java.util.List;
 
+import at.ac.tuwien.shacl.model.SHACLResource;
+
 import com.hp.hpl.jena.rdf.model.Property;
 
 public interface ResultAnnotation extends SHACLResource {

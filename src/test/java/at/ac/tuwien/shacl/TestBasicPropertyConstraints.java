@@ -68,13 +68,13 @@ public class TestBasicPropertyConstraints {
 	}
 	
 	@Test
-	public void testInvalidValueType() {
-		this.testModelInvalid("queryValueTypeInvalid.ttl");
+	public void testInvalidValueClass() {
+		this.testModelInvalid("queryValueClassInvalid.ttl");
 	}
 	
 	@Test
-	public void testValidValueType() {
-		this.testModelValid("queryValueTypeValid.ttl");
+	public void testValidValueClass() {
+		this.testModelValid("queryValueClassValid.ttl");
 	}
 
 	private void testModel(String filename, boolean validModel) {

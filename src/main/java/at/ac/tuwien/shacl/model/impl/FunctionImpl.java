@@ -1,27 +1,25 @@
 package at.ac.tuwien.shacl.model.impl;
 
-import at.ac.tuwien.shacl.metamodel.Function;
+import at.ac.tuwien.shacl.model.Function;
+import at.ac.tuwien.shacl.vocabulary.SHACL;
 
+import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public class FunctionImpl extends SHACLResourceImpl implements Function {
-	private Resource returnType;
+public class FunctionImpl extends MacroImpl implements Function {
 	
-	private boolean cachable;
-
+	public FunctionImpl(Node node, EnhGraph graph) {
+		super(node, graph);
+	}
+	
+	@Override
 	public Resource getReturnType() {
-		return returnType;
+		return this.getOptionalResourceOfProperty(SHACL.returnType);
 	}
 
-	public void setReturnType(Resource returnType) {
-		this.returnType = returnType;
-	}
-
-	public boolean isCachable() {
-		return cachable;
-	}
-
-	public void setCachable(boolean cachable) {
-		this.cachable = cachable;
+	@Override
+	public Boolean isCachable() {
+		return this.getOptionalBooleanOfProperty(SHACL.cachable);
 	}
 }

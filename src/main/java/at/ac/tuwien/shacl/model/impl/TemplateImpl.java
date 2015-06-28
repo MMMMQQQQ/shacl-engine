@@ -1,5 +1,13 @@
 package at.ac.tuwien.shacl.model.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import at.ac.tuwien.shacl.model.Template;
+
+import com.hp.hpl.jena.enhanced.EnhGraph;
+import com.hp.hpl.jena.graph.Node;
+
 
 /**
  *  - Used to encapsulate and parameterize executable bodies based on arguments
@@ -11,30 +19,40 @@ package at.ac.tuwien.shacl.model.impl;
  * @author xlin
  *
  */
-public class TemplateImpl extends SHACLResourceImpl {
-	private String labelTemplate;
-
-	public String getLabelTemplate() {
-		return labelTemplate;
-	}
-
-	public void setLabelTemplate(String labelTemplate) {
-		this.labelTemplate = labelTemplate;
-	}
+public class TemplateImpl extends MacroImpl implements Template {
+	private Map<String, String> labelTemplates;
 	
+	public TemplateImpl(Node node, EnhGraph graph) {
+		super(node, graph);
+		this.labelTemplates = new HashMap<String, String>();
+	}
+
+	@Override
+	public String getLabelTemplate(String language) {
+		//TODO implement
+		return labelTemplates.get(language);
+	}
+
+	@Override
+	public Map<String, String> getLabelTemplates() {
+		//TODO implement
+		if(this.labelTemplates == null) {
+			this.labelTemplates = new HashMap<String, String>();
+		}
+		return labelTemplates;
+	}
+
 	/**
 	 * A template must either be abstract or have an executable body.
 	 * Check, if template is valid under those circumstances.
 	 * 
 	 * @return
 	 */
-	public boolean isValidTemplate() {
-		if(this.isAbstract() && this.getExecutableBody()==null) {
-			return true;
-		} else if(!this.isAbstract() && this.getExecutableBody()!=null) {
-			return true;
-		} else {
+	protected boolean isValidTemplate() {		
+		if(!this.isAbstract() && !this.hasExecutableBody()) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 }

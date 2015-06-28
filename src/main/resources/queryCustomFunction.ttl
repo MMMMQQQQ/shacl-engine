@@ -13,7 +13,7 @@ sh:valCnt
 	rdfs:comment "Gets the number of values of a given property (?arg2) at a given subject (?arg1). The result is the number of matches of (?arg1, ?arg2, ?object)." ;
 	sh:argument [
 		sh:predicate sh:arg1 ;
-		sh:valueType rdfs:Resource ;
+		sh:valueClass rdfs:Resource ;
 		rdfs:comment "The subject resource." ;
 	] ;
 	sh:returnType xsd:integer ;

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import at.ac.tuwien.shacl.vocabulary.SHACL;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -28,7 +30,7 @@ public class GraphTraverser {
 	 * @param model
 	 * @return
 	 */
-	public static List<Statement> listAllSubclassesOfNodeAsSubject(RDFNode node, Model model) {
+	public static List<Statement> listAllSubclassesOfNodeAsSubject(Resource node, Model model) {
 		List<Statement> subclasses = listDirectSubclassesOfNodeAsSubject(node, model);
 		List<Statement> resultList = new ArrayList<Statement>();
 
@@ -38,6 +40,7 @@ public class GraphTraverser {
 		subclasses.addAll(resultList);
 		return subclasses;
 	}
+
 	
 	/**
 	 * Get all direct subclasses of a node
@@ -46,7 +49,7 @@ public class GraphTraverser {
 	 * @param model
 	 * @return
 	 */
-	public static List<Statement> listDirectSubclassesOfNodeAsSubject(RDFNode node, Model model) {
+	public static List<Statement> listDirectSubclassesOfNodeAsSubject(Resource node, Model model) {
 		return model.listStatements(null, RDFS.subClassOf, node).toList();
 	}
 	
@@ -103,5 +106,10 @@ public class GraphTraverser {
 		}
 		
 		return cleanedStatements;
+	}
+	
+	public static List<Resource> getResourcesOfRdfType(Model model, RDFNode node) {
+		//get all subjects that are of rdf:type of the node
+		return model.listResourcesWithProperty(RDF.type, node).toList();
 	}
 }
