@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.ac.tuwien.shacl.executable.Executables;
 import at.ac.tuwien.shacl.executable.sparql.SPARQLExecutableLanguage;
 import at.ac.tuwien.shacl.model.Constraint;
@@ -24,89 +27,82 @@ import at.ac.tuwien.shacl.util.SHACLParsingException;
 import at.ac.tuwien.shacl.util.ValueInjector;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.sparql.mgt.Explain;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
- * Covers section 11, supported operations
+ * Covers section 11, supported operations. Kick starts the validation process.
  * @author xlin
  *
  */
 public class SHACLValidator {
+	private final Logger log = LoggerFactory.getLogger(SHACLValidator.class);
+
 	private SHACLModelRegistry registry;
 
 	private static SHACLValidator validator;
 	
 	private static NamedModelsRegistry namedModels;
 
-	//TODO refactor
 	private Resource currentShape;
 	
 	public SHACLValidator() {
 		validator = this;
-
-		namedModels = new NamedModelsRegistry();
-
-		System.out.println("--------------initializing done");
+		namedModels = NamedModelsRegistry.get();
 		
 		//add sparql executable
 		Executables.addExecutable(new SPARQLExecutableLanguage());
 	}
 	
-	/*
+	/**
 	 * This operation validates a whole graph against all shapes associated with its resources, 
 	 * based on in-graph mappings.
-	 * 
-	 * ?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
 	 */
-	public Model validateGraph(Model model) throws SHACLParsingException {
-		this.registry = SHACLModelRegistry.get();
+	public Model validateGraph(Model model) {
+		this.registry = SHACLModelRegistry.createNewInstance();
 		this.registry.register(model);
 
 		return this.validateGraph(Config.DEFAULT_NAMED_MODEL.getURI(), model);
 	}
 	
-	public Model validateGraph(String uri, Model model) throws SHACLParsingException {
+	public Model validateGraph(String uri, Model model) {
 		namedModels.addNamedGraph(uri, model);
 		namedModels.setDefaultModel(model);
 		
 		List<ShapeInstanceMap> shapes = this.getInstantiatedShapes(model);
 		Model errorModel = ModelFactory.createDefaultModel();
 
-		System.out.println("number of shape data: "+shapes.size());
+		log.debug("number of shape data: "+shapes.size());
 		
 		for(ShapeInstanceMap shape : shapes) {
 			errorModel.add(this.validateNodeAgainstShape(shape.getInstance(), shape.getShape(), model));
 		}
 
-		System.out.println("*******constraint violations*******");
+		log.info("*******constraint violations*******");
+		
 		if(errorModel.isEmpty()) {
-			System.out.println("{}");
+			log.info("{}");
 		} else {
-			errorModel.write(System.out, "Turtle");
+			log.info(errorModel.getGraph().toString());
 		}
 
 		return errorModel;
 	}
 	
-	/* This operation validates a single node against all constraints associated with a given shape.
-
-		Argument	Type	Description
-		?focusNode	rdfs:Resource	The focus node to validate
-		?shape	sh:Shape	The shape that has the constraints.
-		?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
+	/** This operation validates a single node against all constraints associated with a given shape.
 	 */
-	public Model validateNodeAgainstShape(Resource focusNode, Resource shapeNode, Model model) throws SHACLParsingException {
-		System.out.println("*****************************");
-		
+	public Model validateNodeAgainstShape(Resource focusNode, Resource shapeNode, Model model) {
 		Model errorModel = ModelFactory.createDefaultModel();
 		currentShape = shapeNode;
 
+		
 		Shape shape = this.registry.getNamedShape(shapeNode.getURI());
 
 		for(Constraint constraint : shape.getConstraints()) {
@@ -116,13 +112,8 @@ public class SHACLValidator {
 		return errorModel;
 	}
 
-	/* This operation evaluates a single constraint and produces constraint violations.
+	/** This operation evaluates a single constraint and produces constraint violations.
 
-		Argument	Type	Description
-		?constraint	sh:Constraint	The constraint to evalate
-		?focusNode	rdfs:Resource (Optional)	The focus node, if present.
-		This operation assumes that the ?constraint is either a native constraint or a template constraint.
-	
 		For native constraints, the operation selects one of the provided executable bodies. 
 		For example if the constraint has a sh:sparql query and the engine is capable of executing SPARQL,
 		it should follow the execution rules specified in the SPARQL-based Constraints section, 
@@ -139,11 +130,6 @@ public class SHACLValidator {
 	}
 	
 	/** This operation validates a single node against all shapes associated with it, based on in-graph mappings.
-
-	Argument	Type	Description
-	?focusNode	rdfs:Resource	The focus node to validate
-	?minSeverity	rdfs:Class	The minimum severity class, e.g. sh:Error specifying which constraints to exclude/include.
-	 * @throws SHACLParsingException 
 	*/
 	public Model validateNode(Resource focusNode, Model model) throws SHACLParsingException {
 		Model errorModel = ModelFactory.createDefaultModel();
@@ -158,7 +144,6 @@ public class SHACLValidator {
 	protected Model validateConstraint(Resource focusNode, Constraint constraint, Model model) {
 		Model errorModel = ModelFactory.createDefaultModel();
 		
-		//TODO distinguish between sh:property and sh:inverseProperty
 		if(constraint.getConstraintType().equals(SHACL.property) || 
 				constraint.getConstraintType().equals(SHACL.inverseProperty)) {
 			errorModel.add(this.validatePropertyConstraint(focusNode, constraint, errorModel));
@@ -180,16 +165,16 @@ public class SHACLValidator {
 		
 		TemplateConstraint templateCst= SHACLResourceFactory.createTemplateConstraint(constraint);
 		for(Map.Entry<Template, Map<String, RDFNode>> instance : templateCst.getTemplateInstances().entrySet()) {
-			System.out.println("~~~~instance:");
 			String executable = instance.getKey().getExecutableBody(SHACL.sparql);
 			Dataset dataset = namedModels.getDataset();
 			Map<String, RDFNode> mappings = this.createInitialMapping(focusNode, Config.DEFAULT_NAMED_MODEL, currentShape);
 			mappings.putAll(instance.getValue());
-			System.out.println("templates: "+instance.getKey());
+
 			Map<String, RDFNode> result = Executables.getExecutable(SHACL.sparql).executeAsMultipleValues(executable, dataset, mappings);
 
 			if(result.size() > 0) {
 				//TODO allow custom severity
+				
 				ConstraintViolation violation = SHACLResourceFactory.createConstraintViolation(
 						SHACL.Error, focusNode, focusNode, null, null);
 
@@ -200,7 +185,7 @@ public class SHACLValidator {
 
 				errorModel.add(violation.getModel());
 			}
-			System.out.println("result: "+result);
+			log.debug("result of validation: "+result);
 		}
 		
 		return errorModel;
@@ -228,21 +213,21 @@ public class SHACLValidator {
 
 			errorModel.add(violation.getModel());
 		}
-		System.out.println("result: "+result);
+		log.debug("result of validation: "+result);
 		
 		return errorModel;
 	}
 	
 	private Model validatePropertyConstraint(Resource focusNode, Constraint constraint, Model model) {
 		Model errorModel = ModelFactory.createDefaultModel();
-		
+
 		PropertyConstraint propCst= SHACLResourceFactory.createPropertyConstraint(constraint);
 		for(Map.Entry<Template, Map<String, RDFNode>> instance : propCst.getTemplateInstances().entrySet()) {
 			String executable = instance.getKey().getExecutableBody(SHACL.sparql);
 			Dataset dataset = namedModels.getDataset();
 			Map<String, RDFNode> mappings = this.createInitialMapping(focusNode, Config.DEFAULT_NAMED_MODEL, currentShape);
 			mappings.putAll(instance.getValue());
-			System.out.println("templates: "+instance.getKey());
+
 			Map<String, RDFNode> result = Executables.getExecutable(SHACL.sparql).executeAsMultipleValues(executable, dataset, mappings);
 
 			if(result.size() > 0) {
@@ -257,7 +242,7 @@ public class SHACLValidator {
 
 				errorModel.add(violation.getModel());
 			}
-			System.out.println("result: "+result);
+			log.debug("result of validation: "+result);
 		}
 		
 		return errorModel;
@@ -274,7 +259,6 @@ public class SHACLValidator {
 	}
 	
 	private boolean isNativeConstraint(Resource constraint) {
-		System.out.println("constraint: "+constraint.getProperty(RDF.type));
 		if(constraint.getProperty(RDF.type) == null || 
 				constraint.getProperty(RDF.type).getObject().equals(SHACL.NativeConstraint)) {
 			return true;
@@ -317,26 +301,7 @@ public class SHACLValidator {
 			return this.instance;
 		}
 	}
-	
-	public List<Shape> getInstantiatedShapes(Resource focusNode) {
-		List<Shape> attachedShapes = new ArrayList<Shape>();
-		
-		/**
-		 * 
-			forEach ?shape := (?focusNode sh:nodeShape ?shape)
-				validateNodeAgainstShape(?focusNode, ?shape, ?minSeverity)
-			
-			forEach ?type := (?focusNode rdf:type/rdfs:subClassOf* ?type)
-				if (?type instanceof sh:Shape)
-					validateNodeAgainstShape(?focusNode, ?type, ?minSeverity)
-				forEach ?shape := (?shape sh:scopeClass ?type)
-					validateNodeAgainstShape(?focusNode, ?shape, ?minSeverity)
-		 */
-		
-		return attachedShapes;
-	}
-	
-	//TODO merge with other instantiation shape method 
+
 	public Set<Shape> getInstantiatedShapes(Resource focusNode, Model model) {
 		Set<Shape> shapes = new HashSet<Shape>();
 
@@ -386,16 +351,18 @@ public class SHACLValidator {
 
 			if(shapeS.getSubject().getProperty(SHACL.scopeClass) != null) {
 				Resource scopeClass = shapeS.getSubject().getProperty(SHACL.scopeClass).getResource();
+
 				if(scopeClass != null) {
 					List<Statement> scopeStatements = model.listStatements(null, RDF.type, scopeClass).toList();
 					for(Statement s : scopeStatements) {
-						shapeInstances.add(new ShapeInstanceMap(this.registry.getNamedShape(s.getResource().getURI()), s.getSubject()));
+						shapeInstances.add(new ShapeInstanceMap(this.registry.getNamedShape(shapeS.getSubject().getURI()), s.getSubject()));
 					}
 				}
 			}
 		}
 		
 		for(Statement shapeS : model.listStatements(null, RDF.type, SHACL.ShapeClass).toList()) {
+			
 			for(Statement s : model.listStatements(null, RDF.type, shapeS.getSubject()).toList()) {
 				shapeInstances.add(new ShapeInstanceMap(this.registry.getNamedShape(s.getResource().getURI()), s.getSubject()));
 			}
@@ -406,7 +373,6 @@ public class SHACLValidator {
 	
 	public static SHACLValidator getDefaultValidator() {
 		if(validator == null) {
-			System.out.println("VALIDATOR CREATED");
 			validator = new SHACLValidator();
 		}
 		

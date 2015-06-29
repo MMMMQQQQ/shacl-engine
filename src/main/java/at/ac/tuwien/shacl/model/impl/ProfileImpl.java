@@ -9,7 +9,6 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-
 public class ProfileImpl extends SHACLResourceImpl implements Profile {
 	
 	private Map<String, Resource> members;

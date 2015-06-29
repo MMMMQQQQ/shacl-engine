@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.atlas.logging.Log;
+
 import at.ac.tuwien.shacl.executable.ExecutableLanguage;
 import at.ac.tuwien.shacl.executable.Executables;
 import at.ac.tuwien.shacl.model.Constraint;
@@ -20,6 +22,14 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/**
+ * A registry for all functions, templates, constraints and shapes.
+ * Note that anonymous resources will not be registered, i.e. only 
+ * resources with URIs will be considered.
+ * 
+ * @author xlin
+ *
+ */
 public class SHACLModelRegistry {
 	private Map<String, Function> functions;
 	
@@ -134,6 +144,7 @@ public class SHACLModelRegistry {
 			if(r.getURI() != null) {
 				Shape s = SHACLResourceFactory.createShape(r);
 				namedShapes.put(s.getURI(), s);
+				Log.debug(this.getClass(), "shape with uri "+s.getURI()+" registered");
 			}
 		}
 	}
@@ -215,13 +226,14 @@ public class SHACLModelRegistry {
 	public static SHACLModelRegistry get() {
 		if(registry == null) {
 			//init registry with data from shacl spec model
-			registry = new SHACLModelRegistry(getSHACLModelRegistry());
+			registry = createNewInstance();
 		}
 		
 		return registry;
 	}
 	
-	public static SHACLModelRegistry createInstance() {
-		return new SHACLModelRegistry(metamodelRegistry);
+	public static SHACLModelRegistry createNewInstance() {
+		registry = new SHACLModelRegistry(getSHACLModelRegistry());
+		return registry;
 	}
 }

@@ -20,11 +20,17 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 
-//implements the sh:property and sh:inverseProperty of a Shape
+/**
+ * Implements the sh:property and sh:inverseProperty of a Shape.
+ * 
+ * @author xlin
+ *
+ */
 public class PropertyConstraint extends ConstraintImpl {
 
 	public PropertyConstraint(Node node, EnhGraph graph) {
 		super(node, graph);
+
 		this.init();
 	}
 	
@@ -39,7 +45,14 @@ public class PropertyConstraint extends ConstraintImpl {
 		Map<Template, TemplateInstance> registeredTmpls = new HashMap<Template, TemplateInstance>();
 
 		for(Statement stmt : this.listProperties().toList()) {
-			Template template = SHACLPropertyRegistry.get().getTemplate(stmt.getPredicate().getURI());
+			Template template = null;
+			
+			if(this.getConstraintType().equals(SHACL.property)) {
+				template = SHACLPropertyRegistry.get().getTemplate(stmt.getPredicate().getURI());
+			} else if(this.getConstraintType().equals(SHACL.inverseProperty)) {
+				template = SHACLPropertyRegistry.getInverse().getTemplate(stmt.getPredicate().getURI());
+			}
+			
 			TemplateInstance tmpInstance = null;
 			
 			if(template != null) {

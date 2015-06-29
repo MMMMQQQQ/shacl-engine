@@ -25,8 +25,6 @@ public class TestSHACLModelRegistry {
 		assertTrue(registry.getTemplates().size()>0);
 		assertNotNull(registry.getTemplate(SHACL.NS + "AbstractCountPropertyConstraint"));
 		assertNotNull(registry.getTemplate(SHACL.NS + "XorConstraint"));
-
-		System.out.println(registry.getFunction(SHACL.NS + "valueCount").getExecutableBody(SHACL.sparql));
 	}
 	
 	@Test

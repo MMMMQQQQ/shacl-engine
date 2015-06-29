@@ -27,29 +27,7 @@ public class SPARQLExecutableLanguage implements ExecutableLanguage {
 	
 	private SPARQLExecutor executor;
 	
-	public SPARQLExecutableLanguage() {
-//		builtins = new HashMap<String, Function>();
-		
-		//register built-in functions of SHACL specification
-//		List<Resource> functions = GraphTraverser.getResourcesOfRdfType(metamodel, SHACL.Function);
-//		
-//		for(Resource functionNode : functions) {
-//			Function function = SHACLResourceFactory.createFunction(functionNode);
-//			
-//			//register in arq registry
-//			if(function.getExecutableBody(this.getCommand()) != null) {
-//				if(this.isAskQuery(function.getExecutableBody(this.getCommand()))) {
-//					FunctionRegistry.get().put(functionNode.getURI(), new AskFunctionFactory());
-//				} else if(this.isSelectQuery(function.getExecutableBody(this.getCommand())) {
-//					FunctionRegistry.get().put(functionNode.getURI(), new SelectFunctionFactory());
-//				}
-//			} else if(functionNode.equals(SHACL.hasShape)) {
-//				FunctionRegistry.get().put(functionNode.getURI(), new HasShapeFunction());
-//			}
-//			
-//			builtins.put(functionNode.getURI(), function);
-//		}
-		
+	public SPARQLExecutableLanguage() {		
 		this.executor = new SPARQLExecutor();
 	}
 	
@@ -57,24 +35,12 @@ public class SPARQLExecutableLanguage implements ExecutableLanguage {
 	public Property getCommand() {
 		return SHACL.sparql;
 	}
-	
-	@Override
-	public RDFNode executeAsSingleValue(String query, Model model) {
-		query = this.buildExecutable(query, model);
-		return this.executor.executeAsSingleValue(query, model);
-	}
-
-	@Override
-	public RDFNode executeAsSingleValue(String query, Model model,
-			Map<String, RDFNode> variables) {
-		query = this.buildExecutable(query, model);
-		return this.executor.executeAsSingleValue(query, model, variables);
-	}
 
 	@Override
 	public RDFNode executeAsSingleValue(String query, Dataset dataset,
 			Map<String, RDFNode> variables) {
 		query = this.buildExecutable(query, dataset.getNamedModel(Config.DEFAULT_NAMED_MODEL.getURI()));
+
 		return this.executor.executeAsSingleValue(query, dataset, variables);
 	}
 
@@ -86,7 +52,6 @@ public class SPARQLExecutableLanguage implements ExecutableLanguage {
 	
 	public String buildExecutable(String string, Model model) {
 		Map<String, String> prefixes = model.getNsPrefixMap();
-		
 		String prefs = "";
 		for(Map.Entry<String,String> p : prefixes.entrySet()) {
 			prefs = prefs + "\n" + "PREFIX " + p.getKey() + ": <" + p.getValue() + ">";
@@ -102,29 +67,18 @@ public class SPARQLExecutableLanguage implements ExecutableLanguage {
 			query = this.buildExecutable(query, function.getModel());
 			
 			if(this.executor.isAskQuery(query)) {
-				FunctionRegistry.get().put(function.getURI(), new AskFunctionFactory());
+				FunctionRegistry.get().put(function.getURI(), new AskFunction());
+				log.debug("ask sparql function with uri "+function.getURI()+" registered");
 			} else if(this.executor.isSelectQuery(query)) {
-				FunctionRegistry.get().put(function.getURI(), new SelectFunctionFactory());
+				FunctionRegistry.get().put(function.getURI(), new SelectFunction());
+				log.debug("select sparql function with uri "+function.getURI()+" registered");
 			}
 		} else if(function.getURI().equals(SHACL.hasShape.getURI())) {
 			FunctionRegistry.get().put(function.getURI(), new HasShapeFunction());
+			log.debug("sparql function with uri "+function.getURI()+" registered");
 		} else {
 			//do nothing, because the function has no purpose
 		}
-	}
-
-	@Override
-	public Map<String, RDFNode> executeAsMultipleValues(String query,
-			Model model) {
-		query = this.buildExecutable(query, model);
-		return this.executor.executeAsMultipleValues(query, model);
-	}
-
-	@Override
-	public Map<String, RDFNode> executeAsMultipleValues(String query,
-			Model model, Map<String, RDFNode> variables) {
-		query = this.buildExecutable(query, model);
-		return this.executor.executeAsMultipleValues(query, model, variables);
 	}
 
 	@Override

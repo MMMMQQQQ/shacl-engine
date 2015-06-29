@@ -5,12 +5,13 @@ import java.util.Map;
 import at.ac.tuwien.shacl.model.Function;
 
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
- * Interface defining how new executable languages should be defined.
+ * Interface defining an executable language.
+ * To create a new executable language, implement from this interface and register an 
+ * instance of that class in at.ac.tuwien.shacl.executable.Executables
  * 
  * @author xlin
  *
@@ -24,18 +25,10 @@ public interface ExecutableLanguage {
 	 */
 	public Property getCommand();
 
-	public Map<String,RDFNode> executeAsMultipleValues(final String executable, final Model model);
-	
-	public Map<String,RDFNode> executeAsMultipleValues(final String executable, final Model model, final Map<String, RDFNode> variables);
-	
 	public Map<String,RDFNode> executeAsMultipleValues(final String executable, final Dataset dataset, final Map<String, RDFNode> variables);
 	
 	public Map<String,RDFNode> executeAsMultipleValues(final String executable, final Dataset dataset);
 
-	public RDFNode executeAsSingleValue(final String executable, final Model model);
-	
-	public RDFNode executeAsSingleValue(final String executable, final Model model, final Map<String, RDFNode> variables);
-	
 	public RDFNode executeAsSingleValue(final String executable, final Dataset dataset, final Map<String, RDFNode> variables);
 	
 	public RDFNode executeAsSingleValue(final String executable, final Dataset dataset);

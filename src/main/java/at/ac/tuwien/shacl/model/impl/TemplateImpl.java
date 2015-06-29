@@ -28,12 +28,6 @@ public class TemplateImpl extends MacroImpl implements Template {
 	}
 
 	@Override
-	public String getLabelTemplate(String language) {
-		//TODO implement
-		return labelTemplates.get(language);
-	}
-
-	@Override
 	public Map<String, String> getLabelTemplates() {
 		//TODO implement
 		if(this.labelTemplates == null) {

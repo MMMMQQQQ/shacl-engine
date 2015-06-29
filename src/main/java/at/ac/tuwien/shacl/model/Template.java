@@ -4,6 +4,4 @@ import java.util.Map;
 
 public interface Template extends Macro {
 	public Map<String, String> getLabelTemplates();
-
-	public String getLabelTemplate(String language);
 }

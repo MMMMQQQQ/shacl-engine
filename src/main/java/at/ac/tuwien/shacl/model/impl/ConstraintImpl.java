@@ -1,11 +1,10 @@
 package at.ac.tuwien.shacl.model.impl;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import at.ac.tuwien.shacl.model.Constraint;
 import at.ac.tuwien.shacl.model.Shape;
+import at.ac.tuwien.shacl.vocabulary.SHACL;
 
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
@@ -13,8 +12,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 
 public class ConstraintImpl extends SHACLResourceImpl implements Constraint {
 
-	private Property constraintType;
-	
 	public ConstraintImpl(Node node, EnhGraph graph) {
 		super(node, graph);
 	}
@@ -37,13 +34,14 @@ public class ConstraintImpl extends SHACLResourceImpl implements Constraint {
 
 	@Override
 	public Property getConstraintType() {
-		return constraintType;
+		if(this.getModel().listObjectsOfProperty(SHACL.property).toSet().contains(this)) {
+			return SHACL.property;
+		} else if(this.getModel().listObjectsOfProperty(SHACL.inverseProperty).toSet().contains(this)) {
+			return SHACL.inverseProperty;
+		} else if(this.getModel().listObjectsOfProperty(SHACL.constraint).toSet().contains(this)) {
+			return SHACL.constraint;
+		} else {
+			return null;
+		}
 	}
-
-	@Override
-	public void setConstraintType(Property constraintProperty) {
-		//TODO throw exception, if this variable isnt null and input parameter and class variable differ from each other
-		this.constraintType = constraintProperty;
-	}
-
 }

@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
@@ -15,6 +18,8 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  *
  */
 public class ValueInjector {
+	private static final Logger log = LoggerFactory.getLogger(ValueInjector.class);
+	
 	private static Pattern pattern = null;
 	
 	/**
@@ -52,9 +57,8 @@ public class ValueInjector {
 				if(value != null) {
 					string = string.replace("{?"+ variable +"}", value);
 				} else {
-					//System.out.println("unknown variable " + variable);
-					//TODO create constraint violation type sh:Warning
-					//that variable doesnt exist OR log error
+					log.warn("unknown variable " + variable);
+					//TODO create constraint violation type sh:Warning that variable doesnt exist?
 				}
 			}
 		}

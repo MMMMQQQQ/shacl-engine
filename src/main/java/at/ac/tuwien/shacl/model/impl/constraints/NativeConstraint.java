@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class NativeConstraint extends ConstraintImpl {	
 
-	private List<ResultAnnotationImpl> resultAnnotations;
+	private List<ResultAnnotation> resultAnnotations;
 	
 	private Map<Property, String> executableBodies;
 
@@ -24,7 +24,6 @@ public class NativeConstraint extends ConstraintImpl {
 	}
 
 	public Resource getSeverity() {
-		System.out.println("severity: "+this.getOptionalResourceOfProperty(SHACL.severity));
 		return this.getOptionalResourceOfProperty(SHACL.severity);
 	}
 
@@ -32,7 +31,7 @@ public class NativeConstraint extends ConstraintImpl {
 		return this.getOptionalResourceOfProperty(SHACL.predicate);
 	}
 
-	public List<ResultAnnotationImpl> getResultAnnotations() {
+	public List<ResultAnnotation> getResultAnnotations() {
 		return resultAnnotations;
 	}
 

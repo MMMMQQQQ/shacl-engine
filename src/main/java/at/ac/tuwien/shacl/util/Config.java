@@ -5,6 +5,12 @@ import at.ac.tuwien.shacl.vocabulary.SHACL;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
+/**
+ * Configuration class defining several properties.
+ * 
+ * @author xlin
+ *
+ */
 public class Config {
 	public static final String BASE_RES_DIR = "src/main/resources/";
 	

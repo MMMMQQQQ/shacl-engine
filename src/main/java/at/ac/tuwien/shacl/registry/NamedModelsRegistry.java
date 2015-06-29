@@ -8,6 +8,12 @@ import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+/**
+ * A registry for all named models.
+ * 
+ * @author xlin
+ *
+ */
 public class NamedModelsRegistry {
 	private Dataset dataset;
 	
@@ -53,7 +59,7 @@ public class NamedModelsRegistry {
 	
 	private static NamedModelsRegistry registry;
 	
-	public static NamedModelsRegistry getRegistry() {
+	public static NamedModelsRegistry get() {
 		if(registry == null) {
 			registry = new NamedModelsRegistry();
 		}

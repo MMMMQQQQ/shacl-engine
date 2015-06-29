@@ -6,29 +6,20 @@
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix ex: <http://www.example.org/#>.
 
-ex:SuperShape
+ex:NotExampleShape
 	a sh:Shape ;
+	sh:constraint [
+		a sh:NotConstraint ;
+		sh:shape ex:NotShape
+	] .
+
+ex:NotShape
+	a sh:Shape;
 	sh:property [
 		sh:predicate ex:property ;
 		sh:minCount 1 ;
 	] .
 
-ex:ExampleAndShape
-	a sh:Shape ;
-	sh:constraint [
-		a sh:AndConstraint ;
-		sh:shapes (
-			ex:SuperShape
-			[
-				sh:property [
-					sh:predicate ex:property ;
-					sh:maxCount 1 ;
-				]
-			]
-		)
-	] .
-
-
 ex:ValidInstance1
-	sh:nodeShape ex:ExampleAndShape;
-	ex:property "One" .
+	sh:nodeShape ex:NotExampleShape;
+.

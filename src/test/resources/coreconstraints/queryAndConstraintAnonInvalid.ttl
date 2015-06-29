@@ -29,6 +29,7 @@ ex:ExampleAndShape
 	] .
 
 
-ex:ValidInstance1
+ex:InvalidInstance1
 	sh:nodeShape ex:ExampleAndShape;
-	ex:property "One" .
+	ex:property "One";
+	ex:property "Two" .

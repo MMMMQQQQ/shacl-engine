@@ -10,7 +10,6 @@ import at.ac.tuwien.shacl.model.Template;
 import at.ac.tuwien.shacl.model.impl.ConstraintImpl;
 import at.ac.tuwien.shacl.model.impl.TemplateInstance;
 import at.ac.tuwien.shacl.registry.SHACLModelRegistry;
-import at.ac.tuwien.shacl.registry.SHACLPropertyRegistry;
 import at.ac.tuwien.shacl.util.Config;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
 
@@ -18,12 +17,16 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-//implement a general shape constraint
+/**
+ * Implements a general shape constraint.
+ * 
+ * @author xlin
+ *
+ */
 public class TemplateConstraint extends ConstraintImpl {
 
 	public TemplateConstraint(Node node, EnhGraph graph) {
@@ -43,8 +46,6 @@ public class TemplateConstraint extends ConstraintImpl {
 		Template template = SHACLModelRegistry.get().getTemplate(this.getProperty(RDF.type).getResource().getURI());
 		
 		for(Statement stmt : this.listProperties().toList()) {
-			
-			System.out.println("***templates: "+template);
 			TemplateInstance tmpInstance = null;
 			
 			if(template != null) {

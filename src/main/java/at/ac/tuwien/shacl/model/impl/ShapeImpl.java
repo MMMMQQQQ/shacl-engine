@@ -51,8 +51,6 @@ public class ShapeImpl extends SHACLResourceImpl implements Shape {
 				
 				this.constraints.put(constraint.getURI(), constraint);
 			}
-			
-			constraint.setConstraintType(constraintType);
 		}
 	}
 

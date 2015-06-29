@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import at.ac.tuwien.shacl.model.Argument;
 import at.ac.tuwien.shacl.model.SHACLResource;
 import at.ac.tuwien.shacl.util.Config;
 import at.ac.tuwien.shacl.vocabulary.SHACL;
@@ -25,22 +24,6 @@ public class SHACLResourceImpl extends ResourceImpl implements SHACLResource {
 	public SHACLResourceImpl(Node node, EnhGraph graph) {
 		super(node, graph);
 	}
-	
-//	@Override
-//	public boolean isSubclassOf(Resource resource) {
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean isTypeOf(Resource resource) {
-//		return false;
-//	}
-
-//	@Override
-//	public List<Resource> listSubclasses() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 	
 	@Override
 	public Map<String, String> getMessages() {

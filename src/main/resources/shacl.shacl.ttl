@@ -1827,16 +1827,13 @@ sh:walkShapesList
 	] ;
 	sh:returnType xsd:boolean ;
 	sh:sparql """
-		SELECT ?result
-		WHERE {
+		ASK {
 			GRAPH ?arg4 {
-				OPTIONAL {
-					?arg1 rdf:first ?shape .
-					?arg1 rdf:rest ?rest .
-				}
+				?arg1 rdf:first ?shape .
+				?arg1 rdf:rest ?rest .
 			}
-			BIND (IF(bound(?shape), sh:hasShape(?arg3, ?shape, ?arg4), !?arg2) AS ?hasShape) .
-			BIND (IF(?hasShape = ?arg2, true, IF(bound(?rest), sh:walkShapesList(?rest, ?arg2, ?arg3, ?arg4), false)) AS ?result) .
+			BIND (sh:hasShape(?arg3, ?shape, ?arg4) AS ?hasShape) .
+			FILTER IF(?hasShape = ?arg2, true, sh:walkShapesList(?rest, ?arg2, ?arg3, ?arg4)) .
 		}
 		""" ;
 .

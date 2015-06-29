@@ -1,11 +1,6 @@
 package at.ac.tuwien.shacl.vocabulary;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import at.ac.tuwien.shacl.util.Config;
 
@@ -15,6 +10,13 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
+/**
+ * The SHACL vocabulary. Note that some parts might be outdated as this class is only
+ * a snapshot of the changing SHACL specification.
+ * 
+ * @author xlin
+ *
+ */
 public class SHACL {
 
     public final static String BASE_URI = "http://www.w3.org/ns/shacl";
@@ -27,7 +29,7 @@ public class SHACL {
     
     public final static Property final_ = ResourceFactory.createProperty(NS + "final");
     
-    public final static Property sparqlEntailment = ResourceFactory.createProperty(NS + "sparqlEntailment");
+    public final static Property entailment = ResourceFactory.createProperty(NS + "entailment");
     
     public final static Resource ClosedShapeConstraint = ResourceFactory.createResource(NS + "ClosedShapeConstraint");
     

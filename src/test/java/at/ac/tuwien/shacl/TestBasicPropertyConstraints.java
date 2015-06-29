@@ -1,17 +1,9 @@
 package at.ac.tuwien.shacl;
-import static org.junit.Assert.assertFalse;
-
 import org.junit.Test;
 
 import at.ac.tuwien.shacl.test.util.HelperClass;
-import at.ac.tuwien.shacl.util.SHACLParsingException;
-import at.ac.tuwien.shacl.validation.SHACLValidator;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-
-public class TestBasicPropertyConstraints {
+public class TestBasicPropertyConstraints extends AbstractConstraintTester {
 	@Test
 	public void testInvalidAllowedValues() {
 		this.testModelInvalid("queryAllowedValuesInvalid.ttl");
@@ -77,33 +69,8 @@ public class TestBasicPropertyConstraints {
 		this.testModelValid("queryValueClassValid.ttl");
 	}
 
-	private void testModel(String filename, boolean validModel) {
-		Model model;
-
-		model = ModelFactory.createDefaultModel();
-		model.read(HelperClass.Base_dir+HelperClass.Basic_propConst_dir+filename);
-		SHACLValidator validator = new SHACLValidator();
-		Model errorModel;
-		try {
-			errorModel = validator.validateGraph(model);
-			if(validModel) {
-				assertFalse(!errorModel.isEmpty());
-			} else {
-				assertFalse(errorModel.isEmpty());
-			}
-		} catch (SHACLParsingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
-	}
-	
-	private void testModelValid(String filename) {
-		this.testModel(filename, true);
-	}
-	
-	private void testModelInvalid(String filename) {
-		this.testModel(filename, false);
+	@Override
+	protected String getBaseDir() {
+		return HelperClass.Basic_propConst_dir;
 	}
 }

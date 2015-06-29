@@ -15,17 +15,9 @@ ex:SuperShape
 
 ex:ExampleAndShape
 	a sh:Shape ;
-	sh:constraint [
-		a sh:AndConstraint ;
-		sh:shapes (
-			ex:SuperShape
-			[
-				sh:property [
-					sh:predicate ex:property ;
-					sh:maxCount 1 ;
-				]
-			]
-		)
+	sh:property [
+		sh:predicate ex:property ;
+		sh:maxCount 1;
 	] .
 
 
