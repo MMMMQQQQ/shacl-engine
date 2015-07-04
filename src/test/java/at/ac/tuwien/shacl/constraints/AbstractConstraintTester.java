@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl;
+package at.ac.tuwien.shacl.constraints;
 
 import static org.junit.Assert.assertFalse;
 import at.ac.tuwien.shacl.test.util.HelperClass;

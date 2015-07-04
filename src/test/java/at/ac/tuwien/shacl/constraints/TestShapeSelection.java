@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl;
+package at.ac.tuwien.shacl.constraints;
 
 import static org.junit.Assert.assertEquals;
 

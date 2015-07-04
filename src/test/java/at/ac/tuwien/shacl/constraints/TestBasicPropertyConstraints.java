@@ -1,4 +1,4 @@
-package at.ac.tuwien.shacl;
+package at.ac.tuwien.shacl.constraints;
 import org.junit.Test;
 
 import at.ac.tuwien.shacl.test.util.HelperClass;
