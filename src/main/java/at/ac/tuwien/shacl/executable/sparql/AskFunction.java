@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /**
- * Defines the behavior of an SPARQL ASK query.
+ * Defines the behavior of a SPARQL ASK query.
  * 
  * @author xlin
  *

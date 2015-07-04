@@ -17,7 +17,6 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.JenaException;
@@ -30,21 +29,10 @@ import com.hp.hpl.jena.shared.JenaException;
  */
 public class SPARQLExecutor {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
-	public RDFNode executeAsSingleValue(String executable, Model model) {
-		QueryExecution exec = QueryExecutionFactory.create(executable, model);
-		return this.executeAsSingleValue(exec, executable);
-	}
 
 	public RDFNode executeAsSingleValue(String executable, Dataset dataset) {
 		QueryExecution exec = QueryExecutionFactory.create(executable, dataset);
 		return this.executeAsSingleValue(exec, executable);
-	}
-	
-	public RDFNode executeAsSingleValue(String query, Model model, Map<String, RDFNode> variables) {
-		
-		QueryExecution exec = QueryExecutionFactory.create(query, model, this.createBindings(variables));
-		return this.executeAsSingleValue(exec, query);
 	}
 
 	public RDFNode executeAsSingleValue(String query, Dataset dataset, Map<String, RDFNode> variables) {
@@ -77,20 +65,10 @@ public class SPARQLExecutor {
 			exec.close();
 		}
 	}
-	
-	public Map<String, RDFNode> executeAsMultipleValues(String executable, Model model) {
-		QueryExecution exec = QueryExecutionFactory.create(executable, model);
-		return this.executeAsMultipleValues(exec, executable);
-	}
 
 	public Map<String, RDFNode> executeAsMultipleValues(String executable, Dataset dataset) {
 		QueryExecution exec = QueryExecutionFactory.create(executable, dataset);
 		return this.executeAsMultipleValues(exec, executable);
-	}
-	
-	public Map<String, RDFNode> executeAsMultipleValues(String query, Model model, Map<String, RDFNode> variables) {
-		QueryExecution exec = QueryExecutionFactory.create(query, model, this.createBindings(variables));
-		return this.executeAsMultipleValues(exec, query);
 	}
 
 	public Map<String, RDFNode> executeAsMultipleValues(String query, Dataset dataset, Map<String, RDFNode> variables) {
