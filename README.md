@@ -1,5 +1,7 @@
 # SHACL Engine
 
+This implementation is deprecated! Please refer to the TopBraid SHACL API or similar implementations.
+
 ## Description
 * This is a Java project for an engine supporting the Shapes Constraint Language (SHACL). 
 * It is based on this proposal: https://w3c.github.io/data-shapes/shacl/. 
