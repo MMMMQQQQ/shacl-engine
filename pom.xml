@@ -3,6 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>at.ac.tuwien.ame</groupId>
+  <artifactId>shacl-engine</artifactId>
   <version>0.3.1-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
@@ -23,7 +24,8 @@
     <dependency>
 		<groupId>org.apache.jena</groupId>
 		<artifactId>jena-osgi</artifactId>
-		<version>2.13.0</version>
+		<version>2.13.0-Protege</version>
+		<type>bundle</type>
 	</dependency>
   </dependencies>
   
@@ -69,5 +71,4 @@
       </plugin>
 	</plugins>
   </build>
-  <artifactId>shacl-engine</artifactId>
 </project>
